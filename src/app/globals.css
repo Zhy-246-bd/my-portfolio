@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/* ================================================================
+   全站基础样式（颜色 + 字体）
+   想换配色，改下面的 --background（底色）和 --foreground（字色）即可。
+   ================================================================ */
+
+:root {
+  --background: #f8fafc; /* 页面底色：浅灰 */
+  --foreground: #0f172a; /* 正文字色：深蓝黑 */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* 字体：优先使用系统自带的中文字体，
+     不需要联网下载字体文件，所以打开速度快、离线也能正常显示。 */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* 让标题和段落在不同屏幕宽度下换行更自然，读起来更舒服 */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
