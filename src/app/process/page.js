@@ -115,55 +115,77 @@ export default function ProcessPage() {
           id="prototypes"
           no="②"
           title="原型"
-          hint="写代码之前先画草图：先想好页面长什么样，再动手做，能少改很多东西。"
+          hint="没有专业画图工具，我用「文字结构描述 + 方块线框图」来画每一页的结构：页面分成哪几块、按什么顺序排。"
         />
         <div className="mt-4">
           {prototypes.length === 0 ? (
-            <EmptyBox>
-              <p className="font-medium text-slate-700">
-                这一项还空着 —— 需要我亲自动手画一张草图。
-              </p>
-              <ol className="mt-2 list-decimal space-y-1 pl-5">
-                <li>拿纸笔画出首页大概长什么样（导航放哪、标题放哪、卡片怎么排）</li>
-                <li>用手机拍下来</li>
-                <li>
-                  把照片存进项目的{" "}
-                  <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-indigo-700">
-                    public/images/
-                  </code>{" "}
-                  文件夹
-                </li>
-                <li>
-                  打开{" "}
-                  <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs text-indigo-700">
-                    src/data/process.js
-                  </code>
-                  ，照着注释里的格式填一行
-                </li>
-              </ol>
-            </EmptyBox>
+            <EmptyBox>还没有原型记录。</EmptyBox>
           ) : (
-            <ul className="grid gap-4 sm:grid-cols-2">
+            <ul className="space-y-4">
               {prototypes.map((item) => (
                 <li
                   key={item.title}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+                  className="rounded-xl border border-slate-200 bg-white p-5"
                 >
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    width={1200}
-                    height={800}
-                    className="h-auto w-full"
-                  />
-                  <div className="p-4">
-                    <p className="font-semibold text-slate-900">{item.title}</p>
-                    {item.note && (
-                      <p className="mt-1.5 text-sm leading-6 text-slate-600">
-                        {item.note}
+                  <p className="font-semibold text-slate-900">{item.title}</p>
+                  {item.note && (
+                    <p className="mt-1.5 text-sm leading-6 text-slate-600">
+                      {item.note}
+                    </p>
+                  )}
+
+                  {/* 如果以后想贴手绘照片，照数据文件里的注释加上 image 字段即可 */}
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      width={1200}
+                      height={800}
+                      className="mt-4 h-auto w-full rounded-lg"
+                    />
+                  ) : null}
+
+                  {/* 方块线框图：一个方块 = 页面上的一块区域 */}
+                  {item.wireframe?.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        方块线框图
                       </p>
-                    )}
-                  </div>
+                      <div className="mt-2 space-y-1.5">
+                        {item.wireframe.map((block) => (
+                          <div key={block.label}>
+                            <div className="rounded border-2 border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-center text-xs text-slate-600">
+                              {block.label}
+                            </div>
+                            {block.children?.length > 0 && (
+                              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                                {block.children.map((child) => (
+                                  <div
+                                    key={child}
+                                    className="min-w-[4.5rem] flex-1 rounded border border-slate-300 bg-white px-2 py-1.5 text-center text-xs text-slate-500"
+                                  >
+                                    {child}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 文字结构描述 */}
+                  {item.outline?.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        文字结构描述
+                      </p>
+                      <pre className="mt-2 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-700">
+                        {item.outline.join("\n")}
+                      </pre>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
