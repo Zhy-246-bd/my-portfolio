@@ -134,15 +134,15 @@ export const projects = [
       },
     ],
 
-    // 这个项目是手写 + AI 辅助，技术说明如实分开写
+    // 这个项目用 Trae（AI 编程工具）辅助，技术说明如实分开写
     tech: [
       {
         name: "HTML + CSS + JavaScript",
-        what: "手写页面结构、翻牌动画和抽奖逻辑",
+        what: "网页的技术基础：页面结构、翻牌动画和抽奖逻辑",
       },
       {
-        name: "AI 编程助手",
-        what: "用提示词辅助生成代码框架，自己修改细节",
+        name: "Trae（AI 编程工具）",
+        what: "在 Trae 里用提示词生成代码，自己修改细节",
       },
       {
         name: "Netlify",

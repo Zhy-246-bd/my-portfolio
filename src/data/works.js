@@ -51,8 +51,8 @@ export const works = [
     date: "2026年9-10月 · 第 4-6 周",
     goal: "课程要求：按照完整的项目开发流程，做一个自己想做的东西。",
     whatIdid:
-      "我利用 AI 辅助写提示词、生成代码框架，自己手写修改细节，最后把「今天吃什么盲盒」部署上线到 Netlify。",
-    skills: ["HTML/CSS/JavaScript", "AI 辅助编程", "Netlify 部署"],
+      "我用 Trae（AI 编程工具）辅助：写提示词、生成代码框架，自己修改细节，最后把「今天吃什么盲盒」部署上线到 Netlify。",
+    skills: ["HTML/CSS/JavaScript", "Trae（AI 编程）", "Netlify 部署"],
     status: "已完成",
     projectId: "project-3",
   },
