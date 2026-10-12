@@ -97,4 +97,14 @@ export const iterations = [
     effect: "/iterations 页上线，8 条记录按时间顺序展示，每一条都能和 Git 的提交时间戳对上；README 里的记录和网页上的记录互为印证。",
     next: "做「标志性成果」专题页（问题/用户/方案/演示/复盘）；然后把网站部署到公网，满足「可访问」底线。",
   },
+  {
+    no: 9,
+    version: "v9",
+    date: "2026-10-12",
+    title: "部署上线，满足「可访问」底线",
+    what: "在 next.config.mjs 里开启静态导出，npm run build 生成 out 文件夹；把 out 文件夹拖拽上传到 Netlify，拿到公网网址 https://endearing-myportfolio.netlify.app/；site.js 增加网址字段，页脚显示「本站已上线」。",
+    why: "课程四条底线第一条就是「可访问」——网站必须能在公网正常打开，只在本机（localhost）能看到不算数。",
+    effect: "8 个页面在公网全部能正常打开（实测 HTTP 200），无死链接，不带斜杠的网址会自动跳转，乱输网址会显示 404 页；手机和电脑都能访问。",
+    next: "做「标志性成果」专题页（问题/用户/方案/演示/复盘）。以后每次改完内容，重新 npm run build 再拖一次 out 文件夹即可更新线上。",
+  },
 ];

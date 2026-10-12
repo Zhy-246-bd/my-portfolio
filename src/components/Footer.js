@@ -10,6 +10,19 @@ export default function Footer() {
           本网站由我本人规划、编写和修改，过程中使用了 AI
           编程助手（Claude）辅助。AI 参与较多的部分，我都记录在「过程证据」页的提示词记录里，并写清了我自己做了哪些调整。
         </p>
+        {site.siteUrl && (
+          <p className="mt-3 leading-6">
+            本站已上线：{" "}
+            <a
+              href={site.siteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-indigo-600 hover:underline"
+            >
+              {site.siteUrl}
+            </a>
+          </p>
+        )}
         <p className="mt-4 text-xs text-slate-400">
           © {new Date().getFullYear()} {site.name} · 最近更新：{site.lastUpdated}
         </p>
