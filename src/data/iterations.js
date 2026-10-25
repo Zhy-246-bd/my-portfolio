@@ -107,4 +107,14 @@ export const iterations = [
     effect: "8 个页面在公网全部能正常打开（实测 HTTP 200），无死链接，不带斜杠的网址会自动跳转，乱输网址会显示 404 页；手机和电脑都能访问。",
     next: "做「标志性成果」专题页（问题/用户/方案/演示/复盘）。以后每次改完内容，重新 npm run build 再拖一次 out 文件夹即可更新线上。",
   },
+  {
+    no: 10,
+    version: "v10",
+    date: "2026-10-25",
+    title: "部署备用网址到 Vercel",
+    what: "用 Vercel CLI 把项目关联到 Vercel（项目名 my-portfolio，团队 zhhy）并部署成功，拿到备用网址 https://my-portfolio-d8uz1evf2-zhhy.vercel.app；site.js 增加备用网址字段，页脚同时显示两个网址。",
+    why: "只有一个托管平台不保险，多一个备用网址，两个平台互为备份；而且 Vercel 项目已关联好，以后把代码推送到 GitHub 就能自动部署。",
+    effect: "Vercel 部署状态 READY（生产环境），构建成功；两个平台现在都有完整的网站。",
+    next: "做「标志性成果」专题页（问题/用户/方案/演示/复盘）。",
+  },
 ];

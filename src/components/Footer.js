@@ -21,6 +21,19 @@ export default function Footer() {
             >
               {site.siteUrl}
             </a>
+            {site.siteUrlAlt && (
+              <>
+                {" · "}备用网址：{" "}
+                <a
+                  href={site.siteUrlAlt}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-indigo-600 hover:underline"
+                >
+                  {site.siteUrlAlt}
+                </a>
+              </>
+            )}
           </p>
         )}
         <p className="mt-4 text-xs text-slate-400">
