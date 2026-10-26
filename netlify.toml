@@ -1,0 +1,6 @@
+# Netlify 自动部署配置
+# 这个文件提交到 GitHub 后，Netlify 每次构建都会读它，
+# 网页端「Build settings」里怎么填都不影响（以这里为准）。
+[build]
+  command = "npm run build"
+  publish = "out"
