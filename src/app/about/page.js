@@ -114,7 +114,15 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      {/* ④ 联系方式 */}
+      {/* ④ 关于本网站的声明 */}
+      <section className="mt-10">
+        <h2 className="text-lg font-bold text-slate-900">关于本网站的说明</h2>
+        <p className="mt-4 rounded-xl border border-slate-200 bg-white p-5 leading-7 text-slate-600">
+          {about.aiStatement}
+        </p>
+      </section>
+
+      {/* ⑤ 联系方式 */}
       <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="font-semibold text-slate-900">联系我</h2>
         <p className="mt-2 text-sm text-slate-600">

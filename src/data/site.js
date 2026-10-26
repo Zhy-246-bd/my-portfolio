@@ -11,7 +11,7 @@ export const site = {
   intro:
     "这是我在数智编程课上的个人作品集。这里不只放最后的成品，还记录了我每一阶段的作业、遇到问题时是怎么解决的，以及每次修改的原因和效果。",
   email: "2034267621@qq.com", // ← TODO: 改成你的邮箱
-  siteUrl: "https://endearing-myportfolio.netlify.app/", // 部署后的公网网址（页脚会显示）
+  siteUrl: "https://zhymy-portfolio.netlify.app/", // 部署后的公网网址（页脚会显示）
   siteUrlAlt: "https://my-portfolio-d8uz1evf2-zhhy.vercel.app", // 备用网址（Vercel）
   github: "", // 有 GitHub 就填网址，没有就留空字符串
   lastUpdated: "2026-10-25",
@@ -28,6 +28,7 @@ export const navItems = [
   { href: "/iterations", label: "迭代记录" },
   { href: "/featured", label: "标志性成果" },
   { href: "/reflection", label: "学习复盘" },
+  { href: "/credits", label: "引用声明" },
 ];
 
 // 【首页的板块卡片】改这里，首页的卡片会自动更新。

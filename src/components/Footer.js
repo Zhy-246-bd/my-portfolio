@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { site } from "@/data/site";
 
 // 页脚：所有页面共用（在 src/app/layout.js 里引用了一次）
@@ -9,6 +10,12 @@ export default function Footer() {
         <p className="mt-2 leading-6">
           本网站由我本人规划、编写和修改，过程中使用了 AI
           编程助手（Claude）辅助。AI 参与较多的部分，我都记录在「过程证据」页的提示词记录里，并写清了我自己做了哪些调整。
+          <Link
+            href="/credits"
+            className="ml-1 font-medium text-indigo-600 hover:underline"
+          >
+            详见「引用声明」页 →
+          </Link>
         </p>
         {site.siteUrl && (
           <p className="mt-3 leading-6">

@@ -36,7 +36,8 @@ MyPortfolio/
 │   │   ├── process/page.js     ← ④ 过程证据（/process）
 │   │   ├── iterations/page.js  ← ⑤ 迭代记录（/iterations）
 │   │   ├── featured/page.js    ← ⑥ 标志性成果（/featured）
-│   │   └── reflection/page.js  ← ⑦ 学习复盘（/reflection）
+│   │   ├── reflection/page.js  ← ⑦ 学习复盘（/reflection）
+│   │   └── credits/page.js     ← 引用声明（/credits）
 │   ├── components/             ← 可复用的小零件
 │   │   ├── NavBar.js           ← 导航栏（手机端自动变成"菜单"按钮）
 │   │   ├── Footer.js           ← 页脚（含 AI 辅助说明）
@@ -49,7 +50,8 @@ MyPortfolio/
 │       ├── process.js          ← ④ 过程证据（需求/原型/提示词/版本/问题）
 │       ├── iterations.js       ← ⑤ 迭代记录
 │       ├── featured.js         ← ⑥ 标志性成果专题
-│       └── reflection.js       ← ⑦ 最终学习复盘
+│       ├── reflection.js       ← ⑦ 最终学习复盘
+│       └── credits.js          ← 引用声明（模板/AI/同伴/隐私）
 ├── public/                     ← 图片等静态文件放这里（图片放 public/images/）
 └── package.json                ← 项目依赖清单，一般不用动
 ```
@@ -78,7 +80,7 @@ MyPortfolio/
 ### 3.2 四条合格底线
 
 - [x] **可访问**：网址正常打开，移动端和桌面端基本可用
-      → ✅ 主网址 Netlify：https://endearing-myportfolio.netlify.app/（8 个页面全部实测 HTTP 200）
+      → ✅ 主网址 Netlify：https://zhymy-portfolio.netlify.app/（8 个页面全部实测 HTTP 200，GitHub 推送自动部署）
       → ✅ 备用网址 Vercel：https://my-portfolio-d8uz1evf2-zhhy.vercel.app（部署状态 READY）
 - [ ] **有入口**：所有外链有效、项目入口明确，不能只有图片没有成果
       → 3 个项目的 `entry` 已填好并实测可访问 ✅；无网址的项目会显示「即将上线」标签而非死链接
@@ -91,7 +93,7 @@ MyPortfolio/
 
 1. **页脚（全站可见）** —— 每页底部都有一句话说明 ✅ 已完成
 2. **「过程证据」页的提示词记录** —— 我和 AI 的每次对话原文都记在这里，这是最硬的证据 ❌ 待做
-3. **单独的「引用与声明」页** —— 完整说明模板、开源代码、AI 辅助、同伴帮助、隐私处理 ⏳ 待确认是否新建
+3. **单独的「引用与声明」页（/credits）** —— 完整说明模板、开源框架、AI 辅助、同伴帮助、隐私处理 ✅ 已完成
 
 ---
 
@@ -109,6 +111,7 @@ MyPortfolio/
 | 迭代记录 | `src/data/iterations.js` |
 | 标志性成果专题 | `src/data/featured.js` |
 | 最终学习复盘 | `src/data/reflection.js` |
+| 引用声明（模板/AI/同伴/隐私） | `src/data/credits.js` |
 
 ---
 
@@ -188,7 +191,7 @@ MyPortfolio/
 
 ### 第 9 次迭代 · 2026-10-12 · 部署上线，满足「可访问」底线
 
-- **改了什么**：在 `next.config.mjs` 里开启静态导出，`npm run build` 生成 `out` 文件夹；把 `out` 文件夹拖拽上传到 Netlify，拿到公网网址 https://endearing-myportfolio.netlify.app/；`site.js` 增加网址字段，页脚显示「本站已上线」。
+- **改了什么**：在 `next.config.mjs` 里开启静态导出，`npm run build` 生成 `out` 文件夹；把 `out` 文件夹拖拽上传到 Netlify，拿到公网网址 https://zhymy-portfolio.netlify.app/；`site.js` 增加网址字段，页脚显示「本站已上线」。
 - **为什么改**：课程四条底线第一条就是「可访问」——网站必须能在公网正常打开，只在本机（localhost）能看到不算数。
 - **效果如何**：8 个页面在公网全部能正常打开（实测 HTTP 200），无死链接，不带斜杠的网址会自动跳转，乱输网址会显示 404 页；手机和电脑都能访问。
 - **下一步**：做「标志性成果」专题页（问题/用户/方案/演示/复盘）。以后每次改完内容，重新 `npm run build` 再拖一次 `out` 文件夹即可更新线上。
@@ -213,6 +216,13 @@ MyPortfolio/
 - **为什么改**：课程要求这一页必须包含问题/用户/方案/演示/复盘五个要素；先把页面框架搭好，之后只需要填内容，不用再动页面代码。
 - **效果如何**：页面上 5 个要素的分区齐全，没填的内容都显示成黄色草稿框，不会把空页面当成成品；以后在 `featured.js` 里填好 `projectId`，④ 演示会自动出现访问按钮和关键页。
 - **下一步**：选定一个代表作（想清楚哪个项目最有故事、自己最满意），然后填写这一页的内容；再做最后一个模块「最终学习复盘」。
+
+### 第 13 次迭代 · 2026-10-26 · 打通 GitHub 与 Netlify 自动化部署，彻底解决样式丢失问题，网站正式上线
+
+- **改了什么**：① 把代码推送到 GitHub（仓库 `Zhy-246-bd/my-portfolio`），Netlify 改用「Import from Git」连接 GitHub；② 新建 `netlify.toml` 写明构建命令（`npm run build`）和发布目录（`out`），彻底解决之前网页端 Publish directory 设置不对导致的样式丢失问题；③ 全站旧网址统一替换为新网址 https://zhymy-portfolio.netlify.app/；④ 「关于我」页新增 AI 辅助说明，新建「引用声明」页如实说明 AI 辅助等情况。
+- **为什么改**：手动拖拽上传太容易出错（之前拖错文件夹导致全站 404）；改成 GitHub 推送自动部署后，改完代码 `git push` 一下网站就自动更新，不再依赖手动操作。课程「真实」底线也要求 AI 辅助必须如实声明，所以要补上专门的声明。
+- **效果如何**：现在 `git push` 之后 Netlify 自动构建部署，网站样式正常、8 个页面全部能打开；新网址正式上线；AI 辅助声明覆盖页脚、「关于我」、「引用声明」页三处。
+- **下一步**：删除旧的 Drop 站点；选定「标志性成果」代表作并填写内容；做最后一个模块「最终学习复盘」。
 
 ---
 
