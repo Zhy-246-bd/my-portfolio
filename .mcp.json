@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "motion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "framer-motion"
+      ]
+    }
+  }
+}
