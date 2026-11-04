@@ -51,12 +51,13 @@ export default function StudioLanding() {
       last = now;
 
       const t = now / 1000;
+      const breath = (Math.sin(t * 0.42) + 1) / 2;
       const fx =
-        0.004 + Math.sin(t * 0.7) * 0.0022 + Math.sin(t * 1.7) * 0.0008;
+        0.0038 + breath * 0.0022 + Math.sin(t * 0.21) * 0.0005;
       const fy =
-        0.012 + Math.cos(t * 0.55) * 0.0045 + Math.sin(t * 1.1) * 0.0015;
-      const scale = 26 + Math.sin(t * 0.9) * 12;
-      const blur = 1.2 + Math.sin(t * 0.8) * 0.7;
+        0.011 + breath * 0.005 + Math.cos(t * 0.18) * 0.001;
+      const scale = 24 + breath * 8;
+      const blur = 1.05 + breath * 0.75;
 
       turbulenceRef.current?.setAttribute(
         "baseFrequency",
@@ -168,15 +169,7 @@ export default function StudioLanding() {
           >
             {headings[view].map((line) => (
               <span key={line} className={styles.line}>
-                {line.split("").map((letter, index) => (
-                  <span
-                    key={`${letter}-${index}`}
-                    className={styles.letter}
-                    style={{ "--i": index }}
-                  >
-                    {letter}
-                  </span>
-                ))}
+                {line}
               </span>
             ))}
           </h1>
