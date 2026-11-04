@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "StudioPoppins";
+  src: url("/fonts/Poppins-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 .stage {
   --studio-mono: "SFMono-Regular", "Cascadia Mono", Consolas, "Liberation Mono",
     monospace;
@@ -196,6 +204,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.fluidCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 .headingWrap {
