@@ -168,8 +168,29 @@ void main() {
 
 const QUAD = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
 
+const EMIT = `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uText;
+uniform sampler2D uDye;
+uniform vec2 uPointer;
+uniform float uEmit;
+uniform float uSuppress;
+uniform float uRestore;
+void main() {
+  vec4 dye = texture2D(uDye, vUv);
+  float glyph = texture2D(uText, vUv).a;
+  float mask = 1.0 - smoothstep(0.02, 0.16, distance(vUv, uPointer));
+  float restore = uRestore * (1.0 - mask);
+  dye.r = mix(dye.r, glyph * 0.9, restore);
+  dye.g *= 1.0 - restore * 0.35;
+  dye.r += glyph * uEmit * (1.0 - mask * uSuppress);
+  gl_FragColor = dye;
+}
+`;
+
 export default class GpuFluid {
-  constructor(gl, width = 320, height = 180) {
+  constructor(gl, width = 512, height = 320) {
     this.gl = gl;
     this.width = width;
     this.height = height;
@@ -213,6 +234,7 @@ export default class GpuFluid {
     this.pressureProgram = makeProgram(PRESSURE);
     this.gradientProgram = makeProgram(GRADIENT);
     this.warpProgram = makeProgram(WARP);
+    this.emitProgram = makeProgram(EMIT);
 
     const createFBO = (w, h) => {
       const texture = gl.createTexture();
@@ -271,6 +293,7 @@ export default class GpuFluid {
     this.pointerPos = { x: 0.5, y: 0.5 };
     this.active = false;
     this.breakAmount = 0;
+    this.textTexture = null;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
@@ -318,6 +341,26 @@ export default class GpuFluid {
     this.dye.swap();
   }
 
+  setTextTexture(texture) {
+    this.textTexture = texture;
+  }
+
+  emitText() {
+    if (!this.textTexture) return;
+    const { gl } = this;
+    this.bindTexture(this.dye.read.texture, 0);
+    this.bindTexture(this.textTexture, 1);
+    this.draw(this.dye.write, this.emitProgram, (u) => {
+      gl.uniform1i(u.uDye, 0);
+      gl.uniform1i(u.uText, 1);
+      gl.uniform2f(u.uPointer, this.pointerPos.x, this.pointerPos.y);
+      gl.uniform1f(u.uEmit, 0.022);
+      gl.uniform1f(u.uSuppress, this.active ? 0.9 : 0);
+      gl.uniform1f(u.uRestore, 0.03);
+    });
+    this.dye.swap();
+  }
+
   pointer(x, y) {
     this.active = true;
     this.pointerPos = { x, y };
@@ -358,9 +401,11 @@ export default class GpuFluid {
     this.time += dt;
     const t = this.time;
 
+    this.emitText();
+
     for (const p of this.pending) {
-      const forceX = p.dx * 18;
-      const forceY = p.dy * 18;
+      const forceX = p.dx * 8;
+      const forceY = p.dy * 8;
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
       this.splatDye(p.x, p.y, [0, 0.22, 0], 0.0015);
     }
@@ -384,7 +429,7 @@ export default class GpuFluid {
       gl.uniform1i(u.uVelocity, 1);
       gl.uniform1i(u.uSource, 0);
       gl.uniform1f(u.uDt, dt);
-      gl.uniform1f(u.uDissipation, 0.995);
+      gl.uniform1f(u.uDissipation, this.active ? 0.995 : 0.95);
     });
     this.velocity.swap();
 
