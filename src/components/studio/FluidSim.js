@@ -1,5 +1,5 @@
-const N = 160;
-const M = 90;
+const N = 192;
+const M = 108;
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const index = (x, y) => x + y * N;
@@ -17,6 +17,7 @@ export default class FluidSim {
     this.pink = new Float32Array(N * M);
     this.pink0 = new Float32Array(N * M);
     this.div = new Float32Array(N * M);
+    this.curl = new Float32Array(N * M);
     this.pressure = new Float32Array(N * M);
     this.pixels = new Uint8Array(N * M * 4);
     this.time = 0;
@@ -95,6 +96,39 @@ export default class FluidSim {
     );
   }
 
+  computeCurl() {
+    for (let y = 1; y < M - 1; y += 1) {
+      for (let x = 1; x < N - 1; x += 1) {
+        const i = index(x, y);
+        this.curl[i] =
+          0.5 *
+          (this.v[index(x + 1, y)] -
+            this.v[index(x - 1, y)] -
+            (this.u[index(x, y + 1)] -
+              this.u[index(x, y - 1)]));
+      }
+    }
+  }
+
+  applyVorticity(dt) {
+    const epsilon = 18;
+    for (let y = 2; y < M - 2; y += 1) {
+      for (let x = 2; x < N - 2; x += 1) {
+        const i = index(x, y);
+        const dx =
+          Math.abs(this.curl[index(x + 1, y)]) -
+          Math.abs(this.curl[index(x - 1, y)]);
+        const dy =
+          Math.abs(this.curl[index(x, y + 1)]) -
+          Math.abs(this.curl[index(x, y - 1)]);
+        const length = Math.hypot(dx, dy) + 0.0001;
+        const force = this.curl[i] * epsilon * dt;
+        this.u[i] += (dy / length) * force;
+        this.v[i] -= (dx / length) * force;
+      }
+    }
+  }
+
   advect(field, previous, dt) {
     for (let y = 1; y < M - 1; y += 1) {
       for (let x = 1; x < N - 1; x += 1) {
@@ -120,7 +154,7 @@ export default class FluidSim {
       }
     }
 
-    for (let iteration = 0; iteration < 12; iteration += 1) {
+    for (let iteration = 0; iteration < 16; iteration += 1) {
       for (let y = 1; y < M - 1; y += 1) {
         for (let x = 1; x < N - 1; x += 1) {
           const i = index(x, y);
@@ -177,6 +211,16 @@ export default class FluidSim {
     this.v0.set(this.v);
     this.advect(this.u, this.u0, dt);
     this.advect(this.v, this.v0, dt);
+
+    for (let y = 1; y < M - 1; y += 1) {
+      for (let x = 1; x < N - 1; x += 1) {
+        const i = index(x, y);
+        this.v[i] += this.teal[i] * 9 * dt;
+      }
+    }
+
+    this.computeCurl();
+    this.applyVorticity(dt);
     this.project();
 
     this.teal0.set(this.teal);

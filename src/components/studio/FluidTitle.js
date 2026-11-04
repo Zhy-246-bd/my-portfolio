@@ -112,12 +112,12 @@ void main() {
     fbm(textUv * 28.0 + vec2(t * 0.18, -t * 0.1))
   );
   text = smoothstep(
-    0.06,
-    0.78,
-    text + (inkNoise - 0.5) * 0.38 + (flowInk - 0.5) * 0.16
+    0.12,
+    0.82,
+    text + (inkNoise - 0.5) * 0.22 + (flowInk - 0.5) * 0.08
   );
-  text = max(text, bleed * 0.5);
-  text *= 0.72 + 0.28 * grain;
+  text = max(text, bleed * 0.35);
+  text *= 0.9 + 0.1 * grain;
 
   float glow = 0.0;
   for (int i = 0; i < 6; i++) {
@@ -182,22 +182,20 @@ void main() {
   textColor = mix(
     textColor,
     inkColor,
-    clamp(flowInk * 0.24 + strand * 0.16, 0.0, 0.36)
+    clamp(flowInk * 0.08, 0.0, 0.08)
   );
-  textColor = mix(textColor, textColor * 0.7, flowInk * 0.16);
-  textColor *= 0.94 + 0.1 * strand;
+  textColor *= 0.96 + 0.04 * flowInk;
 
   float textAlpha = clamp(
     text *
-      (1.0 - smoke * 0.12) *
-      (0.86 + 0.14 * flowInk) *
-      (0.92 + 0.08 * grain),
+      (1.0 - smoke * 0.1) *
+      (0.96 + 0.04 * flowInk),
     0.0,
     1.0
   );
   vec3 color = smokeColor * smoke * 0.55;
   color = mix(color, textColor, textAlpha);
-  color += inkColor * glow * 0.02;
+  color += inkColor * glow * 0.01;
 
   float pinkHaze = clamp(pinkDensity * 3.0, 0.0, 1.0);
   pinkHaze *= pinkFilament;
