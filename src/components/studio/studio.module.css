@@ -1016,23 +1016,161 @@
 .moduleBody {
   position: relative;
   z-index: 3;
-  margin-top: -18px;
-  padding: 0 24px 64px;
+  padding: 0 24px 80px;
 }
 
 .moduleSheet {
-  width: min(1120px, 100%);
+  width: min(1040px, 100%);
   margin: 0 auto;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 22px;
-  background: #f5f7f4;
-  padding: 34px 40px 44px;
-  color: #0f172a;
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 38px 0 20px;
+  color: #dfeae5;
 }
 
 .moduleSheet :global(h1:first-of-type) {
   display: none;
+}
+
+/* 内容直接落在深色背景上：把原页面的浅色工具类映射成深色玻璃 */
+.moduleSheet :global(h2),
+.moduleSheet :global(h3),
+.moduleSheet :global(h4),
+.moduleSheet :global(strong) {
+  color: #edf6f1;
+}
+
+.moduleSheet :global(.text-slate-900),
+.moduleSheet :global(.text-slate-800) {
+  color: #edf6f1;
+}
+
+.moduleSheet :global(.text-slate-700) {
+  color: #cfddd8;
+}
+
+.moduleSheet :global(.text-slate-600) {
+  color: #aebfb8;
+}
+
+.moduleSheet :global(.text-slate-500) {
+  color: #93a69f;
+}
+
+.moduleSheet :global(.text-slate-400) {
+  color: #7c8f88;
+}
+
+.moduleSheet :global(.bg-white) {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.moduleSheet :global(.bg-slate-50),
+.moduleSheet :global(.bg-slate-100) {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.moduleSheet :global(.border-slate-100),
+.moduleSheet :global(.border-slate-200),
+.moduleSheet :global(.border-slate-300) {
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.moduleSheet :global(.divide-slate-200) > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.moduleSheet :global(.text-indigo-700),
+.moduleSheet :global(.text-indigo-600),
+.moduleSheet :global(.text-indigo-500) {
+  color: #9fe7dc;
+}
+
+.moduleSheet :global(.bg-indigo-50),
+.moduleSheet :global(.bg-indigo-100),
+.moduleSheet :global(.bg-indigo-50\/60) {
+  background: rgba(110, 225, 208, 0.1);
+}
+
+.moduleSheet :global(.border-indigo-100),
+.moduleSheet :global(.border-indigo-200),
+.moduleSheet :global(.border-indigo-300) {
+  border-color: rgba(110, 225, 208, 0.24);
+}
+
+.moduleSheet :global(.bg-indigo-600) {
+  background: #2e7d73;
+}
+
+.moduleSheet :global(.bg-emerald-50),
+.moduleSheet :global(.bg-emerald-100),
+.moduleSheet :global(.bg-emerald-50\/60) {
+  background: rgba(100, 215, 165, 0.12);
+}
+
+.moduleSheet :global(.text-emerald-700),
+.moduleSheet :global(.text-emerald-600) {
+  color: #8fe0bc;
+}
+
+.moduleSheet :global(.border-emerald-200) {
+  border-color: rgba(100, 215, 165, 0.22);
+}
+
+.moduleSheet :global(.bg-amber-50),
+.moduleSheet :global(.bg-amber-100) {
+  background: rgba(232, 190, 105, 0.09);
+}
+
+.moduleSheet :global(.text-amber-800),
+.moduleSheet :global(.text-amber-700),
+.moduleSheet :global(.text-amber-600) {
+  color: #e6c27a;
+}
+
+.moduleSheet :global(.border-amber-300),
+.moduleSheet :global(.border-amber-200) {
+  border-color: rgba(232, 190, 105, 0.28);
+}
+
+.moduleSheet :global(.bg-rose-50),
+.moduleSheet :global(.bg-rose-50\/60) {
+  background: rgba(240, 120, 145, 0.1);
+}
+
+.moduleSheet :global(.text-rose-700) {
+  color: #f2a0b4;
+}
+
+.moduleSheet :global(.ring-slate-50) {
+  --tw-ring-color: #050908;
+}
+
+.moduleSheet :global(a) {
+  color: #9fe7dc;
+}
+
+.moduleSheet :global(.bg-indigo-600) {
+  color: #f4fffb;
+}
+
+.moduleSheet :global(.shadow-sm),
+.moduleSheet :global(.shadow),
+.moduleSheet :global(.shadow-md),
+.moduleSheet :global(.shadow-lg) {
+  box-shadow: none;
+}
+
+.moduleSheet :global(code) {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  color: #c9f3ea;
+}
+
+.moduleSheet :global(img) {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
 }
 
 @media (max-width: 700px) {
@@ -1054,11 +1192,10 @@
   }
 
   .moduleBody {
-    padding: 0 10px 36px;
+    padding: 0 16px 48px;
   }
 
   .moduleSheet {
-    border-radius: 16px;
-    padding: 22px 16px 30px;
+    padding: 28px 0 12px;
   }
 }
