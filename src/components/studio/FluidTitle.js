@@ -164,6 +164,21 @@ void main() {
   color += pink * pinkRim * 0.2;
   color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.12;
 
+  float paintDye = dye.b;
+  float paint = smoothstep(0.025, 0.45, paintDye);
+  float paintRim = smoothstep(0.03, 0.13, paintDye) *
+    (1.0 - smoothstep(0.13, 0.42, paintDye));
+  vec3 cream = vec3(1.0, 0.88, 0.56);
+  vec3 gold = vec3(0.95, 0.62, 0.24);
+  vec3 paintColor = mix(
+    vec3(0.32, 0.72, 0.62),
+    cream,
+    clamp(paintDye * 2.6, 0.0, 1.0)
+  );
+  color += paintColor * paint * 1.45;
+  color += cream * paintRim * 0.75;
+  color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.28;
+
   vec2 waterP = uv * aspect;
   float waterField = fbm(
     waterP * 2.6 + vec2(uTime * 0.035, -uTime * 0.028)

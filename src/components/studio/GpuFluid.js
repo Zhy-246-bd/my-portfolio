@@ -185,6 +185,24 @@ void main() {
 }
 `;
 
+const BUOYANCY = `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uVelocity;
+uniform sampler2D uDye;
+uniform float uDt;
+uniform float uTime;
+uniform float uStrength;
+void main() {
+  vec2 velocity = texture2D(uVelocity, vUv).xy;
+  float paint = texture2D(uDye, vUv).b;
+  velocity.y += paint * uStrength * uDt;
+  velocity.x += sin(vUv.y * 19.0 + uTime * 1.6) *
+    paint * uStrength * uDt * 0.22;
+  gl_FragColor = vec4(velocity, 0.0, 1.0);
+}
+`;
+
 const EMIT = `
 precision highp float;
 varying vec2 vUv;
@@ -254,6 +272,7 @@ export default class GpuFluid {
     this.warpProgram = makeProgram(WARP);
     this.emitProgram = makeProgram(EMIT);
     this.stirProgram = makeProgram(STIR);
+    this.buoyancyProgram = makeProgram(BUOYANCY);
 
     const createFBO = (w, h) => {
       const texture = gl.createTexture();
@@ -387,7 +406,21 @@ export default class GpuFluid {
     this.draw(this.velocity.write, this.stirProgram, (u) => {
       gl.uniform1i(u.uVelocity, 0);
       gl.uniform2f(u.uPointer, this.pointerPos.x, this.pointerPos.y);
-      gl.uniform1f(u.uStrength, 2.2);
+      gl.uniform1f(u.uStrength, 0.7);
+    });
+    this.velocity.swap();
+  }
+
+  applyBuoyancy(dt) {
+    const { gl } = this;
+    this.bindTexture(this.velocity.read.texture, 0);
+    this.bindTexture(this.dye.read.texture, 1);
+    this.draw(this.velocity.write, this.buoyancyProgram, (u) => {
+      gl.uniform1i(u.uVelocity, 0);
+      gl.uniform1i(u.uDye, 1);
+      gl.uniform1f(u.uDt, dt);
+      gl.uniform1f(u.uTime, this.time);
+      gl.uniform1f(u.uStrength, 18);
     });
     this.velocity.swap();
   }
@@ -456,11 +489,27 @@ export default class GpuFluid {
       this.splatDye(
         p.x,
         p.y,
-        [0, 0.008 + 0.02 * variation, 0],
-        0.00028 + 0.0004 * variation,
+        [0, 0, 0.006 + 0.012 * variation],
+        0.0003 + 0.0004 * variation,
       );
     }
     this.pending = [];
+
+    if (this.active) {
+      this.splatVelocity(
+        this.pointerPos.x,
+        this.pointerPos.y,
+        Math.sin(t * 2.2) * 0.12,
+        0.13,
+        0.004,
+      );
+      this.splatDye(
+        this.pointerPos.x,
+        this.pointerPos.y,
+        [0, 0, 0.018],
+        0.003,
+      );
+    }
 
     const texelX = 1 / this.width;
     const texelY = 1 / this.height;
@@ -474,6 +523,8 @@ export default class GpuFluid {
       gl.uniform1f(u.uDissipation, this.active ? 0.96 : 0.93);
     });
     this.velocity.swap();
+
+    this.applyBuoyancy(dt);
 
     this.bindTexture(this.velocity.read.texture, 0);
     this.draw(this.curl, this.curlProgram, (u) => {
