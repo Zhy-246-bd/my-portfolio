@@ -9,7 +9,9 @@ export default function ModuleShell({ title, label, index, children }) {
     <div className={styles.modulePage}>
       <header className={styles.moduleHero}>
         <div className={styles.moduleTopline}>
-          <Link href="/studio">← INDEX</Link>
+          <Link href="/studio" className={styles.moduleBack}>
+            ← 回到首页
+          </Link>
           <span>
             {index} / 07 · {title}
           </span>
