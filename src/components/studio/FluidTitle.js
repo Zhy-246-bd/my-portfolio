@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import FluidSim from "./FluidSim";
 import styles from "./studio.module.css";
 
 const VERTEX_SHADER = `
@@ -17,9 +18,9 @@ const FRAGMENT_SHADER = `
 precision highp float;
 
 uniform sampler2D uText;
+uniform sampler2D uFluid;
 uniform vec2 uResolution;
 uniform float uTime;
-uniform vec4 uBlobs[8];
 
 varying vec2 vUv;
 
@@ -69,34 +70,14 @@ void main() {
   );
   float field = n1 * 0.5 + n2 * 0.28 + streak * 0.12 + filament * 0.1;
 
-  vec2 displacement = vec2(0.0);
-  float density = 0.0;
-  float pinkDensity = 0.0;
+  vec4 fluid = texture2D(uFluid, uv);
+  float tealDye = fluid.r;
+  float pinkDye = fluid.g;
+  vec2 velocity = (fluid.ba - 0.5) * 2.0;
 
-  for (int i = 0; i < 8; i++) {
-    vec4 blob = uBlobs[i];
-    float strength = abs(blob.w);
-    vec2 bp = blob.xy * aspect;
-    float distanceToBlob = distance(p, bp);
-    float radius = max(blob.z, 0.001);
-    float raggedDistance =
-      distanceToBlob +
-      (noise(p * 7.0 + blob.xy * 9.0 + vec2(t * 0.2)) - 0.5) *
-        radius *
-        0.95;
-    float force =
-      smoothstep(radius, 0.0, max(raggedDistance, 0.0)) * strength;
-    force *= 0.58 + 0.42 * noise(
-      p * 5.0 + blob.xy * 6.0 + vec2(t * 0.15)
-    );
-    density += force;
-    if (blob.w > 0.0) {
-      pinkDensity += force;
-    }
-    displacement += normalize(p - bp + vec2(0.0001)) * force;
-  }
-
-  displacement += (q - 0.5) * 0.35;
+  float density = tealDye + pinkDye;
+  float pinkDensity = pinkDye;
+  vec2 displacement = velocity * 0.55 + (q - 0.5) * 0.22;
 
   vec2 uvShift = vec2(
     displacement.x / aspect.x,
@@ -155,7 +136,7 @@ void main() {
     fbm(vec2(p.x * 13.0 + t * 0.28, p.y * 7.0 - t * 0.16))
   );
   float pinkMask = clamp(
-    pinkDensity * 2.1 * pinkFilament,
+    pinkDensity * 4.2 * pinkFilament,
     0.0,
     1.0
   );
@@ -165,10 +146,10 @@ void main() {
   );
   float wisp = smoothstep(0.32, 0.68, filament);
   float smoke = smoothstep(
-    0.38,
-    0.82,
-    field * 0.6 + ribbon * 0.35 + density * 0.8
-  ) * smokeNoise * (0.34 + 0.66 * wisp);
+    0.16,
+    0.7,
+    tealDye * 1.3 + field * 0.14 + density * 0.08
+  ) * smokeNoise * (0.4 + 0.6 * wisp);
 
   vec3 teal = vec3(0.58, 0.99, 0.9);
   vec3 pink = vec3(1.0, 0.35, 0.62);
@@ -182,7 +163,7 @@ void main() {
   vec3 smokeColor = mix(
     teal,
     pink,
-    clamp(pinkDensity * 1.4 * pinkTexture, 0.0, 1.0)
+    clamp(pinkDensity * 3.0 * pinkTexture, 0.0, 1.0)
   );
   smokeColor = mix(
     smokeColor,
@@ -218,9 +199,9 @@ void main() {
   color = mix(color, textColor, textAlpha);
   color += inkColor * glow * 0.02;
 
-  float pinkHaze = clamp(pinkDensity * 1.25, 0.0, 1.0);
+  float pinkHaze = clamp(pinkDensity * 3.0, 0.0, 1.0);
   pinkHaze *= pinkFilament;
-  color += pink * pinkHaze * 0.14;
+  color += pink * pinkHaze * 0.2;
   color = mix(color, smokeColor, smoke * 0.08);
 
   float vignette = smoothstep(
@@ -298,65 +279,50 @@ export default function FluidTitle({ lines, onClick }) {
     );
 
     const textTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textTexture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
+    const fluid = new FluidSim();
+    const fluidWidth = fluid.n;
+    const fluidHeight = fluid.m;
+
+    const fluidTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, fluidTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      fluidWidth,
+      fluidHeight,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null,
+    );
+    gl.activeTexture(gl.TEXTURE0);
+
     const uText = gl.getUniformLocation(program, "uText");
+    const uFluid = gl.getUniformLocation(program, "uFluid");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uTime = gl.getUniformLocation(program, "uTime");
-    const uBlobs = gl.getUniformLocation(program, "uBlobs[0]");
 
     gl.uniform1i(uText, 0);
+    gl.uniform1i(uFluid, 1);
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
     let height = 0;
     let frame = 0;
-    let lastSpawn = 0;
-    let lastPointer = null;
     let disposed = false;
-
-    let blobs = [
-      {
-        x: 0.13,
-        y: 0.22,
-        baseX: 0.13,
-        baseY: 0.22,
-        radius: 0.38,
-        strength: 0.4,
-        life: 1,
-        decay: 0,
-        ambient: true,
-        phase: 0,
-      },
-      {
-        x: 0.87,
-        y: 0.18,
-        baseX: 0.87,
-        baseY: 0.18,
-        radius: 0.36,
-        strength: 0.36,
-        life: 1,
-        decay: 0,
-        ambient: true,
-        phase: 2.1,
-      },
-      {
-        x: 0.16,
-        y: 0.82,
-        baseX: 0.16,
-        baseY: 0.82,
-        radius: 0.4,
-        strength: 0.34,
-        life: 1,
-        decay: 0,
-        ambient: true,
-        phase: 4.2,
-      },
-    ];
 
     const buildText = () => {
       const textCanvas = document.createElement("canvas");
@@ -386,6 +352,7 @@ export default function FluidTitle({ lines, onClick }) {
         ctx.fillText(line, width / 2, startY + index * lineHeight);
       });
 
+      gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, textTexture);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
       gl.texImage2D(
@@ -409,80 +376,35 @@ export default function FluidTitle({ lines, onClick }) {
       buildText();
     };
 
-    const pushBlob = (x, y) => {
-      blobs.push({
-        x,
-        y,
-        radius: 0.1 + Math.random() * 0.07,
-        strength: 0.9 + Math.random() * 0.4,
-        life: 1,
-        decay: 0.0035 + Math.random() * 0.002,
-      });
-      if (blobs.length > 8) {
-        const removable = blobs.findIndex((blob) => !blob.ambient);
-        if (removable >= 0) {
-          blobs.splice(removable, 1);
-        } else {
-          blobs.shift();
-        }
-      }
-    };
-
-    const spawn = (event) => {
-      const now = performance.now();
-      if (now - lastSpawn < 30) return;
-      lastSpawn = now;
-
+    const onPointerMove = (event) => {
       const x = event.clientX / width;
       const y = 1 - event.clientY / height;
-      const from = lastPointer ?? { x, y };
-      const distance = Math.hypot(x - from.x, y - from.y);
-      const steps = Math.max(1, Math.min(5, Math.ceil(distance / 0.018)));
-
-      for (let i = 1; i <= steps; i += 1) {
-        const t = i / steps;
-        pushBlob(
-          from.x + (x - from.x) * t,
-          from.y + (y - from.y) * t,
-        );
-      }
-
-      lastPointer = { x, y };
+      fluid.pointer(x, y);
     };
 
-    const flatBlobs = new Float32Array(8 * 4);
-
     const render = (now) => {
-      blobs = blobs.filter((blob) => {
-        if (blob.ambient) {
-          blob.x =
-            blob.baseX +
-            Math.sin(now * 0.00012 + blob.phase) * 0.06;
-          blob.y =
-            blob.baseY +
-            Math.cos(now * 0.00009 + blob.phase) * 0.04;
-          return true;
-        }
-        blob.life -= blob.decay;
-        blob.y += 0.00035;
-        return blob.life > 0;
-      });
+      if (!disposed) {
+        fluid.step(1 / 60);
+        const pixels = fluid.getPixels();
 
-      const count = Math.min(blobs.length, 8);
-      flatBlobs.fill(0);
-      for (let i = 0; i < count; i += 1) {
-        const blob = blobs[i];
-        const offset = i * 4;
-        flatBlobs[offset] = blob.x;
-        flatBlobs[offset + 1] = blob.y;
-        flatBlobs[offset + 2] = blob.radius;
-        flatBlobs[offset + 3] =
-          blob.strength * blob.life * (blob.ambient ? -1 : 1);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, fluidTexture);
+        gl.texSubImage2D(
+          gl.TEXTURE_2D,
+          0,
+          0,
+          0,
+          fluidWidth,
+          fluidHeight,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          pixels,
+        );
+        gl.activeTexture(gl.TEXTURE0);
+
+        gl.uniform1f(uTime, now / 1000);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
-
-      gl.uniform1f(uTime, now / 1000);
-      gl.uniform4fv(uBlobs, flatBlobs);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       frame = requestAnimationFrame(render);
     };
 
@@ -494,17 +416,19 @@ export default function FluidTitle({ lines, onClick }) {
       })
       .catch(() => {});
     window.addEventListener("resize", resize);
-    window.addEventListener("pointermove", spawn, { passive: true });
+    window.addEventListener("pointermove", onPointerMove, {
+      passive: true,
+    });
     frame = requestAnimationFrame(render);
 
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", spawn);
-      blobs = [];
+      window.removeEventListener("pointermove", onPointerMove);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
+      gl.deleteTexture(fluidTexture);
       gl.deleteProgram(program);
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
