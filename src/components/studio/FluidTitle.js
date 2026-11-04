@@ -16,10 +16,12 @@ void main() {
 const FRAGMENT_SHADER = `
 precision highp float;
 
+uniform sampler2D uText;
 uniform sampler2D uDye;
 uniform vec2 uResolution;
 uniform vec2 uPointer;
 uniform float uActive;
+uniform float uCrisp;
 uniform float uTime;
 varying vec2 vUv;
 
@@ -66,10 +68,12 @@ void main() {
   float bottom = texture2D(uDye, uv - vec2(0.0, texel.y)).r;
   vec2 gradient = vec2(right - left, top - bottom);
 
-  float text = smoothstep(0.12, 0.52, textDensity);
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
-  text *= 0.82 + 0.18 * grain;
-  text = pow(text, 1.08);
+  float textDye = smoothstep(0.12, 0.52, dye.r);
+  float glyph = texture2D(uText, uv).a;
+  float text = mix(textDye, glyph, uCrisp);
+  text *= 0.92 + 0.08 * grain;
+  text = pow(text, 1.04);
 
   float rim = smoothstep(0.06, 0.2, density) *
     (1.0 - smoothstep(0.2, 0.48, density));
@@ -110,8 +114,8 @@ void main() {
   float occlusion = smoothstep(0.08, 0.4, shadowDensity) * (1.0 - text);
   color *= 1.0 - occlusion * 0.55;
 
-  color += vec3(0.7, 1.0, 0.98) * rim * 0.24;
-  color += vec3(0.82, 1.0, 1.0) * specular * 0.1;
+  color += vec3(0.7, 1.0, 0.98) * rim * 0.24 * text;
+  color += vec3(0.82, 1.0, 1.0) * specular * 0.1 * text;
   color += teal * caustic * 0.12;
   color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.02;
 
@@ -250,15 +254,19 @@ export default function FluidTitle({
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     fluid.setTextTexture(textTexture);
 
+    const uText = gl.getUniformLocation(program, "uText");
     const uDye = gl.getUniformLocation(program, "uDye");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uPointer = gl.getUniformLocation(program, "uPointer");
     const uActive = gl.getUniformLocation(program, "uActive");
+    const uCrisp = gl.getUniformLocation(program, "uCrisp");
     const uTime = gl.getUniformLocation(program, "uTime");
+    gl.uniform1i(uText, 0);
     gl.uniform1i(uDye, 2);
+    gl.uniform1f(uCrisp, variant === "cover" ? 0 : 1);
 
     const dpr = isFullPage
-      ? 0.8
+      ? 1
       : Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
     let height = 0;
@@ -377,6 +385,8 @@ export default function FluidTitle({
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.useProgram(program);
 
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textTexture);
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
