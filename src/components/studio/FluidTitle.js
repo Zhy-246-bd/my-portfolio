@@ -168,6 +168,8 @@ void main() {
   float paint = smoothstep(0.025, 0.45, paintDye);
   float paintRim = smoothstep(0.03, 0.13, paintDye) *
     (1.0 - smoothstep(0.13, 0.42, paintDye));
+  float paintBreakup = fbm(uv * 18.0 + vec2(uTime * 0.26, 0.0));
+  paint *= 0.62 + 0.38 * smoothstep(0.28, 0.76, paintBreakup);
   vec3 cream = vec3(1.0, 0.88, 0.56);
   vec3 gold = vec3(0.95, 0.62, 0.24);
   vec3 paintColor = mix(
@@ -175,9 +177,11 @@ void main() {
     cream,
     clamp(paintDye * 2.6, 0.0, 1.0)
   );
-  color += paintColor * paint * 1.45;
-  color += cream * paintRim * 0.75;
-  color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.28;
+  float greenMix = smoothstep(0.04, 0.34, dye.r) * 0.55;
+  paintColor = mix(paintColor, vec3(0.2, 0.76, 0.62), greenMix);
+  color += paintColor * paint * 0.95;
+  color += cream * paintRim * 0.5;
+  color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.22;
 
   vec2 waterP = uv * aspect;
   float waterField = fbm(

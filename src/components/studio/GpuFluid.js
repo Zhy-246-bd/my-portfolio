@@ -231,6 +231,7 @@ export default class GpuFluid {
     this.width = width;
     this.height = height;
     this.time = 0;
+    this.frameCount = 0;
     this.pending = [];
     this.last = null;
 
@@ -420,7 +421,7 @@ export default class GpuFluid {
       gl.uniform1i(u.uDye, 1);
       gl.uniform1f(u.uDt, dt);
       gl.uniform1f(u.uTime, this.time);
-      gl.uniform1f(u.uStrength, 18);
+      gl.uniform1f(u.uStrength, 14);
     });
     this.velocity.swap();
   }
@@ -475,6 +476,7 @@ export default class GpuFluid {
   step(dt) {
     const { gl } = this;
     this.time += dt;
+    this.frameCount += 1;
     const t = this.time;
 
     this.emitText();
@@ -489,25 +491,29 @@ export default class GpuFluid {
       this.splatDye(
         p.x,
         p.y,
-        [0, 0, 0.006 + 0.012 * variation],
-        0.0003 + 0.0004 * variation,
+        [0, 0, 0.004 + 0.007 * variation],
+        0.00026 + 0.0003 * variation,
       );
     }
     this.pending = [];
 
-    if (this.active) {
+    if (this.active && this.frameCount % 2 === 0) {
+      const phase = this.frameCount * 0.92;
+      const offsetX = Math.cos(phase) * 0.008;
+      const offsetY = Math.sin(phase * 0.73) * 0.005;
+      const amount = 0.014 + 0.008 * (0.5 + 0.5 * Math.sin(phase * 1.4));
       this.splatVelocity(
-        this.pointerPos.x,
-        this.pointerPos.y,
-        Math.sin(t * 2.2) * 0.12,
-        0.13,
-        0.004,
+        this.pointerPos.x + offsetX,
+        this.pointerPos.y + offsetY,
+        Math.sin(phase) * 0.05,
+        0.1,
+        0.003,
       );
       this.splatDye(
-        this.pointerPos.x,
-        this.pointerPos.y,
-        [0, 0, 0.018],
-        0.003,
+        this.pointerPos.x + offsetX,
+        this.pointerPos.y + offsetY,
+        [0, 0, amount],
+        0.0025 + 0.0006 * (0.5 + 0.5 * Math.cos(phase)),
       );
     }
 
@@ -575,7 +581,7 @@ export default class GpuFluid {
       gl.uniform1i(u.uVelocity, 1);
       gl.uniform1i(u.uSource, 0);
       gl.uniform1f(u.uDt, dt);
-      gl.uniform1f(u.uDissipation, 0.95);
+      gl.uniform1f(u.uDissipation, 0.97);
     });
     this.dye.swap();
 
