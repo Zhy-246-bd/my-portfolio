@@ -555,7 +555,7 @@ export default class GpuFluid {
       gl.uniform2f(u.uTexel, texelX, texelY);
     });
 
-    for (let i = 0; i < 20; i += 1) {
+    for (let i = 0; i < 14; i += 1) {
       this.bindTexture(this.pressure.read.texture, 0);
       this.bindTexture(this.divergence.texture, 1);
       this.draw(this.pressure.write, this.pressureProgram, (u) => {

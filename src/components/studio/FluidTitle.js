@@ -184,7 +184,7 @@ void main() {
   color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.22;
 
   vec2 waterP = uv * aspect;
-  float waterField = fbm(
+  float waterField = noise(
     waterP * 2.6 + vec2(uTime * 0.035, -uTime * 0.028)
   );
   float rippleA = pow(
@@ -280,8 +280,8 @@ export default function FluidTitle({
     const isModuleCanvas = variant === "module";
     const fluid = new GpuFluid(
       gl,
-      isFullPage || isBackdrop ? 384 : 512,
-      isFullPage || isBackdrop ? 240 : 320,
+      isBackdrop ? 256 : 448,
+      isBackdrop ? 160 : 280,
     );
 
     const textTexture = gl.createTexture();
@@ -307,12 +307,12 @@ export default function FluidTitle({
     gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
 
     const dpr = isFullPage
-      ? 1.25
+      ? 1.15
       : isBackdrop
-        ? 0.9
+        ? 0.65
         : isModuleCanvas
-          ? 1.25
-          : Math.min(window.devicePixelRatio || 1, 1.1);
+          ? 1.05
+          : Math.min(window.devicePixelRatio || 1, 0.9);
     const textDpr = isFullPage || isModuleCanvas ? 2 : dpr;
     let width = 0;
     let height = 0;
@@ -422,8 +422,15 @@ export default function FluidTitle({
       fluid.pointerLeave();
     };
 
+    let lastBackdropDraw = 0;
+
     const render = (now) => {
       if (!disposed) {
+        if (isBackdrop && now - lastBackdropDraw < 33) {
+          frame = requestAnimationFrame(render);
+          return;
+        }
+        lastBackdropDraw = now;
         fluid.step(1 / 60);
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
