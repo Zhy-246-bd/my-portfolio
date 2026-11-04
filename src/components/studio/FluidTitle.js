@@ -125,70 +125,82 @@ void main() {
     fbm(vec2(p.x * 14.0 + t * 0.32, p.y * 7.0 - t * 0.18))
   );
   float pinkMask = clamp(
-    pinkDye * 1.35 * pinkTexture * pinkFilament,
+    pinkDye * 1.6 * pinkTexture * pinkFilament,
     0.0,
     1.0
   );
 
-  float smokeNoise = 0.55 + 0.45 * n2;
-  float ribbon = fbm(
-    vec2(p.x * 3.0 + q.y * 1.5, p.y * 8.0 - t * 0.22)
+  vec2 texel = 1.0 / uResolution;
+  float densityL =
+    texture2D(uDye, clamp(uv - vec2(texel.x, 0.0), 0.0, 1.0)).r +
+    texture2D(uDye, clamp(uv - vec2(texel.x, 0.0), 0.0, 1.0)).g;
+  float densityR =
+    texture2D(uDye, clamp(uv + vec2(texel.x, 0.0), 0.0, 1.0)).r +
+    texture2D(uDye, clamp(uv + vec2(texel.x, 0.0), 0.0, 1.0)).g;
+  float densityT =
+    texture2D(uDye, clamp(uv + vec2(0.0, texel.y), 0.0, 1.0)).r +
+    texture2D(uDye, clamp(uv + vec2(0.0, texel.y), 0.0, 1.0)).g;
+  float densityB =
+    texture2D(uDye, clamp(uv - vec2(0.0, texel.y), 0.0, 1.0)).r +
+    texture2D(uDye, clamp(uv - vec2(0.0, texel.y), 0.0, 1.0)).g;
+  vec2 gradient = vec2(densityR - densityL, densityT - densityB);
+
+  float fine = fbm(
+    vec2(p.x * 7.0 + q.y * 2.0 + t * 0.2, p.y * 16.0 - t * 0.35)
   );
-  float wisp = smoothstep(0.32, 0.68, filament);
-  float smoke = smoothstep(
-    0.12,
-    0.62,
-    tealDye * 1.35 + ribbon * 0.2 + density * 0.08
-  ) * smokeNoise * (0.4 + 0.6 * wisp);
+  float waterMask = smoothstep(0.08, 0.4, density);
+  waterMask *= 0.58 + 0.42 * smoothstep(0.32, 0.68, fine);
+  float rim = smoothstep(0.04, 0.16, density) *
+    (1.0 - smoothstep(0.16, 0.38, density));
+  float specular = pow(clamp(length(gradient) * 7.0, 0.0, 1.0), 1.6);
+  float caustic = pow(
+    abs(sin(p.x * 24.0 + fine * 5.0 + t * 1.4)),
+    7.0
+  ) * waterMask;
 
   vec3 teal = vec3(0.56, 0.98, 0.9);
-  vec3 pink = vec3(0.78, 0.4, 0.84);
+  vec3 pink = vec3(0.74, 0.38, 0.82);
   vec3 purple = vec3(0.7, 0.42, 0.86);
-
-  vec3 inkColor = mix(
+  vec3 waterColor = mix(
     teal,
     pink,
-    clamp(pinkMask * (0.55 + 0.45 * inkNoise), 0.0, 1.0)
+    clamp(pinkDye * 1.05, 0.0, 1.0)
   );
-  vec3 smokeColor = mix(
-    teal,
-    pink,
-    clamp(pinkDye * 2.6 * pinkTexture, 0.0, 1.0)
-  );
-  smokeColor = mix(
-    smokeColor,
+  waterColor = mix(
+    waterColor,
     purple,
-    clamp(density * 0.14, 0.0, 0.24)
+    clamp(density * 0.12, 0.0, 0.2)
   );
 
   vec3 textColor = mix(
     teal,
     pink,
-    clamp(pinkMask * (0.45 + 0.35 * inkNoise), 0.0, 1.0)
+    clamp(pinkMask * (0.5 + 0.4 * inkNoise), 0.0, 1.0)
   );
   float stir = fbm(
     vec2(p.x * 7.0 + t * 0.24, p.y * 11.0 - t * 0.2)
   );
   textColor = mix(
     textColor,
-    smokeColor,
-    clamp(stir * 0.18, 0.0, 0.18)
+    waterColor,
+    clamp(stir * 0.14, 0.0, 0.14)
   );
   textColor *= 0.92 + 0.1 * stir;
 
   float textAlpha = clamp(
-    text * (1.0 - smoke * 0.14) * (0.94 + 0.06 * flowInk),
+    text * (0.95 + 0.05 * flowInk),
     0.0,
     1.0
   );
 
-  vec3 color = smokeColor * smoke * 0.58;
+  vec3 color = waterColor * waterMask * 0.28;
+  color += vec3(0.7, 1.0, 0.98) * rim * 0.18;
+  color += vec3(0.82, 1.0, 1.0) * specular * 0.12;
+  color += teal * caustic * 0.14;
   color = mix(color, textColor, textAlpha);
-  color += inkColor * glow * 0.03;
+  color += textColor * glow * 0.02;
 
-  float pinkHaze = clamp(pinkDye * 1.3, 0.0, 1.0);
-  pinkHaze *= pinkFilament;
-  color += pink * pinkHaze * 0.1;
+  color += pink * pinkMask * 0.03;
 
   float vignette = smoothstep(
     1.05,

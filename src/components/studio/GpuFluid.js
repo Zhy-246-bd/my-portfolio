@@ -367,19 +367,19 @@ export default class GpuFluid {
     const dy = 0.24 + Math.sin(t * 0.35) * 0.06;
 
     this.splatVelocity(ax, ay, 0, 0.13, 0.0032);
-    this.splatDye(ax, ay, [0.06, 0, 0], 0.0032);
+    this.splatDye(ax, ay, [0.035, 0, 0], 0.0032);
     this.splatVelocity(bx, by, 0, 0.15, 0.0032);
-    this.splatDye(bx, by, [0.055, 0, 0], 0.0032);
+    this.splatDye(bx, by, [0.03, 0, 0], 0.0032);
     this.splatVelocity(cx, cy, 0.05, 0.08, 0.0028);
-    this.splatDye(cx, cy, [0.035, 0, 0], 0.0028);
+    this.splatDye(cx, cy, [0.02, 0, 0], 0.0028);
     this.splatVelocity(dx, dy, -0.05, 0.09, 0.0028);
-    this.splatDye(dx, dy, [0.035, 0, 0], 0.0028);
+    this.splatDye(dx, dy, [0.02, 0, 0], 0.0028);
 
     for (const p of this.pending) {
       const forceX = p.dx * 18;
       const forceY = p.dy * 18;
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
-      this.splatDye(p.x, p.y, [0, 0.32, 0], 0.0015);
+      this.splatDye(p.x, p.y, [0, 0.22, 0], 0.0015);
     }
     this.pending = [];
 
@@ -387,7 +387,7 @@ export default class GpuFluid {
       this.splatDye(
         this.pointerPos.x,
         this.pointerPos.y,
-        [0, 0.012, 0],
+        [0, 0.006, 0],
         0.002,
       );
     }
@@ -454,7 +454,7 @@ export default class GpuFluid {
       gl.uniform1i(u.uVelocity, 1);
       gl.uniform1i(u.uSource, 0);
       gl.uniform1f(u.uDt, dt);
-      gl.uniform1f(u.uDissipation, 0.996);
+      gl.uniform1f(u.uDissipation, 0.993);
     });
     this.dye.swap();
   }
