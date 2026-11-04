@@ -767,3 +767,189 @@
     animation: none !important;
   }
 }
+
+/* 右侧七个模块：沿用关于 / 作品的玻璃卡片语言 */
+.sidebar {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  z-index: 14;
+  display: flex;
+  width: 230px;
+  flex-direction: column;
+  gap: 8px;
+  transform: translateY(-50%);
+}
+
+.sidebarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 2px;
+  font-family: var(--studio-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: rgba(230, 240, 236, 0.36);
+}
+
+.sidebarNav {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sidebarCard {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(7, 13, 12, 0.62);
+  padding: 10px 12px;
+  color: #f5f8f4;
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sidebarCard:hover {
+  transform: translateX(-4px);
+  border-color: rgba(169, 232, 221, 0.32);
+  background: rgba(12, 24, 22, 0.82);
+}
+
+.sidebarCard[data-active="true"] {
+  border-color: rgba(169, 232, 221, 0.48);
+  background: rgba(16, 34, 30, 0.86);
+}
+
+.sidebarIndex {
+  font-family: var(--studio-mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(180, 236, 224, 0.38);
+}
+
+.sidebarText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebarText strong {
+  overflow: hidden;
+  font-family: var(--studio-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebarText small {
+  overflow: hidden;
+  font-family: var(--studio-mono);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  color: rgba(230, 240, 236, 0.42);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebarArrow {
+  font-size: 12px;
+  color: rgba(230, 240, 236, 0.3);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebarCard:hover .sidebarArrow {
+  color: rgba(180, 236, 224, 0.85);
+  transform: translate(1px, -1px);
+}
+
+.sidebarToggle {
+  display: none;
+}
+
+.sidebarBackdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(300px, 84vw);
+    transform: translateX(110%);
+    gap: 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(4, 9, 8, 0.92);
+    padding: 72px 16px 24px;
+    overflow-y: auto;
+    transition: transform 0.28s ease;
+    backdrop-filter: blur(18px);
+  }
+
+  .sidebar[data-open="true"] {
+    transform: translateX(0);
+  }
+
+  .sidebarToggle {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 16;
+    display: flex;
+    min-width: 76px;
+    flex-direction: column;
+    gap: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(7, 13, 12, 0.78);
+    padding: 9px 13px;
+    color: #f5f8f4;
+    text-align: left;
+    backdrop-filter: blur(14px);
+  }
+
+  .sidebarToggle span {
+    font-family: var(--studio-sans);
+    font-size: 13px;
+  }
+
+  .sidebarToggle small {
+    font-family: var(--studio-mono);
+    font-size: 7px;
+    letter-spacing: 0.14em;
+    color: rgba(230, 240, 236, 0.42);
+  }
+
+  .sidebarBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 13;
+    display: none;
+    border: 0;
+    background: rgba(0, 0, 0, 0.42);
+    cursor: default;
+  }
+
+  .sidebarBackdrop[data-open="true"] {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebarCard,
+  .sidebar,
+  .sidebarArrow {
+    transition: none;
+  }
+}

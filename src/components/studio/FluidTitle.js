@@ -248,7 +248,7 @@ export default function FluidTitle({ lines, onClick }) {
       ctx.scale(dpr, dpr);
       const fontSize =
         lines.length > 1
-          ? Math.min(width * 0.185, height * 0.29)
+          ? Math.min(width * 0.16, height * 0.255)
           : Math.min(width * 0.205, height * 0.34);
       const lineHeight = fontSize * 0.82;
       const totalHeight = (lines.length - 1) * lineHeight;
