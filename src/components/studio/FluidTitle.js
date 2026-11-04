@@ -142,6 +142,22 @@ void main() {
   color += pink * pinkRim * 0.2;
   color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.12;
 
+  vec2 waterP = uv * aspect;
+  float waterField = fbm(
+    waterP * 2.6 + vec2(uTime * 0.035, -uTime * 0.028)
+  );
+  float rippleA = pow(
+    0.5 + 0.5 * sin(waterP.y * 23.0 + waterField * 7.0 + uTime * 0.45),
+    10.0
+  );
+  float rippleB = pow(
+    0.5 + 0.5 * sin(waterP.x * 17.0 - waterField * 6.0 - uTime * 0.32),
+    12.0
+  );
+  float waterLines = (rippleA + rippleB) * 0.5;
+  color += teal * waterLines * 0.1;
+  color += vec3(0.55, 0.95, 0.88) * (waterField - 0.5) * 0.04;
+
   float vignette = smoothstep(
     1.05,
     0.25,
@@ -250,17 +266,24 @@ export default function FluidTitle({
       if (!ctx) return;
 
       ctx.scale(dpr, dpr);
-      const isModule = variant === "module";
-      let fontSize = isModule
-        ? Math.min(width * 0.26, height * 0.62)
-        : lines.length > 1
-          ? Math.min(width * 0.16, height * 0.255)
-          : Math.min(width * 0.205, height * 0.34);
+      const isModule = variant === "module" || variant === "moduleFull";
+      const isFullModule = variant === "moduleFull";
+      const viewportHeight =
+        typeof window === "undefined" ? height : window.innerHeight;
+      let fontSize = isFullModule
+        ? Math.min(width * 0.24, viewportHeight * 0.24)
+        : isModule
+          ? Math.min(width * 0.26, height * 0.62)
+          : lines.length > 1
+            ? Math.min(width * 0.16, height * 0.255)
+            : Math.min(width * 0.205, height * 0.34);
       const lineHeight = fontSize * 0.82;
       const totalHeight = (lines.length - 1) * lineHeight;
-      const startY = isModule
-        ? height * 0.56
-        : height / 2 - totalHeight / 2 + fontSize * 0.02;
+      const startY = isFullModule
+        ? Math.min(viewportHeight * 0.2, 230)
+        : isModule
+          ? height * 0.56
+          : height / 2 - totalHeight / 2 + fontSize * 0.02;
 
       ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
       if (isModule && lines[0]) {

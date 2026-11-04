@@ -956,18 +956,46 @@
 
 /* 七个模块内页：顶部流体英文标题 + 下方内容 */
 .modulePage {
+  position: relative;
   min-height: 100vh;
   background: #050908;
   color: #f4f7f4;
 }
 
+.moduleFluid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.moduleShade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(70, 170, 158, 0.08),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 9, 8, 0.02) 0%,
+      rgba(5, 9, 8, 0.18) 30%,
+      rgba(5, 9, 8, 0.46) 58%,
+      rgba(5, 9, 8, 0.76) 100%
+    );
+}
+
 .moduleHero {
   position: relative;
+  z-index: 3;
   height: min(44vh, 390px);
   min-height: 270px;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: #050908;
+  background: transparent;
 }
 
 .moduleTopline {
@@ -1022,6 +1050,7 @@
 .moduleBody {
   position: relative;
   z-index: 3;
+  background: transparent;
   padding: 0 24px 80px;
 }
 

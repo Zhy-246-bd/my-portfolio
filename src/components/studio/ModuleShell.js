@@ -7,6 +7,11 @@ import styles from "./studio.module.css";
 export default function ModuleShell({ title, label, index, children }) {
   return (
     <div className={styles.modulePage}>
+      <div className={styles.moduleFluid}>
+        <FluidTitle lines={[title]} variant="moduleFull" />
+      </div>
+      <span className={styles.moduleShade} aria-hidden="true" />
+
       <header className={styles.moduleHero}>
         <div className={styles.moduleTopline}>
           <Link href="/studio" className={styles.moduleBack}>
@@ -16,8 +21,6 @@ export default function ModuleShell({ title, label, index, children }) {
             {index} / 07 · {title}
           </span>
         </div>
-
-        <FluidTitle lines={[title]} variant="module" />
 
         <div className={styles.moduleHeroFoot}>
           <span>{label}</span>
