@@ -400,38 +400,38 @@ export default class GpuFluid {
     if (this.frameCount % 2 !== 0) return;
 
     const pulse = 0.5 + 0.5 * Math.sin(this.frameCount * 0.9);
-    const amount = 0.02 + 0.014 * pulse;
-    const wobble = Math.sin(this.frameCount * 0.42) * 0.012;
+    const amount = 0.009 + 0.006 * pulse;
+    const wobble = Math.sin(this.frameCount * 0.42) * 0.01;
 
     if (leftBurst) {
       this.splatVelocity(
         0.055 + wobble,
-        0.045,
-        0.04,
-        0.1,
-        0.0038,
+        0.035,
+        0.025,
+        0.065,
+        0.003,
       );
       this.splatDye(
         0.055 + wobble,
-        0.045,
+        0.035,
         [0, 0, amount],
-        0.0038 + 0.001 * pulse,
+        0.0029 + 0.0006 * pulse,
       );
     }
 
     if (rightBurst) {
       this.splatVelocity(
         0.945 + wobble,
-        0.045,
-        -0.04,
-        0.1,
-        0.0038,
+        0.035,
+        -0.025,
+        0.065,
+        0.003,
       );
       this.splatDye(
         0.945 + wobble,
-        0.045,
+        0.035,
         [0, 0, amount],
-        0.0038 + 0.001 * pulse,
+        0.0029 + 0.0006 * pulse,
       );
     }
   }
