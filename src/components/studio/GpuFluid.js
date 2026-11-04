@@ -398,8 +398,20 @@ export default class GpuFluid {
     if (this.last) {
       const dx = x - this.last.x;
       const dy = y - this.last.y;
-      if (Math.abs(dx) + Math.abs(dy) > 0.0005) {
-        this.pending.push({ x, y, dx, dy });
+      const distance = Math.hypot(dx, dy);
+      if (distance > 0.0005) {
+        const steps = Math.max(
+          1,
+          Math.min(6, Math.ceil(distance / 0.008)),
+        );
+        for (let step = 1; step <= steps; step += 1) {
+          this.pending.push({
+            x: this.last.x + (dx * step) / steps,
+            y: this.last.y + (dy * step) / steps,
+            dx: dx / steps,
+            dy: dy / steps,
+          });
+        }
       }
     }
     this.last = { x, y };
@@ -438,19 +450,17 @@ export default class GpuFluid {
     for (const p of this.pending) {
       const forceX = p.dx * 8;
       const forceY = p.dy * 8;
+      const variation =
+        0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.x * 41 + p.y * 57 + t * 4));
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
-      this.splatDye(p.x, p.y, [0, 0.2, 0], 0.0007);
-    }
-    this.pending = [];
-
-    if (this.active) {
       this.splatDye(
-        this.pointerPos.x,
-        this.pointerPos.y,
-        [0, 0.07, 0],
-        0.0018,
+        p.x,
+        p.y,
+        [0, 0.008 + 0.02 * variation, 0],
+        0.00028 + 0.0004 * variation,
       );
     }
+    this.pending = [];
 
     const texelX = 1 / this.width;
     const texelY = 1 / this.height;
@@ -514,7 +524,7 @@ export default class GpuFluid {
       gl.uniform1i(u.uVelocity, 1);
       gl.uniform1i(u.uSource, 0);
       gl.uniform1f(u.uDt, dt);
-      gl.uniform1f(u.uDissipation, 0.993);
+      gl.uniform1f(u.uDissipation, 0.95);
     });
     this.dye.swap();
 
