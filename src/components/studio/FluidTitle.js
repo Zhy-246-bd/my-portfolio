@@ -81,12 +81,12 @@ void main() {
     fbm(p * 3.0 + t * 0.27) - 0.5,
     fbm(p * 3.0 + 11.0 - t * 0.22) - 0.5
   );
-  displacement += flow * 0.9;
+  displacement += flow * 0.15;
 
   vec2 uvShift = vec2(
     displacement.x / aspect.x,
     displacement.y
-  ) * 0.027;
+  ) * 0.03;
   float shiftLength = length(uvShift);
   if (shiftLength > 0.04) {
     uvShift *= 0.04 / shiftLength;
@@ -101,7 +101,7 @@ void main() {
   softText += texture2D(uText, clamp(textUv + vec2(0.0, 0.0025), 0.0, 1.0)).a;
   softText += texture2D(uText, clamp(textUv - vec2(0.0, 0.0025), 0.0, 1.0)).a;
   softText /= 4.0;
-  text = mix(text, softText, 0.3);
+  text = mix(text, softText, 0.42);
 
   float glow = 0.0;
   for (int i = 0; i < 8; i++) {
@@ -111,19 +111,20 @@ void main() {
   }
   glow /= 8.0;
 
+  float densityNoise = 0.55 + 0.65 * n2;
   float smokeTexture = 0.58 + 0.42 * n2;
   float smoke = smoothstep(
-    0.5,
-    0.85,
-    field + density * 0.9
+    0.48,
+    0.86,
+    field + density * 0.8 * densityNoise
   ) * smokeTexture;
   vec3 teal = vec3(0.6, 1.0, 0.92);
   vec3 purple = vec3(0.78, 0.48, 0.9);
   vec3 smokeColor = mix(
     teal,
     purple,
-    smoothstep(0.58, 0.94, n2) * 0.32 +
-      clamp(density * 0.25, 0.0, 0.3)
+    smoothstep(0.55, 0.94, n2) * 0.35 +
+      clamp(density * 0.2, 0.0, 0.25)
   );
 
   vec3 textColor = mix(
@@ -135,7 +136,7 @@ void main() {
   vec3 color = smokeColor * smoke * 0.62;
   color = mix(color, textColor, clamp(text * 1.05, 0.0, 1.0));
   color += teal * glow * 0.08;
-  color = mix(color, smokeColor, smoke * 0.05);
+  color = mix(color, smokeColor, smoke * 0.2);
 
   float vignette = smoothstep(
     1.05,
@@ -259,36 +260,36 @@ export default function FluidTitle({ lines, onClick }) {
     let disposed = false;
     let blobs = [
       {
-        x: 0.18,
-        y: 0.3,
-        baseX: 0.18,
-        baseY: 0.3,
-        radius: 0.34,
-        strength: 0.55,
+        x: 0.13,
+        y: 0.22,
+        baseX: 0.13,
+        baseY: 0.22,
+        radius: 0.38,
+        strength: 0.4,
         life: 1,
         decay: 0,
         ambient: true,
         phase: 0,
       },
       {
-        x: 0.78,
-        y: 0.26,
-        baseX: 0.78,
-        baseY: 0.26,
-        radius: 0.3,
-        strength: 0.48,
+        x: 0.87,
+        y: 0.18,
+        baseX: 0.87,
+        baseY: 0.18,
+        radius: 0.36,
+        strength: 0.36,
         life: 1,
         decay: 0,
         ambient: true,
         phase: 2.1,
       },
       {
-        x: 0.56,
-        y: 0.7,
-        baseX: 0.56,
-        baseY: 0.7,
-        radius: 0.36,
-        strength: 0.45,
+        x: 0.16,
+        y: 0.82,
+        baseX: 0.16,
+        baseY: 0.82,
+        radius: 0.4,
+        strength: 0.34,
         life: 1,
         decay: 0,
         ambient: true,
@@ -357,10 +358,10 @@ export default function FluidTitle({ lines, onClick }) {
       blobs.push({
         x,
         y,
-        radius: 0.15 + Math.random() * 0.2,
-        strength: 0.45 + Math.random() * 0.35,
+        radius: 0.22 + Math.random() * 0.16,
+        strength: 0.85 + Math.random() * 0.5,
         life: 1,
-        decay: 0.0035 + Math.random() * 0.0025,
+        decay: 0.0035 + Math.random() * 0.002,
       });
       if (blobs.length > 8) {
         const removable = blobs.findIndex((blob) => !blob.ambient);
