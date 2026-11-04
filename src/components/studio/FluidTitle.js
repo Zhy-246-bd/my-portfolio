@@ -88,7 +88,25 @@ void main() {
   );
   ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
 
-  vec3 color = ink * text * 0.82;
+  vec3 normal = normalize(
+    vec3(-gradient.x * 16.0, -gradient.y * 16.0, 1.0)
+  );
+  vec3 lightDirection = normalize(vec3(-0.45, 0.65, 0.8));
+  vec3 halfDirection = normalize(lightDirection + vec3(0.0, 0.0, 1.0));
+  float diffuse = clamp(dot(normal, lightDirection), 0.0, 1.0);
+  float gloss = pow(clamp(dot(normal, halfDirection), 0.0, 1.0), 22.0);
+
+  vec3 textColor = ink * (0.52 + 0.54 * diffuse);
+  textColor += vec3(0.8, 1.0, 1.0) * gloss * 0.38;
+
+  vec3 color = textColor * text * 0.9;
+
+  float shadowDensity = texture2D(
+    uDye,
+    uv + vec2(0.004, -0.005)
+  ).r;
+  float occlusion = smoothstep(0.08, 0.4, shadowDensity) * (1.0 - text);
+  color *= 1.0 - occlusion * 0.55;
 
   color += vec3(0.7, 1.0, 0.98) * rim * 0.24;
   color += vec3(0.82, 1.0, 1.0) * specular * 0.1;
