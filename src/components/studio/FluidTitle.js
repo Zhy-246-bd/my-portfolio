@@ -86,7 +86,7 @@ void main() {
   vec3 ink = mix(
     teal,
     pink,
-    clamp(pinkDye * 0.25, 0.0, 1.0)
+    clamp(pinkDye * 0.4, 0.0, 1.0)
   );
   ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
 
@@ -115,10 +115,10 @@ void main() {
   color += teal * caustic * 0.12;
   color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.04;
 
-  float pinkInk = smoothstep(0.26, 0.58, pinkDye);
+  float pinkInk = smoothstep(0.32, 0.65, pinkDye);
   float pinkFalloff = 1.0 - smoothstep(
-    0.035,
-    0.16,
+    0.025,
+    0.085,
     distance(uv, uPointer)
   );
   pinkInk *= mix(1.0, pinkFalloff, uActive);
@@ -143,15 +143,15 @@ void main() {
     pink,
     0.7
   );
-  color += pinkInkColor * pinkInk * 0.1;
-  color += pink * pinkRim * 0.05;
-  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.03;
+  color += pinkInkColor * pinkInk * 0.18;
+  color += pink * pinkRim * 0.08;
+  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.04;
 
   vec3 brightPink = vec3(1.0, 0.38, 0.86);
   float cursorInk = exp(
-    -dot(uv - uPointer, uv - uPointer) / 0.0005
+    -dot(uv - uPointer, uv - uPointer) / 0.00025
   );
-  color += brightPink * cursorInk * 0.75 * uActive;
+  color += brightPink * cursorInk * 0.9 * uActive;
 
   float vignette = smoothstep(
     1.05,
@@ -178,13 +178,10 @@ function compileShader(gl, type, source) {
 
 export default function FluidTitle({ lines, onClick }) {
   const canvasRef = useRef(null);
-  const trailRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const trailCanvas = trailRef.current;
-    if (!canvas || !trailCanvas) return undefined;
-    const trailCtx = trailCanvas.getContext("2d");
+    if (!canvas) return undefined;
 
     const gl = canvas.getContext("webgl2", {
       antialias: false,
@@ -251,7 +248,6 @@ export default function FluidTitle({ lines, onClick }) {
     let height = 0;
     let frame = 0;
     let disposed = false;
-    let trailPoints = [];
 
     const buildText = () => {
       const textCanvas = document.createElement("canvas");
@@ -300,98 +296,12 @@ export default function FluidTitle({ lines, onClick }) {
       height = window.innerHeight;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
-      trailCanvas.width = canvas.width;
-      trailCanvas.height = canvas.height;
-      trailCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uResolution, width, height);
       buildText();
     };
 
-    const drawTrail = (now) => {
-      const nowMs = performance.now();
-      trailPoints = trailPoints.filter(
-        (point) => nowMs - point.t < 900,
-      );
-      trailCtx.clearRect(0, 0, width, height);
-
-      if (trailPoints.length < 2) return;
-
-      trailCtx.globalCompositeOperation = "screen";
-      trailCtx.shadowColor = "rgba(238, 86, 224, 0.8)";
-      trailCtx.shadowBlur = 14;
-      trailCtx.lineCap = "round";
-      trailCtx.lineJoin = "round";
-
-      if (trailPoints.length > 1) {
-        trailCtx.beginPath();
-        trailCtx.moveTo(trailPoints[0].x, trailPoints[0].y);
-        for (let index = 1; index < trailPoints.length; index += 1) {
-          const point = trailPoints[index];
-          const age = (nowMs - point.t) / 900;
-          const wobble =
-            Math.sin(now * 0.004 + index * 0.65) *
-            2.4 *
-            (1 - age);
-          trailCtx.lineTo(point.x, point.y + wobble);
-        }
-        trailCtx.strokeStyle = "rgba(255, 80, 220, 0.1)";
-        trailCtx.lineWidth = 26;
-        trailCtx.stroke();
-        trailCtx.strokeStyle = "rgba(245, 90, 220, 0.18)";
-        trailCtx.lineWidth = 12;
-        trailCtx.stroke();
-        trailCtx.strokeStyle = "rgba(255, 150, 240, 0.32)";
-        trailCtx.lineWidth = 4;
-        trailCtx.stroke();
-      }
-
-      for (let index = 0; index < trailPoints.length; index += 1) {
-        const point = trailPoints[index];
-        const age = (nowMs - point.t) / 900;
-        const alpha = (1 - age) * 0.55;
-        const radius = 2.5 + 7 * (1 - age);
-        const wobble =
-          Math.sin(now * 0.004 + index * 0.65) * 2.4 * (1 - age);
-
-        trailCtx.fillStyle = `rgba(252, 92, 224, ${alpha * 0.35})`;
-        trailCtx.beginPath();
-        trailCtx.arc(
-          point.x,
-          point.y + wobble,
-          radius * 1.6,
-          0,
-          Math.PI * 2,
-        );
-        trailCtx.fill();
-
-        trailCtx.fillStyle = `rgba(255, 160, 242, ${alpha * 0.6})`;
-        trailCtx.beginPath();
-        trailCtx.arc(
-          point.x,
-          point.y + wobble,
-          radius * 0.72,
-          0,
-          Math.PI * 2,
-        );
-        trailCtx.fill();
-      }
-
-      const head = trailPoints[trailPoints.length - 1];
-      trailCtx.shadowBlur = 0;
-      trailCtx.fillStyle = "rgba(255, 150, 240, 0.45)";
-      trailCtx.beginPath();
-      trailCtx.arc(head.x, head.y, 4, 0, Math.PI * 2);
-      trailCtx.fill();
-    };
-
     const onPointerMove = (event) => {
-      trailPoints.push({
-        x: event.clientX,
-        y: event.clientY,
-        t: performance.now(),
-      });
-      if (trailPoints.length > 90) trailPoints.shift();
       fluid.pointer(event.clientX / width, 1 - event.clientY / height);
     };
 
@@ -402,7 +312,6 @@ export default function FluidTitle({ lines, onClick }) {
     const render = (now) => {
       if (!disposed) {
         fluid.step(1 / 60);
-        drawTrail(now);
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, canvas.width, canvas.height);
@@ -462,27 +371,11 @@ export default function FluidTitle({ lines, onClick }) {
   }, [lines]);
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        className={styles.fluidCanvas}
-        onClick={onClick}
-        aria-hidden="true"
-      />
-      <canvas
-        ref={trailRef}
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 3,
-          display: "block",
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          mixBlendMode: "screen",
-        }}
-      />
-    </>
+    <canvas
+      ref={canvasRef}
+      className={styles.fluidCanvas}
+      onClick={onClick}
+      aria-hidden="true"
+    />
   );
 }
