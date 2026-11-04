@@ -86,7 +86,7 @@ void main() {
   vec3 ink = mix(
     teal,
     pink,
-    clamp(pinkDye * 0.4, 0.0, 1.0)
+    clamp(pinkDye * 0.18, 0.0, 1.0)
   );
   ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
 
@@ -113,12 +113,12 @@ void main() {
   color += vec3(0.7, 1.0, 0.98) * rim * 0.24;
   color += vec3(0.82, 1.0, 1.0) * specular * 0.1;
   color += teal * caustic * 0.12;
-  color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.04;
+  color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.02;
 
-  float pinkInk = smoothstep(0.3, 0.6, pinkDye);
+  float pinkInk = smoothstep(0.04, 0.32, pinkDye);
   float pinkFalloff = 1.0 - smoothstep(
-    0.03,
-    0.16,
+    0.035,
+    0.24,
     distance(uv, uPointer)
   );
   pinkInk *= mix(1.0, pinkFalloff, uActive);
@@ -139,18 +139,18 @@ void main() {
   );
 
   vec3 pinkInkColor = mix(
-    vec3(0.55, 0.22, 0.66),
-    pink,
-    0.65
+    vec3(0.62, 0.24, 0.78),
+    vec3(0.92, 0.4, 0.92),
+    0.55
   );
-  color += pinkInkColor * pinkInk * 0.06;
-  color += pink * pinkRim * 0.04;
-  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.03;
+  color += pinkInkColor * pinkInk * 0.5;
+  color += pink * pinkRim * 0.2;
+  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.1;
 
   float cursorInk = exp(
     -dot(uv - uPointer, uv - uPointer) / 0.0005
   );
-  color += pinkInkColor * cursorInk * 0.15 * uActive;
+  color += pinkInkColor * cursorInk * 0.04 * uActive;
 
   float vignette = smoothstep(
     1.05,
