@@ -270,6 +270,7 @@ export default class GpuFluid {
     this.curl = createFBO(width, height);
     this.pointerPos = { x: 0.5, y: 0.5 };
     this.active = false;
+    this.breakAmount = 0;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
@@ -357,24 +358,6 @@ export default class GpuFluid {
     this.time += dt;
     const t = this.time;
 
-    const ax = 0.18 + Math.sin(t * 0.45) * 0.08;
-    const ay = 0.72 + Math.cos(t * 0.31) * 0.08;
-    const bx = 0.82 + Math.cos(t * 0.33) * 0.08;
-    const by = 0.68 + Math.sin(t * 0.27) * 0.08;
-    const cx = 0.32 + Math.sin(t * 0.21) * 0.12;
-    const cy = 0.26 + Math.cos(t * 0.37) * 0.06;
-    const dx = 0.7 + Math.cos(t * 0.24) * 0.12;
-    const dy = 0.24 + Math.sin(t * 0.35) * 0.06;
-
-    this.splatVelocity(ax, ay, 0, 0.13, 0.0032);
-    this.splatDye(ax, ay, [0.035, 0, 0], 0.0032);
-    this.splatVelocity(bx, by, 0, 0.15, 0.0032);
-    this.splatDye(bx, by, [0.03, 0, 0], 0.0032);
-    this.splatVelocity(cx, cy, 0.05, 0.08, 0.0028);
-    this.splatDye(cx, cy, [0.02, 0, 0], 0.0028);
-    this.splatVelocity(dx, dy, -0.05, 0.09, 0.0028);
-    this.splatDye(dx, dy, [0.02, 0, 0], 0.0028);
-
     for (const p of this.pending) {
       const forceX = p.dx * 18;
       const forceY = p.dy * 18;
@@ -457,5 +440,11 @@ export default class GpuFluid {
       gl.uniform1f(u.uDissipation, 0.993);
     });
     this.dye.swap();
+
+    if (this.active) {
+      this.breakAmount = Math.min(1, this.breakAmount + 0.12);
+    } else {
+      this.breakAmount *= 0.962;
+    }
   }
 }
