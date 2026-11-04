@@ -165,7 +165,11 @@ function compileShader(gl, type, source) {
   return shader;
 }
 
-export default function FluidTitle({ lines, onClick }) {
+export default function FluidTitle({
+  lines,
+  onClick,
+  variant = "cover",
+}) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -246,14 +250,26 @@ export default function FluidTitle({ lines, onClick }) {
       if (!ctx) return;
 
       ctx.scale(dpr, dpr);
-      const fontSize =
-        lines.length > 1
+      const isModule = variant === "module";
+      let fontSize = isModule
+        ? Math.min(width * 0.26, height * 0.62)
+        : lines.length > 1
           ? Math.min(width * 0.16, height * 0.255)
           : Math.min(width * 0.205, height * 0.34);
       const lineHeight = fontSize * 0.82;
       const totalHeight = (lines.length - 1) * lineHeight;
-      const startY = height / 2 - totalHeight / 2 + fontSize * 0.02;
+      const startY = isModule
+        ? height * 0.56
+        : height / 2 - totalHeight / 2 + fontSize * 0.02;
 
+      ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
+      if (isModule && lines[0]) {
+        const measured = ctx.measureText(lines[0]).width;
+        const available = width * 0.9;
+        if (measured > available) {
+          fontSize *= available / measured;
+        }
+      }
       ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -281,8 +297,9 @@ export default function FluidTitle({ lines, onClick }) {
     };
 
     const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, Math.round(rect.width));
+      height = Math.max(1, Math.round(rect.height));
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -291,7 +308,11 @@ export default function FluidTitle({ lines, onClick }) {
     };
 
     const onPointerMove = (event) => {
-      fluid.pointer(event.clientX / width, 1 - event.clientY / height);
+      const rect = canvas.getBoundingClientRect();
+      fluid.pointer(
+        (event.clientX - rect.left) / Math.max(1, rect.width),
+        1 - (event.clientY - rect.top) / Math.max(1, rect.height),
+      );
     };
 
     const onPointerLeave = () => {
@@ -357,7 +378,7 @@ export default function FluidTitle({ lines, onClick }) {
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
     };
-  }, [lines]);
+  }, [lines, variant]);
 
   return (
     <canvas

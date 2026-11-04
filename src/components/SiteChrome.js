@@ -8,11 +8,25 @@ import Footer from "@/components/Footer";
 // 其余页面保持原样。
 export default function SiteChrome({ children }) {
   const pathname = usePathname();
+  const modulePaths = [
+    "/about",
+    "/works",
+    "/projects",
+    "/process",
+    "/iterations",
+    "/featured",
+    "/reflection",
+  ];
+
   const bare =
     pathname === "/notebook" ||
     pathname?.startsWith("/notebook/") ||
     pathname === "/studio" ||
-    pathname?.startsWith("/studio/");
+    pathname?.startsWith("/studio/") ||
+    modulePaths.some(
+      (path) =>
+        pathname === path || pathname?.startsWith(`${path}/`),
+    );
 
   if (bare) return children;
 
