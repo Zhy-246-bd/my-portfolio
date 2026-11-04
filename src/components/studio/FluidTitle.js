@@ -19,7 +19,6 @@ precision highp float;
 uniform sampler2D uText;
 uniform sampler2D uVelocity;
 uniform sampler2D uDye;
-uniform sampler2D uWarp;
 uniform vec2 uResolution;
 uniform float uTime;
 
@@ -61,7 +60,6 @@ void main() {
   float tealDye = dye.r;
   float pinkDye = dye.g;
   vec2 velocity = texture2D(uVelocity, uv).xy;
-  vec2 warp = texture2D(uWarp, uv).xy;
   float density = tealDye + pinkDye;
 
   vec2 q = vec2(
@@ -75,7 +73,7 @@ void main() {
   );
   float field = n1 * 0.55 + n2 * 0.3 + filament * 0.15;
 
-  vec2 displacement = warp * 0.28 + velocity * 0.012 + (q - 0.5) * 0.04;
+  vec2 displacement = velocity * 0.008 + (q - 0.5) * 0.012;
   vec2 uvShift = displacement;
   float shiftLength = length(uvShift);
   if (shiftLength > 0.03) {
@@ -127,7 +125,7 @@ void main() {
     fbm(vec2(p.x * 14.0 + t * 0.32, p.y * 7.0 - t * 0.18))
   );
   float pinkMask = clamp(
-    pinkDye * 3.2 * pinkTexture * pinkFilament,
+    pinkDye * 1.35 * pinkTexture * pinkFilament,
     0.0,
     1.0
   );
@@ -144,8 +142,8 @@ void main() {
   ) * smokeNoise * (0.4 + 0.6 * wisp);
 
   vec3 teal = vec3(0.56, 0.98, 0.9);
-  vec3 pink = vec3(1.0, 0.36, 0.63);
-  vec3 purple = vec3(0.74, 0.45, 0.88);
+  vec3 pink = vec3(0.78, 0.4, 0.84);
+  vec3 purple = vec3(0.7, 0.42, 0.86);
 
   vec3 inkColor = mix(
     teal,
@@ -166,9 +164,17 @@ void main() {
   vec3 textColor = mix(
     teal,
     pink,
-    clamp(pinkMask * (0.6 + 0.4 * inkNoise), 0.0, 1.0)
+    clamp(pinkMask * (0.45 + 0.35 * inkNoise), 0.0, 1.0)
   );
-  textColor *= 0.9 + 0.14 * flowInk;
+  float stir = fbm(
+    vec2(p.x * 7.0 + t * 0.24, p.y * 11.0 - t * 0.2)
+  );
+  textColor = mix(
+    textColor,
+    smokeColor,
+    clamp(stir * 0.18, 0.0, 0.18)
+  );
+  textColor *= 0.92 + 0.1 * stir;
 
   float textAlpha = clamp(
     text * (1.0 - smoke * 0.14) * (0.94 + 0.06 * flowInk),
@@ -180,9 +186,9 @@ void main() {
   color = mix(color, textColor, textAlpha);
   color += inkColor * glow * 0.03;
 
-  float pinkHaze = clamp(pinkDye * 2.6, 0.0, 1.0);
+  float pinkHaze = clamp(pinkDye * 1.3, 0.0, 1.0);
   pinkHaze *= pinkFilament;
-  color += pink * pinkHaze * 0.16;
+  color += pink * pinkHaze * 0.1;
 
   float vignette = smoothstep(
     1.05,
@@ -279,14 +285,12 @@ export default function FluidTitle({ lines, onClick }) {
     const uText = gl.getUniformLocation(program, "uText");
     const uVelocity = gl.getUniformLocation(program, "uVelocity");
     const uDye = gl.getUniformLocation(program, "uDye");
-    const uWarp = gl.getUniformLocation(program, "uWarp");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uTime = gl.getUniformLocation(program, "uTime");
 
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1i(uWarp, 3);
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
@@ -368,8 +372,6 @@ export default function FluidTitle({ lines, onClick }) {
         gl.bindTexture(gl.TEXTURE_2D, fluid.velocity.read.texture);
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
-        gl.activeTexture(gl.TEXTURE3);
-        gl.bindTexture(gl.TEXTURE_2D, fluid.warp.read.texture);
 
         gl.uniform1f(uTime, now / 1000);
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

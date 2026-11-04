@@ -379,7 +379,7 @@ export default class GpuFluid {
       const forceX = p.dx * 18;
       const forceY = p.dy * 18;
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
-      this.splatDye(p.x, p.y, [0, 0.7, 0], 0.0017);
+      this.splatDye(p.x, p.y, [0, 0.32, 0], 0.0015);
     }
     this.pending = [];
 
@@ -387,8 +387,8 @@ export default class GpuFluid {
       this.splatDye(
         this.pointerPos.x,
         this.pointerPos.y,
-        [0, 0.06, 0],
-        0.0022,
+        [0, 0.012, 0],
+        0.002,
       );
     }
 
@@ -457,7 +457,5 @@ export default class GpuFluid {
       gl.uniform1f(u.uDissipation, 0.996);
     });
     this.dye.swap();
-
-    this.updateWarp(dt);
   }
 }
