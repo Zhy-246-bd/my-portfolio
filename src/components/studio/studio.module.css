@@ -7,8 +7,6 @@
   --studio-purple: #c77fdd;
   --mx: 0;
   --my: 0;
-  --px: 50vw;
-  --py: 50vh;
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -122,28 +120,14 @@
   animation: veilDrift 13s ease-in-out infinite alternate;
 }
 
-.pointerGlow {
+.inkCanvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   z-index: 3;
-  width: 620px;
-  height: 620px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(169, 232, 221, 0.16),
-    rgba(80, 200, 180, 0.06) 42%,
-    transparent 66%
-  );
-  filter: blur(24px);
-  mix-blend-mode: screen;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  transform: translate(
-    calc(var(--px) - 310px),
-    calc(var(--py) - 310px)
-  );
-  transition: transform 0.18s ease-out;
+  mix-blend-mode: screen;
 }
 
 .identity {
@@ -232,7 +216,7 @@
   text-transform: uppercase;
   font-family: "Arial Black", "Helvetica Neue", Impact, sans-serif;
   font-weight: 900;
-  letter-spacing: -0.075em;
+  letter-spacing: -0.05em;
   line-height: 0.78;
   text-shadow:
     0 0 26px rgba(169, 232, 221, 0.34),
@@ -247,11 +231,25 @@
   transition: translate 0.45s ease-out;
   animation:
     titleIn 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both,
-    titleSway 10s ease-in-out 1.2s infinite;
+    titleBreathe 11s ease-in-out 1.2s infinite;
 }
 
 .line {
   display: block;
+  white-space: nowrap;
+}
+
+.letter {
+  display: inline-block;
+  margin: 0 0.024em;
+  transform-origin: 50% 82%;
+  will-change: transform;
+  animation: letterSway var(--d, 6.2s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.letterAlt {
+  animation-name: letterSwayAlt;
 }
 
 .titleHome {
@@ -516,23 +514,55 @@
   }
 }
 
-@keyframes titleSway {
+@keyframes titleBreathe {
   0%,
   100% {
-    transform: perspective(1300px) translate3d(-9px, 4px, 0)
-      rotateZ(-1.2deg) rotateY(2.4deg) skewX(-1.4deg) scale(1);
+    opacity: 0.93;
+    transform: scale(1);
   }
-  32% {
-    transform: perspective(1300px) translate3d(6px, -8px, 0)
-      rotateZ(0.7deg) rotateY(-1.4deg) skewX(0.6deg) scale(1.04);
+  50% {
+    opacity: 1;
+    transform: scale(1.018);
   }
-  58% {
-    transform: perspective(1300px) translate3d(12px, -12px, 0)
-      rotateZ(1.5deg) rotateY(-3deg) skewX(1.8deg) scale(1.055);
+}
+
+@keyframes letterSway {
+  0%,
+  100% {
+    transform: translate3d(-1px, 0, 0) rotate(-2deg) skewX(-2.1deg)
+      scale(1);
+  }
+  30% {
+    transform: translate3d(2px, -3px, 0) rotate(1.6deg)
+      skewX(1.8deg) scale(1.03);
+  }
+  62% {
+    transform: translate3d(-0.8px, -1px, 0) rotate(0.4deg)
+      skewX(0.5deg) scale(1.01);
   }
   82% {
-    transform: perspective(1300px) translate3d(2px, -4px, 0)
-      rotateZ(0.2deg) rotateY(-0.5deg) skewX(-0.3deg) scale(1.02);
+    transform: translate3d(1px, -2px, 0) rotate(-0.8deg)
+      skewX(-0.8deg) scale(1.015);
+  }
+}
+
+@keyframes letterSwayAlt {
+  0%,
+  100% {
+    transform: translate3d(1px, 0, 0) rotate(1.8deg) skewX(2deg)
+      scale(1);
+  }
+  35% {
+    transform: translate3d(-2px, -2.6px, 0) rotate(-1.5deg)
+      skewX(-1.7deg) scale(1.026);
+  }
+  66% {
+    transform: translate3d(0.7px, -0.8px, 0) rotate(-0.3deg)
+      skewX(-0.4deg) scale(1.009);
+  }
+  84% {
+    transform: translate3d(-0.8px, -1.6px, 0) rotate(0.9deg)
+      skewX(1deg) scale(1.014);
   }
 }
 
@@ -614,6 +644,10 @@
     display: none;
   }
 
+  .inkCanvas {
+    display: none;
+  }
+
   .smokeTeal {
     left: -30vw;
     bottom: -20vw;
@@ -687,7 +721,8 @@
   .panel,
   .outputs,
   .smoke,
-  .smokeVeil {
+  .smokeVeil,
+  .letter {
     animation: none !important;
   }
 }
