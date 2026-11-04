@@ -166,8 +166,8 @@ void main() {
     12.0
   );
   float waterLines = (rippleA + rippleB) * 0.5;
-  color += teal * waterLines * 0.1;
-  color += vec3(0.55, 0.95, 0.88) * (waterField - 0.5) * 0.04;
+  color += teal * waterLines * 0.012;
+  color += vec3(0.55, 0.95, 0.88) * (waterField - 0.5) * 0.008;
 
   float vignette = smoothstep(
     1.05,
@@ -246,10 +246,12 @@ export default function FluidTitle({
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
     const isFullPage = variant === "moduleFull";
+    const isBackdrop = variant === "backdrop";
+    const isModuleCanvas = variant === "module";
     const fluid = new GpuFluid(
       gl,
-      isFullPage ? 384 : 512,
-      isFullPage ? 240 : 320,
+      isFullPage || isBackdrop ? 384 : 512,
+      isFullPage || isBackdrop ? 240 : 320,
     );
 
     const textTexture = gl.createTexture();
@@ -274,8 +276,12 @@ export default function FluidTitle({
 
     const dpr = isFullPage
       ? 1.25
-      : Math.min(window.devicePixelRatio || 1, 1.1);
-    const textDpr = isFullPage ? 2 : dpr;
+      : isBackdrop
+        ? 0.9
+        : isModuleCanvas
+          ? 1.25
+          : Math.min(window.devicePixelRatio || 1, 1.1);
+    const textDpr = isFullPage || isModuleCanvas ? 2 : dpr;
     let width = 0;
     let height = 0;
     let frame = 0;

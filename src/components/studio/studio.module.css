@@ -963,14 +963,14 @@
 }
 
 .moduleFluid {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
 
 .moduleShade {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
