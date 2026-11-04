@@ -201,7 +201,7 @@ void main() {
   dye.r = mix(dye.r, 0.0, mask * uDissolve);
   float restore = uRestore * (1.0 - mask);
   dye.r = mix(dye.r, glyph * 0.9, restore);
-  dye.g *= 1.0 - restore * 0.35;
+  dye.g *= 1.0 - restore * 0.08;
   dye.r += glyph * uEmit * (1.0 - mask);
   gl_FragColor = dye;
 }
@@ -439,7 +439,7 @@ export default class GpuFluid {
       const forceX = p.dx * 8;
       const forceY = p.dy * 8;
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
-      this.splatDye(p.x, p.y, [0, 0.22, 0], 0.0015);
+      this.splatDye(p.x, p.y, [0, 0.07, 0], 0.0012);
     }
     this.pending = [];
 
@@ -447,8 +447,8 @@ export default class GpuFluid {
       this.splatDye(
         this.pointerPos.x,
         this.pointerPos.y,
-        [0, 0.006, 0],
-        0.002,
+        [0, 0.0015, 0],
+        0.0015,
       );
     }
 

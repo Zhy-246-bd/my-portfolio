@@ -84,7 +84,7 @@ void main() {
   vec3 ink = mix(
     teal,
     pink,
-    clamp(pinkDye * 1.55, 0.0, 1.0)
+    clamp(pinkDye * 0.55, 0.0, 1.0)
   );
   ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
 
@@ -112,6 +112,31 @@ void main() {
   color += vec3(0.82, 1.0, 1.0) * specular * 0.1;
   color += teal * caustic * 0.12;
   color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.04;
+
+  float pinkInk = smoothstep(0.1, 0.4, pinkDye);
+  float pinkLeft = texture2D(uDye, uv - vec2(texel.x, 0.0)).g;
+  float pinkRight = texture2D(uDye, uv + vec2(texel.x, 0.0)).g;
+  float pinkTop = texture2D(uDye, uv + vec2(0.0, texel.y)).g;
+  float pinkBottom = texture2D(uDye, uv - vec2(0.0, texel.y)).g;
+  vec2 pinkGradient = vec2(
+    pinkRight - pinkLeft,
+    pinkTop - pinkBottom
+  );
+  float pinkRim = smoothstep(0.02, 0.1, pinkDye) *
+    (1.0 - smoothstep(0.1, 0.28, pinkDye));
+  float pinkGloss = pow(
+    clamp(length(pinkGradient) * 12.0, 0.0, 1.0),
+    1.5
+  );
+
+  vec3 pinkInkColor = mix(
+    vec3(0.55, 0.22, 0.66),
+    pink,
+    0.65
+  );
+  color += pinkInkColor * pinkInk * 0.12;
+  color += pink * pinkRim * 0.08;
+  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.05;
 
   float vignette = smoothstep(
     1.05,
