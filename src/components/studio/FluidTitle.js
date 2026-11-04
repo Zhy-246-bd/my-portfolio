@@ -214,12 +214,12 @@ void main() {
 `;
 
 const PAINT_PALETTES = [
-  { core: [1.0, 0.88, 0.56], edge: [0.95, 0.62, 0.24], base: [0.16, 0.58, 0.53] },
+  { core: [1.0, 0.94, 0.62], edge: [1.0, 0.78, 0.18], base: [0.14, 0.55, 0.48] },
   { core: [0.62, 0.96, 0.98], edge: [0.18, 0.62, 0.9], base: [0.08, 0.38, 0.52] },
   { core: [1.0, 0.64, 0.74], edge: [0.9, 0.24, 0.42], base: [0.42, 0.14, 0.28] },
   { core: [0.84, 0.68, 1.0], edge: [0.5, 0.3, 0.9], base: [0.24, 0.16, 0.5] },
   { core: [0.76, 1.0, 0.62], edge: [0.35, 0.8, 0.3], base: [0.15, 0.4, 0.2] },
-  { core: [1.0, 0.8, 0.5], edge: [0.9, 0.45, 0.15], base: [0.4, 0.22, 0.1] },
+  { core: [1.0, 0.84, 0.42], edge: [1.0, 0.58, 0.08], base: [0.42, 0.2, 0.05] },
   { core: [0.78, 0.9, 1.0], edge: [0.3, 0.5, 0.95], base: [0.16, 0.3, 0.55] },
 ];
 
@@ -460,12 +460,32 @@ export default function FluidTitle({
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
+        const seconds = now / 1000;
         const paletteIndex =
-          Math.floor((now / 1000) / 7) % PAINT_PALETTES.length;
-        const palette = PAINT_PALETTES[paletteIndex];
-        gl.uniform3fv(uPaintCore, palette.core);
-        gl.uniform3fv(uPaintEdge, palette.edge);
-        gl.uniform3fv(uPaintBase, palette.base);
+          Math.floor(seconds / 7) % PAINT_PALETTES.length;
+        const nextPaletteIndex =
+          (paletteIndex + 1) % PAINT_PALETTES.length;
+        const local = seconds % 7;
+        let blend = 0;
+        if (local > 6.2) {
+          const progress = (local - 6.2) / 0.8;
+          blend = progress * progress * (3 - 2 * progress);
+        }
+        const from = PAINT_PALETTES[paletteIndex];
+        const to = PAINT_PALETTES[nextPaletteIndex];
+        const mix = (a, b) => a + (b - a) * blend;
+        const core = from.core.map((value, index) =>
+          mix(value, to.core[index]),
+        );
+        const edge = from.edge.map((value, index) =>
+          mix(value, to.edge[index]),
+        );
+        const base = from.base.map((value, index) =>
+          mix(value, to.base[index]),
+        );
+        gl.uniform3fv(uPaintCore, core);
+        gl.uniform3fv(uPaintEdge, edge);
+        gl.uniform3fv(uPaintBase, base);
         gl.uniform1f(uTime, now / 1000);
         gl.uniform2f(
           uPointer,
