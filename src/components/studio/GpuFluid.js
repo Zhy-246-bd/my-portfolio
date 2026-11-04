@@ -393,45 +393,45 @@ export default class GpuFluid {
 
   emitSideInk() {
     if (!this.autoInk) return;
-    const cycle = this.time % 5.2;
-    const leftBurst = cycle < 2.4;
-    const rightBurst = cycle > 2.6 && cycle < 5.0;
+    const cycle = this.time % 6.2;
+    const leftBurst = cycle < 3.2;
+    const rightBurst = cycle > 1.8 && cycle < 5.4;
     if (!leftBurst && !rightBurst) return;
-    if (this.frameCount % 2 !== 0) return;
+    if (this.frameCount % 3 !== 0) return;
 
     const pulse = 0.5 + 0.5 * Math.sin(this.frameCount * 0.9);
-    const amount = 0.012 + 0.009 * pulse;
-    const wobble = Math.sin(this.frameCount * 0.42) * 0.016;
+    const amount = 0.006 + 0.005 * pulse;
+    const wobble = Math.sin(this.frameCount * 0.42) * 0.01;
 
     if (leftBurst) {
       this.splatVelocity(
         0.055 + wobble,
-        0.04,
-        0.03,
+        0.035,
+        0.025,
         0.075,
-        0.0035,
+        0.003,
       );
       this.splatDye(
         0.055 + wobble,
-        0.04,
+        0.035,
         [0, 0, amount],
-        0.0032 + 0.0008 * pulse,
+        0.0026 + 0.0007 * pulse,
       );
     }
 
     if (rightBurst) {
       this.splatVelocity(
         0.945 + wobble,
-        0.04,
-        -0.03,
+        0.035,
+        -0.025,
         0.075,
-        0.0035,
+        0.003,
       );
       this.splatDye(
         0.945 + wobble,
-        0.04,
+        0.035,
         [0, 0, amount],
-        0.0032 + 0.0008 * pulse,
+        0.0026 + 0.0007 * pulse,
       );
     }
   }
