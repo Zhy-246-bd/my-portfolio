@@ -73,7 +73,16 @@ void main() {
   vec2 gradient = vec2(right - left, top - bottom);
 
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
-  float textDye = smoothstep(0.12, 0.52, dye.r);
+  vec2 dyeTexel = texel * 1.0;
+  float dyeCenter = dye.r;
+  float dyeLeft = texture2D(uDye, uv - vec2(dyeTexel.x, 0.0)).r;
+  float dyeRight = texture2D(uDye, uv + vec2(dyeTexel.x, 0.0)).r;
+  float dyeTop = texture2D(uDye, uv + vec2(0.0, dyeTexel.y)).r;
+  float dyeBottom = texture2D(uDye, uv - vec2(0.0, dyeTexel.y)).r;
+  float dyeSoft = (
+    dyeCenter * 2.0 + dyeLeft + dyeRight + dyeTop + dyeBottom
+  ) / 6.0;
+  float textDye = smoothstep(0.1, 0.52, dyeSoft);
   vec2 flowNoise = vec2(
     fbm(uv * 4.0 + vec2(t * 0.12, 0.0)) - 0.5,
     fbm(uv * 4.0 + vec2(5.2, -t * 0.1)) - 0.5
@@ -223,6 +232,61 @@ const PAINT_PALETTES = [
   { core: [0.78, 0.9, 1.0], edge: [0.3, 0.5, 0.95], base: [0.16, 0.3, 0.55] },
 ];
 
+const FXAA_SHADER = `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uScene;
+uniform vec2 uTexel;
+
+float luma(vec3 color) {
+  return dot(color, vec3(0.299, 0.587, 0.114));
+}
+
+void main() {
+  vec3 center = texture2D(uScene, vUv).rgb;
+  vec3 nw = texture2D(uScene, vUv + vec2(-uTexel.x, -uTexel.y)).rgb;
+  vec3 ne = texture2D(uScene, vUv + vec2(uTexel.x, -uTexel.y)).rgb;
+  vec3 sw = texture2D(uScene, vUv + vec2(-uTexel.x, uTexel.y)).rgb;
+  vec3 se = texture2D(uScene, vUv + vec2(uTexel.x, uTexel.y)).rgb;
+
+  float lCenter = luma(center);
+  float lNW = luma(nw);
+  float lNE = luma(ne);
+  float lSW = luma(sw);
+  float lSE = luma(se);
+
+  float lMin = min(lCenter, min(min(lNW, lNE), min(lSW, lSE)));
+  float lMax = max(lCenter, max(max(lNW, lNE), max(lSW, lSE)));
+  if (lMax - lMin < 0.055) {
+    gl_FragColor = vec4(center, 1.0);
+    return;
+  }
+
+  vec2 dir = vec2(
+    -((lNW + lNE) - (lSW + lSE)),
+    (lNW + lSW) - (lNE + lSE)
+  );
+  float reduce = max((lNW + lNE + lSW + lSE) * 0.0078125, 0.0078125);
+  float rcp = 1.0 / (min(abs(dir.x), abs(dir.y)) + reduce);
+  dir = clamp(dir * rcp, -8.0, 8.0) * uTexel;
+
+  vec3 resultA = 0.5 * (
+    texture2D(uScene, vUv + dir * (1.0 / 3.0 - 0.5)).rgb +
+    texture2D(uScene, vUv + dir * (2.0 / 3.0 - 0.5)).rgb
+  );
+  vec3 resultB = resultA * 0.5 + 0.25 * (
+    texture2D(uScene, vUv + dir * -0.5).rgb +
+    texture2D(uScene, vUv + dir * 0.5).rgb
+  );
+
+  float lB = luma(resultB);
+  gl_FragColor = vec4(
+    (lB < lMin || lB > lMax) ? resultA : resultB,
+    1.0
+  );
+}
+`;
+
 function compileShader(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -275,6 +339,24 @@ export default function FluidTitle({
       return undefined;
     }
     gl.useProgram(program);
+
+    const fxaaFragment = compileShader(
+      gl,
+      gl.FRAGMENT_SHADER,
+      FXAA_SHADER,
+    );
+    if (!fxaaFragment) return undefined;
+    const fxaaProgram = gl.createProgram();
+    gl.attachShader(fxaaProgram, vertex);
+    gl.attachShader(fxaaProgram, fxaaFragment);
+    gl.linkProgram(fxaaProgram);
+    if (!gl.getProgramParameter(fxaaProgram, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(fxaaProgram));
+      return undefined;
+    }
+    const uScene = gl.getUniformLocation(fxaaProgram, "uScene");
+    const uTexel = gl.getUniformLocation(fxaaProgram, "uTexel");
+    const fxaaPosition = gl.getAttribLocation(fxaaProgram, "aPosition");
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -337,6 +419,8 @@ export default function FluidTitle({
     let disposed = false;
     let resizeFrame = 0;
     let resizeObserver = null;
+    let sceneFBO = null;
+    let sceneTexture = null;
 
     const buildText = () => {
       const textCanvas = document.createElement("canvas");
@@ -533,9 +617,13 @@ export default function FluidTitle({
       window.removeEventListener("pointerleave", onPointerLeave);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
+      if (sceneTexture) gl.deleteTexture(sceneTexture);
+      if (sceneFBO) gl.deleteFramebuffer(sceneFBO);
       gl.deleteProgram(program);
+      gl.deleteProgram(fxaaProgram);
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
+      gl.deleteShader(fxaaFragment);
     };
   }, [lines, variant]);
 
@@ -543,6 +631,7 @@ export default function FluidTitle({
     <canvas
       ref={canvasRef}
       className={styles.fluidCanvas}
+      style={variant === "backdrop" ? undefined : { filter: "blur(0.7px)" }}
       onClick={onClick}
       aria-hidden="true"
     />
