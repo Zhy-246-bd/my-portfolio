@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import FluidSim from "./FluidSim";
+import GpuFluid from "./GpuFluid";
 import styles from "./studio.module.css";
 
 const VERTEX_SHADER = `
 attribute vec2 aPosition;
 varying vec2 vUv;
-
 void main() {
   vUv = aPosition * 0.5 + 0.5;
   gl_Position = vec4(aPosition, 0.0, 1.0);
@@ -18,7 +17,8 @@ const FRAGMENT_SHADER = `
 precision highp float;
 
 uniform sampler2D uText;
-uniform sampler2D uFluid;
+uniform sampler2D uVelocity;
+uniform sampler2D uDye;
 uniform vec2 uResolution;
 uniform float uTime;
 
@@ -56,36 +56,31 @@ void main() {
   vec2 p = uv * aspect;
   float t = uTime;
 
+  vec4 dye = texture2D(uDye, uv);
+  float tealDye = dye.r;
+  float pinkDye = dye.g;
+  vec2 velocity = texture2D(uVelocity, uv).xy;
+  float density = tealDye + pinkDye;
+
   vec2 q = vec2(
     fbm(p * 1.4 + vec2(t * 0.02, 0.0)),
     fbm(p * 1.4 + vec2(4.7, -t * 0.015))
   );
   float n1 = fbm(p * 2.2 + q * 1.5 + vec2(t * 0.025, -t * 0.02));
   float n2 = fbm(p * 5.0 + q * 0.6 + vec2(-t * 0.03, t * 0.015));
-  float streak = fbm(
-    vec2(p.x * 3.0 + t * 0.08, p.y * 9.0 - t * 0.18)
-  );
   float filament = fbm(
     vec2(p.x * 8.0 + q.y * 3.0, p.y * 3.0 - t * 0.3)
   );
-  float field = n1 * 0.5 + n2 * 0.28 + streak * 0.12 + filament * 0.1;
+  float field = n1 * 0.55 + n2 * 0.3 + filament * 0.15;
 
-  vec4 fluid = texture2D(uFluid, uv);
-  float tealDye = fluid.r;
-  float pinkDye = fluid.g;
-  vec2 velocity = (fluid.ba - 0.5) * 2.0;
-
-  float density = tealDye + pinkDye;
-  float pinkDensity = pinkDye;
-  vec2 displacement = velocity * 0.55 + (q - 0.5) * 0.22;
-
+  vec2 displacement = velocity * 0.5 + (q - 0.5) * 0.18;
   vec2 uvShift = vec2(
     displacement.x / aspect.x,
     displacement.y
   ) * 0.03;
   float shiftLength = length(uvShift);
-  if (shiftLength > 0.04) {
-    uvShift *= 0.04 / shiftLength;
+  if (shiftLength > 0.05) {
+    uvShift *= 0.05 / shiftLength;
   }
 
   vec2 textUv = clamp(uv + uvShift, vec2(0.0), vec2(1.0));
@@ -93,11 +88,10 @@ void main() {
 
   vec2 flowDirection = normalize(q - vec2(0.5) + vec2(0.0001));
   float bleed = 0.0;
-  bleed += texture2D(uText, clamp(textUv + flowDirection * 0.008, 0.0, 1.0)).a;
-  bleed += texture2D(uText, clamp(textUv + flowDirection * 0.016, 0.0, 1.0)).a;
-  bleed += texture2D(uText, clamp(textUv - flowDirection * 0.008, 0.0, 1.0)).a;
-  bleed += texture2D(uText, clamp(textUv - flowDirection * 0.016, 0.0, 1.0)).a;
-  bleed /= 4.0;
+  bleed += texture2D(uText, clamp(textUv + flowDirection * 0.007, 0.0, 1.0)).a;
+  bleed += texture2D(uText, clamp(textUv + flowDirection * 0.014, 0.0, 1.0)).a;
+  bleed += texture2D(uText, clamp(textUv - flowDirection * 0.007, 0.0, 1.0)).a;
+  bleed /= 3.0;
 
   float inkNoise = fbm(textUv * 13.0 + vec2(t * 0.08, 0.0));
   float flowInk = fbm(
@@ -109,98 +103,87 @@ void main() {
   float grain = smoothstep(
     0.2,
     0.72,
-    fbm(textUv * 28.0 + vec2(t * 0.18, -t * 0.1))
+    fbm(textUv * 24.0 + vec2(t * 0.18, -t * 0.1))
   );
   text = smoothstep(
     0.12,
     0.82,
-    text + (inkNoise - 0.5) * 0.22 + (flowInk - 0.5) * 0.08
+    text + (inkNoise - 0.5) * 0.24 + (flowInk - 0.5) * 0.1
   );
-  text = max(text, bleed * 0.35);
-  text *= 0.9 + 0.1 * grain;
+  text = max(text, bleed * 0.38);
+  text *= 0.88 + 0.12 * grain;
 
   float glow = 0.0;
   for (int i = 0; i < 6; i++) {
     float angle = float(i) * 1.047;
-    vec2 offset = vec2(cos(angle), sin(angle)) * 0.014;
+    vec2 offset = vec2(cos(angle), sin(angle)) * 0.012;
     glow += texture2D(uText, clamp(textUv + offset, 0.0, 1.0)).a;
   }
   glow /= 6.0;
 
-  float pinkTexture = 0.45 + 0.55 * noise(
-    p * 10.0 + vec2(t * 0.25)
-  );
+  float pinkTexture = 0.4 + 0.6 * noise(p * 11.0 + vec2(t * 0.3));
   float pinkFilament = smoothstep(
-    0.42,
-    0.66,
-    fbm(vec2(p.x * 13.0 + t * 0.28, p.y * 7.0 - t * 0.16))
+    0.38,
+    0.64,
+    fbm(vec2(p.x * 14.0 + t * 0.32, p.y * 7.0 - t * 0.18))
   );
   float pinkMask = clamp(
-    pinkDensity * 4.2 * pinkFilament,
+    pinkDye * 3.2 * pinkTexture * pinkFilament,
     0.0,
     1.0
   );
+
   float smokeNoise = 0.55 + 0.45 * n2;
   float ribbon = fbm(
     vec2(p.x * 3.0 + q.y * 1.5, p.y * 8.0 - t * 0.22)
   );
   float wisp = smoothstep(0.32, 0.68, filament);
   float smoke = smoothstep(
-    0.16,
-    0.7,
-    tealDye * 1.3 + field * 0.14 + density * 0.08
+    0.12,
+    0.62,
+    tealDye * 1.35 + ribbon * 0.2 + density * 0.08
   ) * smokeNoise * (0.4 + 0.6 * wisp);
 
-  vec3 teal = vec3(0.58, 0.99, 0.9);
-  vec3 pink = vec3(1.0, 0.35, 0.62);
+  vec3 teal = vec3(0.56, 0.98, 0.9);
+  vec3 pink = vec3(1.0, 0.36, 0.63);
   vec3 purple = vec3(0.74, 0.45, 0.88);
 
   vec3 inkColor = mix(
     teal,
     pink,
-    pinkMask * (0.55 + 0.45 * inkNoise)
+    clamp(pinkMask * (0.55 + 0.45 * inkNoise), 0.0, 1.0)
   );
   vec3 smokeColor = mix(
     teal,
     pink,
-    clamp(pinkDensity * 3.0 * pinkTexture, 0.0, 1.0)
+    clamp(pinkDye * 2.6 * pinkTexture, 0.0, 1.0)
   );
   smokeColor = mix(
     smokeColor,
     purple,
-    clamp(density * 0.15, 0.0, 0.25)
+    clamp(density * 0.14, 0.0, 0.24)
   );
 
   vec3 textColor = mix(
     teal,
     pink,
-    clamp(pinkMask * (0.55 + 0.5 * inkNoise), 0.0, 1.0)
+    clamp(pinkMask * (0.6 + 0.4 * inkNoise), 0.0, 1.0)
   );
-  float strand = fbm(
-    vec2(p.x * 4.0 + t * 0.15, p.y * 18.0 - t * 0.1)
-  );
-  textColor = mix(
-    textColor,
-    inkColor,
-    clamp(flowInk * 0.08, 0.0, 0.08)
-  );
-  textColor *= 0.96 + 0.04 * flowInk;
+  textColor *= 0.9 + 0.14 * flowInk;
 
   float textAlpha = clamp(
-    text *
-      (1.0 - smoke * 0.1) *
-      (0.96 + 0.04 * flowInk),
+    text * (1.0 - smoke * 0.14) * (0.94 + 0.06 * flowInk),
     0.0,
     1.0
   );
-  vec3 color = smokeColor * smoke * 0.55;
-  color = mix(color, textColor, textAlpha);
-  color += inkColor * glow * 0.01;
 
-  float pinkHaze = clamp(pinkDensity * 3.0, 0.0, 1.0);
+  vec3 color = smokeColor * smoke * 0.58;
+  color = mix(color, textColor, textAlpha);
+  color += inkColor * glow * 0.03;
+
+  float pinkHaze = clamp(pinkDye * 2.6, 0.0, 1.0);
   pinkHaze *= pinkFilament;
-  color += pink * pinkHaze * 0.2;
-  color = mix(color, smokeColor, smoke * 0.08);
+  color += pink * pinkHaze * 0.16;
 
   float vignette = smoothstep(
     1.05,
@@ -232,12 +215,18 @@ export default function FluidTitle({ lines, onClick }) {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
 
-    const gl = canvas.getContext("webgl", {
+    const gl = canvas.getContext("webgl2", {
       antialias: false,
       alpha: false,
       powerPreference: "high-performance",
     });
     if (!gl) return undefined;
+
+    const colorBufferFloat = gl.getExtension("EXT_color_buffer_float");
+    if (!colorBufferFloat) {
+      console.error("EXT_color_buffer_float not supported");
+      return undefined;
+    }
 
     const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
     const fragment = compileShader(
@@ -276,6 +265,10 @@ export default function FluidTitle({ lines, onClick }) {
       0,
     );
 
+    const fluid = new GpuFluid(gl);
+    const fluidWidth = fluid.width;
+    const fluidHeight = fluid.height;
+
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textTexture);
@@ -284,37 +277,15 @@ export default function FluidTitle({ lines, onClick }) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 
-    const fluid = new FluidSim();
-    const fluidWidth = fluid.n;
-    const fluidHeight = fluid.m;
-
-    const fluidTexture = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, fluidTexture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      fluidWidth,
-      fluidHeight,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      null,
-    );
-    gl.activeTexture(gl.TEXTURE0);
-
     const uText = gl.getUniformLocation(program, "uText");
-    const uFluid = gl.getUniformLocation(program, "uFluid");
+    const uVelocity = gl.getUniformLocation(program, "uVelocity");
+    const uDye = gl.getUniformLocation(program, "uDye");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uTime = gl.getUniformLocation(program, "uTime");
 
     gl.uniform1i(uText, 0);
-    gl.uniform1i(uFluid, 1);
+    gl.uniform1i(uVelocity, 1);
+    gl.uniform1i(uDye, 2);
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
@@ -375,32 +346,35 @@ export default function FluidTitle({ lines, onClick }) {
     };
 
     const onPointerMove = (event) => {
-      const x = event.clientX / width;
-      const y = 1 - event.clientY / height;
-      fluid.pointer(x, y);
+      fluid.pointer(event.clientX / width, 1 - event.clientY / height);
     };
 
     const render = (now) => {
       if (!disposed) {
         fluid.step(1 / 60);
-        const pixels = fluid.getPixels();
 
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, fluidTexture);
-        gl.texSubImage2D(
-          gl.TEXTURE_2D,
-          0,
-          0,
-          0,
-          fluidWidth,
-          fluidHeight,
-          gl.RGBA,
-          gl.UNSIGNED_BYTE,
-          pixels,
-        );
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.useProgram(program);
+
         gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, textTexture);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, fluid.velocity.read.texture);
+        gl.activeTexture(gl.TEXTURE2);
+        gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
         gl.uniform1f(uTime, now / 1000);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(
+          positionLocation,
+          2,
+          gl.FLOAT,
+          false,
+          0,
+          0,
+        );
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       }
       frame = requestAnimationFrame(render);
@@ -426,7 +400,6 @@ export default function FluidTitle({ lines, onClick }) {
       window.removeEventListener("pointermove", onPointerMove);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
-      gl.deleteTexture(fluidTexture);
       gl.deleteProgram(program);
       gl.deleteShader(vertex);
       gl.deleteShader(fragment);
