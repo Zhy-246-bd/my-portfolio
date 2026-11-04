@@ -18,6 +18,8 @@ precision highp float;
 
 uniform sampler2D uDye;
 uniform vec2 uResolution;
+uniform vec2 uPointer;
+uniform float uActive;
 uniform float uTime;
 varying vec2 vUv;
 
@@ -84,7 +86,7 @@ void main() {
   vec3 ink = mix(
     teal,
     pink,
-    clamp(pinkDye * 0.55, 0.0, 1.0)
+    clamp(pinkDye * 0.4, 0.0, 1.0)
   );
   ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
 
@@ -113,7 +115,13 @@ void main() {
   color += teal * caustic * 0.12;
   color += pink * clamp(pinkDye * 1.2, 0.0, 1.0) * 0.04;
 
-  float pinkInk = smoothstep(0.1, 0.4, pinkDye);
+  float pinkInk = smoothstep(0.3, 0.6, pinkDye);
+  float pinkFalloff = 1.0 - smoothstep(
+    0.03,
+    0.16,
+    distance(uv, uPointer)
+  );
+  pinkInk *= mix(1.0, pinkFalloff, uActive);
   float pinkLeft = texture2D(uDye, uv - vec2(texel.x, 0.0)).g;
   float pinkRight = texture2D(uDye, uv + vec2(texel.x, 0.0)).g;
   float pinkTop = texture2D(uDye, uv + vec2(0.0, texel.y)).g;
@@ -124,6 +132,7 @@ void main() {
   );
   float pinkRim = smoothstep(0.02, 0.1, pinkDye) *
     (1.0 - smoothstep(0.1, 0.28, pinkDye));
+  pinkRim *= mix(1.0, pinkFalloff, uActive);
   float pinkGloss = pow(
     clamp(length(pinkGradient) * 12.0, 0.0, 1.0),
     1.5
@@ -134,9 +143,14 @@ void main() {
     pink,
     0.65
   );
-  color += pinkInkColor * pinkInk * 0.12;
-  color += pink * pinkRim * 0.08;
-  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.05;
+  color += pinkInkColor * pinkInk * 0.06;
+  color += pink * pinkRim * 0.04;
+  color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.03;
+
+  float cursorInk = exp(
+    -dot(uv - uPointer, uv - uPointer) / 0.0005
+  );
+  color += pinkInkColor * cursorInk * 0.15 * uActive;
 
   float vignette = smoothstep(
     1.05,
@@ -223,6 +237,8 @@ export default function FluidTitle({ lines, onClick }) {
 
     const uDye = gl.getUniformLocation(program, "uDye");
     const uResolution = gl.getUniformLocation(program, "uResolution");
+    const uPointer = gl.getUniformLocation(program, "uPointer");
+    const uActive = gl.getUniformLocation(program, "uActive");
     const uTime = gl.getUniformLocation(program, "uTime");
     gl.uniform1i(uDye, 2);
 
@@ -304,6 +320,12 @@ export default function FluidTitle({ lines, onClick }) {
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
         gl.uniform1f(uTime, now / 1000);
+        gl.uniform2f(
+          uPointer,
+          fluid.pointerPos.x,
+          fluid.pointerPos.y,
+        );
+        gl.uniform1f(uActive, fluid.active ? 1 : 0);
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(

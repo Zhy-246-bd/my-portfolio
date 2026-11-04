@@ -439,7 +439,7 @@ export default class GpuFluid {
       const forceX = p.dx * 8;
       const forceY = p.dy * 8;
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
-      this.splatDye(p.x, p.y, [0, 0.07, 0], 0.0012);
+      this.splatDye(p.x, p.y, [0, 0.35, 0], 0.00028);
     }
     this.pending = [];
 
@@ -447,8 +447,8 @@ export default class GpuFluid {
       this.splatDye(
         this.pointerPos.x,
         this.pointerPos.y,
-        [0, 0.0015, 0],
-        0.0015,
+        [0, 0.008, 0],
+        0.0003,
       );
     }
 
