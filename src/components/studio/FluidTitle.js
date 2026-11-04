@@ -23,6 +23,9 @@ uniform vec2 uResolution;
 uniform vec2 uPointer;
 uniform float uActive;
 uniform float uCrisp;
+uniform vec3 uPaintCore;
+uniform vec3 uPaintEdge;
+uniform vec3 uPaintBase;
 uniform float uTime;
 varying vec2 vUv;
 
@@ -170,10 +173,10 @@ void main() {
     (1.0 - smoothstep(0.13, 0.42, paintDye));
   float paintBreakup = fbm(uv * 18.0 + vec2(uTime * 0.26, 0.0));
   paint *= 0.62 + 0.38 * smoothstep(0.28, 0.76, paintBreakup);
-  vec3 cream = vec3(1.0, 0.88, 0.56);
-  vec3 gold = vec3(0.95, 0.62, 0.24);
+  vec3 cream = uPaintCore;
+  vec3 gold = uPaintEdge;
   vec3 paintColor = mix(
-    vec3(0.32, 0.72, 0.62),
+    uPaintBase,
     cream,
     clamp(paintDye * 2.6, 0.0, 1.0)
   );
@@ -209,6 +212,16 @@ void main() {
   gl_FragColor = vec4(color, 1.0);
 }
 `;
+
+const PAINT_PALETTES = [
+  { core: [1.0, 0.88, 0.56], edge: [0.95, 0.62, 0.24], base: [0.16, 0.58, 0.53] },
+  { core: [0.62, 0.96, 0.98], edge: [0.18, 0.62, 0.9], base: [0.08, 0.38, 0.52] },
+  { core: [1.0, 0.64, 0.74], edge: [0.9, 0.24, 0.42], base: [0.42, 0.14, 0.28] },
+  { core: [0.84, 0.68, 1.0], edge: [0.5, 0.3, 0.9], base: [0.24, 0.16, 0.5] },
+  { core: [0.76, 1.0, 0.62], edge: [0.35, 0.8, 0.3], base: [0.15, 0.4, 0.2] },
+  { core: [1.0, 0.8, 0.5], edge: [0.9, 0.45, 0.15], base: [0.4, 0.22, 0.1] },
+  { core: [0.78, 0.9, 1.0], edge: [0.3, 0.5, 0.95], base: [0.16, 0.3, 0.55] },
+];
 
 function compileShader(gl, type, source) {
   const shader = gl.createShader(type);
@@ -300,6 +313,9 @@ export default function FluidTitle({
     const uPointer = gl.getUniformLocation(program, "uPointer");
     const uActive = gl.getUniformLocation(program, "uActive");
     const uCrisp = gl.getUniformLocation(program, "uCrisp");
+    const uPaintCore = gl.getUniformLocation(program, "uPaintCore");
+    const uPaintEdge = gl.getUniformLocation(program, "uPaintEdge");
+    const uPaintBase = gl.getUniformLocation(program, "uPaintBase");
     const uTime = gl.getUniformLocation(program, "uTime");
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
@@ -444,6 +460,12 @@ export default function FluidTitle({
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
+        const paletteIndex =
+          Math.floor((now / 1000) / 7) % PAINT_PALETTES.length;
+        const palette = PAINT_PALETTES[paletteIndex];
+        gl.uniform3fv(uPaintCore, palette.core);
+        gl.uniform3fv(uPaintEdge, palette.edge);
+        gl.uniform3fv(uPaintBase, palette.base);
         gl.uniform1f(uTime, now / 1000);
         gl.uniform2f(
           uPointer,
