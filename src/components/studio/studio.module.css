@@ -30,13 +30,6 @@
     radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
 }
 
-.filterDefs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
 .grain {
   position: absolute;
   inset: 0;
@@ -242,20 +235,19 @@
   letter-spacing: -0.075em;
   line-height: 0.78;
   text-shadow:
-    0 0 26px rgba(169, 232, 221, 0.3),
-    0 0 90px rgba(111, 206, 193, 0.18);
-  filter: url(#studioLiquid) drop-shadow(0 0 24px rgba(169, 232, 221, 0.2));
+    0 0 26px rgba(169, 232, 221, 0.34),
+    0 0 96px rgba(111, 206, 193, 0.22);
   opacity: 0.93;
   pointer-events: auto;
   cursor: pointer;
   user-select: none;
-  will-change: filter, transform, translate;
+  transform-origin: 50% 56%;
+  will-change: transform, translate;
   translate: calc(var(--mx) * 12px) calc(var(--my) * 9px);
   transition: translate 0.45s ease-out;
   animation:
     titleIn 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both,
-    titleBreathe 9s ease-in-out 1.2s infinite,
-    titleGlow 9s ease-in-out 1.2s infinite alternate;
+    titleSway 10s ease-in-out 1.2s infinite;
 }
 
 .line {
@@ -524,32 +516,23 @@
   }
 }
 
-@keyframes titleBreathe {
+@keyframes titleSway {
   0%,
   100% {
-    transform: translate3d(-6px, 2px, 0) scale(1);
+    transform: perspective(1300px) translate3d(-9px, 4px, 0)
+      rotateZ(-1.2deg) rotateY(2.4deg) skewX(-1.4deg) scale(1);
   }
   32% {
-    transform: translate3d(5px, -7px, 0) scale(1.032);
+    transform: perspective(1300px) translate3d(6px, -8px, 0)
+      rotateZ(0.7deg) rotateY(-1.4deg) skewX(0.6deg) scale(1.04);
   }
   58% {
-    transform: translate3d(9px, -12px, 0) scale(1.052);
+    transform: perspective(1300px) translate3d(12px, -12px, 0)
+      rotateZ(1.5deg) rotateY(-3deg) skewX(1.8deg) scale(1.055);
   }
-  78% {
-    transform: translate3d(1px, -4px, 0) scale(1.018);
-  }
-}
-
-@keyframes titleGlow {
-  from {
-    text-shadow:
-      0 0 26px rgba(169, 232, 221, 0.3),
-      0 0 90px rgba(111, 206, 193, 0.18);
-  }
-  to {
-    text-shadow:
-      0 0 44px rgba(169, 232, 221, 0.5),
-      0 0 140px rgba(111, 206, 193, 0.32);
+  82% {
+    transform: perspective(1300px) translate3d(2px, -4px, 0)
+      rotateZ(0.2deg) rotateY(-0.5deg) skewX(-0.3deg) scale(1.02);
   }
 }
 

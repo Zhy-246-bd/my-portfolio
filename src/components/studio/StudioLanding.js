@@ -15,9 +15,6 @@ const headings = {
 export default function StudioLanding() {
   const [view, setView] = useState("home");
   const stageRef = useRef(null);
-  const turbulenceRef = useRef(null);
-  const displacementRef = useRef(null);
-  const blurRef = useRef(null);
 
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -32,45 +29,6 @@ export default function StudioLanding() {
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, []);
-
-  useEffect(() => {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduce) return undefined;
-
-    let frame = 0;
-    let last = 0;
-
-    const tick = (now) => {
-      if (now - last < 45) {
-        frame = requestAnimationFrame(tick);
-        return;
-      }
-      last = now;
-
-      const t = now / 1000;
-      const breath = (Math.sin(t * 0.42) + 1) / 2;
-      const fx =
-        0.0038 + breath * 0.0022 + Math.sin(t * 0.21) * 0.0005;
-      const fy =
-        0.011 + breath * 0.005 + Math.cos(t * 0.18) * 0.001;
-      const scale = 24 + breath * 8;
-      const blur = 1.05 + breath * 0.75;
-
-      turbulenceRef.current?.setAttribute(
-        "baseFrequency",
-        `${fx.toFixed(5)} ${fy.toFixed(5)}`,
-      );
-      displacementRef.current?.setAttribute("scale", scale.toFixed(1));
-      blurRef.current?.setAttribute("stdDeviation", blur.toFixed(2));
-
-      frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
   }, []);
 
   const handlePointerMove = (event) => {
@@ -111,37 +69,6 @@ export default function StudioLanding() {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      <svg className={styles.filterDefs} aria-hidden="true" focusable="false">
-        <defs>
-          <filter
-            id="studioLiquid"
-            x="-20%"
-            y="-30%"
-            width="140%"
-            height="160%"
-            colorInterpolationFilters="sRGB"
-          >
-            <feTurbulence
-              ref={turbulenceRef}
-              type="fractalNoise"
-              baseFrequency="0.004 0.012"
-              numOctaves="2"
-              seed="7"
-              result="noise"
-            />
-            <feDisplacementMap
-              ref={displacementRef}
-              in="SourceGraphic"
-              in2="noise"
-              scale="20"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-            <feGaussianBlur ref={blurRef} stdDeviation="1.4" />
-          </filter>
-        </defs>
-      </svg>
-
       <span className={styles.grain} aria-hidden="true" />
       <span className={`${styles.smoke} ${styles.smokeTeal}`} aria-hidden="true" />
       <span className={`${styles.smoke} ${styles.smokePurple}`} aria-hidden="true" />
