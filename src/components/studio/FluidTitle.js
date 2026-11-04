@@ -18,6 +18,7 @@ precision highp float;
 
 uniform sampler2D uText;
 uniform sampler2D uDye;
+uniform sampler2D uVelocity;
 uniform vec2 uResolution;
 uniform vec2 uPointer;
 uniform float uActive;
@@ -70,12 +71,22 @@ void main() {
 
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
   float textDye = smoothstep(0.12, 0.52, dye.r);
+  vec2 flowNoise = vec2(
+    fbm(uv * 4.0 + vec2(t * 0.12, 0.0)) - 0.5,
+    fbm(uv * 4.0 + vec2(5.2, -t * 0.1)) - 0.5
+  );
+  vec2 flowVelocity = texture2D(uVelocity, uv).xy;
+  vec2 textUv = clamp(
+    uv + (flowNoise * 0.012 + flowVelocity * 0.022) * uCrisp,
+    vec2(0.0),
+    vec2(1.0)
+  );
   vec2 soft = vec2(0.00065, 0.00065);
   float glyph = (
-    texture2D(uText, uv + vec2(soft.x, 0.0)).a +
-    texture2D(uText, uv - vec2(soft.x, 0.0)).a +
-    texture2D(uText, uv + vec2(0.0, soft.y)).a +
-    texture2D(uText, uv - vec2(0.0, soft.y)).a
+    texture2D(uText, textUv + vec2(soft.x, 0.0)).a +
+    texture2D(uText, textUv - vec2(soft.x, 0.0)).a +
+    texture2D(uText, textUv + vec2(0.0, soft.y)).a +
+    texture2D(uText, textUv - vec2(0.0, soft.y)).a
   ) * 0.25;
   float text = mix(textDye, glyph, uCrisp);
   text *= 0.92 + 0.08 * grain;
@@ -265,12 +276,14 @@ export default function FluidTitle({
 
     const uText = gl.getUniformLocation(program, "uText");
     const uDye = gl.getUniformLocation(program, "uDye");
+    const uVelocity = gl.getUniformLocation(program, "uVelocity");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uPointer = gl.getUniformLocation(program, "uPointer");
     const uActive = gl.getUniformLocation(program, "uActive");
     const uCrisp = gl.getUniformLocation(program, "uCrisp");
     const uTime = gl.getUniformLocation(program, "uTime");
     gl.uniform1i(uText, 0);
+    gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
     gl.uniform1f(uCrisp, variant === "cover" ? 0 : 1);
 
@@ -400,6 +413,8 @@ export default function FluidTitle({
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, textTexture);
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, fluid.velocity.read.texture);
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
 
