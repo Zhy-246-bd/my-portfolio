@@ -90,14 +90,33 @@ void main() {
     vec2(0.0),
     vec2(1.0)
   );
-  vec2 soft = vec2(0.00065, 0.00065);
+  float stirMask =
+    (1.0 - smoothstep(0.03, 0.22, distance(uv, uPointer))) * uActive;
+  vec2 organic = vec2(
+    noise(uv * 11.0 + vec2(t * 0.35, 0.0)) - 0.5,
+    noise(uv * 11.0 + vec2(4.3, -t * 0.3)) - 0.5
+  );
+  vec2 stirredUv = clamp(
+    textUv +
+      (flowVelocity * 0.012 + flowNoise * 0.006 + organic * 0.008) *
+        stirMask,
+    vec2(0.0),
+    vec2(1.0)
+  );
+  vec2 soft = vec2(
+    0.00065 + 0.0034 * stirMask,
+    0.00065 + 0.0034 * stirMask
+  );
   float glyph = (
-    texture2D(uText, textUv + vec2(soft.x, 0.0)).a +
-    texture2D(uText, textUv - vec2(soft.x, 0.0)).a +
-    texture2D(uText, textUv + vec2(0.0, soft.y)).a +
-    texture2D(uText, textUv - vec2(0.0, soft.y)).a
+    texture2D(uText, stirredUv + vec2(soft.x, 0.0)).a +
+    texture2D(uText, stirredUv - vec2(soft.x, 0.0)).a +
+    texture2D(uText, stirredUv + vec2(0.0, soft.y)).a +
+    texture2D(uText, stirredUv - vec2(0.0, soft.y)).a
   ) * 0.25;
   float text = mix(textDye, glyph, uCrisp);
+  float meltNoise = noise(uv * 28.0 + vec2(t * 0.45, -t * 0.25));
+  text *= 1.0 - stirMask * smoothstep(0.42, 0.88, meltNoise) * 0.2;
+  text = mix(text, textDye, stirMask * 0.32);
   text *= 0.92 + 0.08 * grain;
   text = pow(text, 1.04);
 
