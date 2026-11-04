@@ -234,7 +234,12 @@ export default function FluidTitle({
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-    const fluid = new GpuFluid(gl);
+    const isFullPage = variant === "moduleFull";
+    const fluid = new GpuFluid(
+      gl,
+      isFullPage ? 384 : 512,
+      isFullPage ? 240 : 320,
+    );
 
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
@@ -252,11 +257,15 @@ export default function FluidTitle({
     const uTime = gl.getUniformLocation(program, "uTime");
     gl.uniform1i(uDye, 2);
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.1);
+    const dpr = isFullPage
+      ? 0.8
+      : Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
     let height = 0;
     let frame = 0;
     let disposed = false;
+    let resizeFrame = 0;
+    let resizeObserver = null;
 
     const buildText = () => {
       const textCanvas = document.createElement("canvas");
@@ -321,14 +330,32 @@ export default function FluidTitle({
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      width = Math.max(1, Math.round(rect.width));
-      height = Math.max(1, Math.round(rect.height));
+      const nextWidth = Math.round(rect.width);
+      const nextHeight = Math.round(rect.height);
+      if (nextWidth < 20 || nextHeight < 20) return;
+      if (nextWidth === width && nextHeight === height) return;
+      width = nextWidth;
+      height = nextHeight;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uResolution, width, height);
       buildText();
     };
+
+    const scheduleResize = () => {
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = 0;
+        resize();
+      });
+    };
+
+    const parent = canvas.parentElement;
+    if (parent && "ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(scheduleResize);
+      resizeObserver.observe(parent);
+    }
 
     const onPointerMove = (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -382,7 +409,7 @@ export default function FluidTitle({
         if (!disposed) buildText();
       })
       .catch(() => {});
-    window.addEventListener("resize", resize);
+    window.addEventListener("resize", scheduleResize);
     window.addEventListener("pointermove", onPointerMove, {
       passive: true,
     });
@@ -392,7 +419,9 @@ export default function FluidTitle({
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
-      window.removeEventListener("resize", resize);
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      if (resizeObserver) resizeObserver.disconnect();
+      window.removeEventListener("resize", scheduleResize);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
       gl.deleteBuffer(buffer);
