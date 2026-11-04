@@ -234,6 +234,7 @@ export default class GpuFluid {
     this.height = height;
     this.time = 0;
     this.frameCount = 0;
+    this.autoInk = false;
     this.pending = [];
     this.last = null;
 
@@ -386,6 +387,55 @@ export default class GpuFluid {
     this.textTexture = texture;
   }
 
+  setAutoInk(value) {
+    this.autoInk = value;
+  }
+
+  emitSideInk() {
+    if (!this.autoInk) return;
+    const cycle = this.time % 5.2;
+    const leftBurst = cycle < 2.4;
+    const rightBurst = cycle > 2.6 && cycle < 5.0;
+    if (!leftBurst && !rightBurst) return;
+    if (this.frameCount % 2 !== 0) return;
+
+    const pulse = 0.5 + 0.5 * Math.sin(this.frameCount * 0.9);
+    const amount = 0.012 + 0.009 * pulse;
+    const wobble = Math.sin(this.frameCount * 0.42) * 0.016;
+
+    if (leftBurst) {
+      this.splatVelocity(
+        0.055 + wobble,
+        0.04,
+        0.03,
+        0.075,
+        0.0035,
+      );
+      this.splatDye(
+        0.055 + wobble,
+        0.04,
+        [0, 0, amount],
+        0.0032 + 0.0008 * pulse,
+      );
+    }
+
+    if (rightBurst) {
+      this.splatVelocity(
+        0.945 + wobble,
+        0.04,
+        -0.03,
+        0.075,
+        0.0035,
+      );
+      this.splatDye(
+        0.945 + wobble,
+        0.04,
+        [0, 0, amount],
+        0.0032 + 0.0008 * pulse,
+      );
+    }
+  }
+
   emitText() {
     if (!this.textTexture) return;
     const { gl } = this;
@@ -484,6 +534,7 @@ export default class GpuFluid {
 
     this.emitText();
     this.stir();
+    this.emitSideInk();
 
     for (const p of this.pending) {
       const forceX = p.dx * 8;

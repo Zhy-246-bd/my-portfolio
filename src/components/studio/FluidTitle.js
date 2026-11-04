@@ -296,6 +296,7 @@ export default function FluidTitle({
       isBackdrop ? 256 : 448,
       isBackdrop ? 160 : 280,
     );
+    fluid.setAutoInk(variant === "cover" || isBackdrop);
 
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
