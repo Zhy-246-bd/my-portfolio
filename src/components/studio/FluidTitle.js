@@ -77,7 +77,7 @@ void main() {
   );
   vec2 flowVelocity = texture2D(uVelocity, uv).xy;
   vec2 textUv = clamp(
-    uv + (flowNoise * 0.012 + flowVelocity * 0.022) * uCrisp,
+    uv + (flowNoise * 0.003 + flowVelocity * 0.006) * uCrisp,
     vec2(0.0),
     vec2(1.0)
   );
@@ -179,9 +179,9 @@ void main() {
   );
   float greenMix = smoothstep(0.04, 0.34, dye.r) * 0.55;
   paintColor = mix(paintColor, vec3(0.2, 0.76, 0.62), greenMix);
-  color += paintColor * paint * 0.95;
-  color += cream * paintRim * 0.5;
-  color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.22;
+  color += paintColor * paint * 0.65;
+  color += cream * paintRim * 0.28;
+  color += gold * clamp(paintDye * 0.9, 0.0, 1.0) * 0.14;
 
   vec2 waterP = uv * aspect;
   float waterField = fbm(
@@ -304,7 +304,7 @@ export default function FluidTitle({
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
+    gl.uniform1f(uCrisp, variant === "backdrop" ? 0 : 1);
 
     const dpr = isFullPage
       ? 1.25
