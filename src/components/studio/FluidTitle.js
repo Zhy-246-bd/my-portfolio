@@ -151,7 +151,7 @@ void main() {
   float cursorInk = exp(
     -dot(uv - uPointer, uv - uPointer) / 0.0005
   );
-  color += brightPink * cursorInk * 0.15 * uActive;
+  color += brightPink * cursorInk * 0.75 * uActive;
 
   float vignette = smoothstep(
     1.05,
@@ -319,140 +319,69 @@ export default function FluidTitle({ lines, onClick }) {
 
       trailCtx.globalCompositeOperation = "screen";
       trailCtx.shadowColor = "rgba(238, 86, 224, 0.8)";
-      trailCtx.shadowBlur = 10;
+      trailCtx.shadowBlur = 14;
       trailCtx.lineCap = "round";
       trailCtx.lineJoin = "round";
 
-      const points = [];
-      for (let index = 1; index < trailPoints.length; index += 1) {
-        const previous = trailPoints[index - 1];
-        const current = trailPoints[index];
-        const dx = current.x - previous.x;
-        const dy = current.y - previous.y;
-        const distance = Math.hypot(dx, dy);
-        const steps = Math.max(1, Math.ceil(distance / 9));
-        for (let step = 0; step < steps; step += 1) {
-          const amount = step / steps;
-          points.push({
-            x: previous.x + dx * amount,
-            y: previous.y + dy * amount,
-            t: previous.t + (current.t - previous.t) * amount,
-          });
-        }
-      }
-      if (trailPoints.length > 0) {
-        points.push(trailPoints[trailPoints.length - 1]);
-      }
-      if (points.length < 2) return;
-      const normalAt = (index) => {
-        const previous = points[Math.max(0, index - 1)];
-        const next = points[Math.min(points.length - 1, index + 1)];
-        const dx = next.x - previous.x;
-        const dy = next.y - previous.y;
-        const length = Math.hypot(dx, dy) || 1;
-        return { x: -dy / length, y: dx / length };
-      };
-
-      const leftEdge = [];
-      const rightEdge = [];
-      for (let index = 0; index < points.length; index += 1) {
-        const point = points[index];
-        const age = (nowMs - point.t) / 900;
-        const widthNow = 1.2 + 7 * (1 - age);
-        const normal = normalAt(index);
-        const rough =
-          Math.sin(index * 1.73 + now * 0.003) *
-          3.4 *
-          (1 - age);
-        leftEdge.push({
-          x: point.x + normal.x * (widthNow + rough),
-          y: point.y + normal.y * (widthNow + rough),
-        });
-        rightEdge.push({
-          x: point.x - normal.x * (widthNow - rough * 0.6),
-          y: point.y - normal.y * (widthNow - rough * 0.6),
-        });
-      }
-
-      trailCtx.beginPath();
-      trailCtx.moveTo(leftEdge[0].x, leftEdge[0].y);
-      for (let index = 1; index < leftEdge.length; index += 1) {
-        trailCtx.lineTo(leftEdge[index].x, leftEdge[index].y);
-      }
-      for (let index = rightEdge.length - 1; index >= 0; index -= 1) {
-        trailCtx.lineTo(rightEdge[index].x, rightEdge[index].y);
-      }
-      trailCtx.closePath();
-      trailCtx.fillStyle = "rgba(255, 74, 220, 0.18)";
-      trailCtx.fill();
-
-      for (let strand = -2; strand <= 2; strand += 1) {
+      if (trailPoints.length > 1) {
         trailCtx.beginPath();
-        for (let index = 0; index < points.length; index += 1) {
-          const point = points[index];
+        trailCtx.moveTo(trailPoints[0].x, trailPoints[0].y);
+        for (let index = 1; index < trailPoints.length; index += 1) {
+          const point = trailPoints[index];
           const age = (nowMs - point.t) / 900;
-          const widthNow = 1.2 + 6 * (1 - age);
-          const normal = normalAt(index);
           const wobble =
-            Math.sin(index * 1.7 + strand * 2.3 + now * 0.004) *
-            2.1 *
+            Math.sin(now * 0.004 + index * 0.65) *
+            2.4 *
             (1 - age);
-          const offset = strand * widthNow * 0.34 + wobble;
-          const x = point.x + normal.x * offset;
-          const y = point.y + normal.y * offset;
-          if (index === 0) trailCtx.moveTo(x, y);
-          else trailCtx.lineTo(x, y);
+          trailCtx.lineTo(point.x, point.y + wobble);
         }
-        trailCtx.strokeStyle =
-          strand === 0
-            ? "rgba(255, 140, 236, 0.18)"
-            : "rgba(255, 92, 226, 0.1)";
-        trailCtx.lineWidth = strand === 0 ? 3 : 1.1;
+        trailCtx.strokeStyle = "rgba(255, 80, 220, 0.1)";
+        trailCtx.lineWidth = 26;
+        trailCtx.stroke();
+        trailCtx.strokeStyle = "rgba(245, 90, 220, 0.18)";
+        trailCtx.lineWidth = 12;
+        trailCtx.stroke();
+        trailCtx.strokeStyle = "rgba(255, 150, 240, 0.32)";
+        trailCtx.lineWidth = 4;
         trailCtx.stroke();
       }
 
-      for (let index = 2; index < points.length - 2; index += 2) {
-        const point = points[index];
+      for (let index = 0; index < trailPoints.length; index += 1) {
+        const point = trailPoints[index];
         const age = (nowMs - point.t) / 900;
-        if (age > 0.7) continue;
-        const previous = points[index - 1];
-        const next = points[index + 1];
-        const tangentX = next.x - previous.x;
-        const tangentY = next.y - previous.y;
-        const normal = normalAt(index);
-        const hash = Math.abs(Math.sin(index * 12.9898) * 43758.5453);
-        const side = hash % 1 > 0.5 ? 1 : -1;
-        const angleBias = (hash % 1 - 0.5) * 1.4;
-        const length = 14 + 30 * (1 - age);
-        const dirX =
-          tangentX * 0.15 +
-          normal.x * side * (0.85 + angleBias);
-        const dirY =
-          tangentY * 0.15 +
-          normal.y * side * (0.85 + angleBias);
-        const lengthNorm = Math.hypot(dirX, dirY) || 1;
-        const endX = point.x + (dirX / lengthNorm) * length;
-        const endY = point.y + (dirY / lengthNorm) * length;
-        const controlX =
-          point.x + (dirX / lengthNorm) * length * 0.4 +
-          normal.x * side * 8;
-        const controlY =
-          point.y + (dirY / lengthNorm) * length * 0.4 +
-          normal.y * side * 8;
+        const alpha = (1 - age) * 0.55;
+        const radius = 2.5 + 7 * (1 - age);
+        const wobble =
+          Math.sin(now * 0.004 + index * 0.65) * 2.4 * (1 - age);
 
+        trailCtx.fillStyle = `rgba(252, 92, 224, ${alpha * 0.35})`;
         trailCtx.beginPath();
-        trailCtx.moveTo(point.x, point.y);
-        trailCtx.quadraticCurveTo(controlX, controlY, endX, endY);
-        trailCtx.strokeStyle = `rgba(255, 100, 230, ${0.32 * (1 - age)})`;
-        trailCtx.lineWidth = 1.8;
-        trailCtx.stroke();
+        trailCtx.arc(
+          point.x,
+          point.y + wobble,
+          radius * 1.6,
+          0,
+          Math.PI * 2,
+        );
+        trailCtx.fill();
+
+        trailCtx.fillStyle = `rgba(255, 160, 242, ${alpha * 0.6})`;
+        trailCtx.beginPath();
+        trailCtx.arc(
+          point.x,
+          point.y + wobble,
+          radius * 0.72,
+          0,
+          Math.PI * 2,
+        );
+        trailCtx.fill();
       }
 
-      const head = points[points.length - 1];
+      const head = trailPoints[trailPoints.length - 1];
       trailCtx.shadowBlur = 0;
-      trailCtx.fillStyle = "rgba(255, 150, 240, 0.18)";
+      trailCtx.fillStyle = "rgba(255, 150, 240, 0.45)";
       trailCtx.beginPath();
-      trailCtx.arc(head.x, head.y, 2.5, 0, Math.PI * 2);
+      trailCtx.arc(head.x, head.y, 4, 0, Math.PI * 2);
       trailCtx.fill();
     };
 
