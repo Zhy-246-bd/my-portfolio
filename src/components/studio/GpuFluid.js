@@ -212,10 +212,12 @@ uniform vec2 uPointer;
 uniform float uEmit;
 uniform float uDissolve;
 uniform float uRestore;
+uniform float uActive;
 void main() {
   vec4 dye = texture2D(uDye, vUv);
   float glyph = texture2D(uText, vUv).a;
-  float mask = 1.0 - smoothstep(0.02, 0.16, distance(vUv, uPointer));
+  float mask =
+    (1.0 - smoothstep(0.02, 0.16, distance(vUv, uPointer))) * uActive;
   dye.r = mix(dye.r, 0.0, mask * uDissolve);
   float restore = uRestore * (1.0 - mask);
   dye.r = mix(dye.r, glyph * 0.9, restore);
@@ -396,6 +398,7 @@ export default class GpuFluid {
       gl.uniform1f(u.uEmit, 0.022);
       gl.uniform1f(u.uDissolve, this.active ? 0.06 : 0);
       gl.uniform1f(u.uRestore, 0.05);
+      gl.uniform1f(u.uActive, this.active ? 1 : 0);
     });
     this.dye.swap();
   }
