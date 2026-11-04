@@ -232,6 +232,7 @@ export default class GpuFluid {
     this.height = height;
     this.time = 0;
     this.frameCount = 0;
+    this.motionSpeed = 0;
     this.pending = [];
     this.last = null;
 
@@ -433,6 +434,9 @@ export default class GpuFluid {
       const dx = x - this.last.x;
       const dy = y - this.last.y;
       const distance = Math.hypot(dx, dy);
+      const speed = Math.min(1, distance * 60);
+      this.motionSpeed =
+        this.motionSpeed * 0.55 + speed * 0.45;
       if (distance > 0.0005) {
         const steps = Math.max(
           1,
@@ -444,9 +448,12 @@ export default class GpuFluid {
             y: this.last.y + (dy * step) / steps,
             dx: dx / steps,
             dy: dy / steps,
+            speed,
           });
         }
       }
+    } else {
+      this.motionSpeed *= 0.5;
     }
     this.last = { x, y };
   }
@@ -488,11 +495,12 @@ export default class GpuFluid {
       const variation =
         0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.x * 41 + p.y * 57 + t * 4));
       this.splatVelocity(p.x, p.y, forceX, forceY, 0.0015);
+      const slow = 1 - p.speed;
       this.splatDye(
         p.x,
         p.y,
-        [0, 0, 0.004 + 0.007 * variation],
-        0.00026 + 0.0003 * variation,
+        [0, 0, (0.0015 + 0.008 * slow) * variation],
+        0.0002 + 0.00045 * slow,
       );
     }
     this.pending = [];
@@ -501,7 +509,10 @@ export default class GpuFluid {
       const phase = this.frameCount * 0.92;
       const offsetX = Math.cos(phase) * 0.008;
       const offsetY = Math.sin(phase * 0.73) * 0.005;
-      const amount = 0.014 + 0.008 * (0.5 + 0.5 * Math.sin(phase * 1.4));
+      const rest = 1 - Math.min(1, this.motionSpeed * 2);
+      const amount =
+        (0.006 + 0.018 * rest) *
+        (0.65 + 0.35 * (0.5 + 0.5 * Math.sin(phase * 1.4)));
       this.splatVelocity(
         this.pointerPos.x + offsetX,
         this.pointerPos.y + offsetY,
@@ -513,9 +524,11 @@ export default class GpuFluid {
         this.pointerPos.x + offsetX,
         this.pointerPos.y + offsetY,
         [0, 0, amount],
-        0.0025 + 0.0006 * (0.5 + 0.5 * Math.cos(phase)),
+        0.0022 + 0.001 * rest,
       );
     }
+
+    this.motionSpeed *= 0.9;
 
     const texelX = 1 / this.width;
     const texelY = 1 / this.height;
