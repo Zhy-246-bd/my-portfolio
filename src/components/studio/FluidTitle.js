@@ -70,7 +70,13 @@ void main() {
 
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
   float textDye = smoothstep(0.12, 0.52, dye.r);
-  float glyph = texture2D(uText, uv).a;
+  vec2 soft = vec2(0.00065, 0.00065);
+  float glyph = (
+    texture2D(uText, uv + vec2(soft.x, 0.0)).a +
+    texture2D(uText, uv - vec2(soft.x, 0.0)).a +
+    texture2D(uText, uv + vec2(0.0, soft.y)).a +
+    texture2D(uText, uv - vec2(0.0, soft.y)).a
+  ) * 0.25;
   float text = mix(textDye, glyph, uCrisp);
   text *= 0.92 + 0.08 * grain;
   text = pow(text, 1.04);
@@ -104,6 +110,7 @@ void main() {
 
   vec3 textColor = ink * (0.52 + 0.54 * diffuse);
   textColor += vec3(0.8, 1.0, 1.0) * gloss * 0.38;
+  textColor = mix(textColor, ink * 0.94, uCrisp);
 
   vec3 color = textColor * text * 0.9;
 
@@ -266,8 +273,9 @@ export default function FluidTitle({
     gl.uniform1f(uCrisp, variant === "cover" ? 0 : 1);
 
     const dpr = isFullPage
-      ? 1
+      ? 1.25
       : Math.min(window.devicePixelRatio || 1, 1.1);
+    const textDpr = isFullPage ? 2 : dpr;
     let width = 0;
     let height = 0;
     let frame = 0;
@@ -277,12 +285,11 @@ export default function FluidTitle({
 
     const buildText = () => {
       const textCanvas = document.createElement("canvas");
-      textCanvas.width = Math.floor(width * dpr);
-      textCanvas.height = Math.floor(height * dpr);
+      textCanvas.width = Math.floor(width * textDpr);
+      textCanvas.height = Math.floor(height * textDpr);
       const ctx = textCanvas.getContext("2d");
       if (!ctx) return;
-
-      ctx.scale(dpr, dpr);
+      ctx.scale(textDpr, textDpr);
       const isModule = variant === "module" || variant === "moduleFull";
       const isFullModule = variant === "moduleFull";
       const viewportHeight =
