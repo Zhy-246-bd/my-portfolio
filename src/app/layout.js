@@ -1,6 +1,5 @@
 import "./globals.css";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { site } from "@/data/site";
 
 // 这里设置浏览器标签页上的标题，以及搜索引擎看到的描述
@@ -18,9 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
       <body className="flex min-h-full flex-col">
-        <NavBar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

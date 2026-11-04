@@ -14,7 +14,7 @@ export const site = {
   siteUrl: "https://zhymy-portfolio.netlify.app/", // 部署后的公网网址（页脚会显示）
   siteUrlAlt: "https://my-portfolio-d8uz1evf2-zhhy.vercel.app", // 备用网址（Vercel）
   github: "", // 有 GitHub 就填网址，没有就留空字符串
-  lastUpdated: "2026-10-25",
+  lastUpdated: "2026-11-03",
 };
 
 // 【导航栏】这里的顺序就是网页上显示的顺序。
