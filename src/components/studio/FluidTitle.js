@@ -285,7 +285,7 @@ export default function FluidTitle({
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1f(uCrisp, variant === "cover" ? 0 : 1);
+    gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
 
     const dpr = isFullPage
       ? 1.25
