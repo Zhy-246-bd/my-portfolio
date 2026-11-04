@@ -772,7 +772,7 @@
 .sidebar {
   position: absolute;
   top: 50%;
-  right: 24px;
+  left: 12px;
   z-index: 14;
   display: flex;
   width: 230px;
@@ -817,7 +817,7 @@
 }
 
 .sidebarCard:hover {
-  transform: translateX(-4px);
+  transform: translateX(4px);
   border-color: rgba(169, 232, 221, 0.32);
   background: rgba(12, 24, 22, 0.82);
 }
@@ -884,12 +884,12 @@
   .sidebar {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     bottom: 0;
     width: min(300px, 84vw);
-    transform: translateX(110%);
+    transform: translateX(-110%);
     gap: 10px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(4, 9, 8, 0.92);
     padding: 72px 16px 24px;
     overflow-y: auto;
