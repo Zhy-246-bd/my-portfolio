@@ -136,6 +136,36 @@ void main() {
 }
 `;
 
+const WARP = `
+precision highp float;
+varying vec2 vUv;
+uniform sampler2D uWarp;
+uniform sampler2D uVelocity;
+uniform vec2 uPoint;
+uniform vec2 uTexel;
+uniform float uDt;
+uniform float uStrength;
+uniform float uRadius;
+uniform float uDecay;
+void main() {
+  vec2 coord = vUv;
+  vec2 prev = texture2D(uWarp, coord).xy * uDecay;
+
+  vec2 L = texture2D(uWarp, coord - vec2(uTexel.x, 0.0)).xy;
+  vec2 R = texture2D(uWarp, coord + vec2(uTexel.x, 0.0)).xy;
+  vec2 T = texture2D(uWarp, coord + vec2(0.0, uTexel.y)).xy;
+  vec2 B = texture2D(uWarp, coord - vec2(0.0, uTexel.y)).xy;
+  vec2 average = (prev + L + R + T + B) * 0.2;
+  prev = mix(prev, average, 0.24);
+
+  vec2 d = vUv - uPoint;
+  float f = exp(-dot(d, d) / uRadius);
+  prev += d * f * uStrength;
+
+  gl_FragColor = vec4(clamp(prev, vec2(-0.12), vec2(0.12)), 0.0, 1.0);
+}
+`;
+
 const QUAD = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
 
 export default class GpuFluid {
@@ -182,6 +212,7 @@ export default class GpuFluid {
     this.divergenceProgram = makeProgram(DIVERGENCE);
     this.pressureProgram = makeProgram(PRESSURE);
     this.gradientProgram = makeProgram(GRADIENT);
+    this.warpProgram = makeProgram(WARP);
 
     const createFBO = (w, h) => {
       const texture = gl.createTexture();
@@ -234,8 +265,11 @@ export default class GpuFluid {
     this.velocity = double();
     this.dye = double();
     this.pressure = double();
+    this.warp = double();
     this.divergence = createFBO(width, height);
     this.curl = createFBO(width, height);
+    this.pointerPos = { x: 0.5, y: 0.5 };
+    this.active = false;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   }
@@ -284,6 +318,8 @@ export default class GpuFluid {
   }
 
   pointer(x, y) {
+    this.active = true;
+    this.pointerPos = { x, y };
     if (this.last) {
       const dx = x - this.last.x;
       const dy = y - this.last.y;
@@ -292,6 +328,28 @@ export default class GpuFluid {
       }
     }
     this.last = { x, y };
+  }
+
+  pointerLeave() {
+    this.active = false;
+    this.last = null;
+  }
+
+  updateWarp(dt) {
+    const { gl } = this;
+    this.bindTexture(this.warp.read.texture, 0);
+    this.bindTexture(this.velocity.read.texture, 1);
+    this.draw(this.warp.write, this.warpProgram, (u) => {
+      gl.uniform1i(u.uWarp, 0);
+      gl.uniform1i(u.uVelocity, 1);
+      gl.uniform2f(u.uPoint, this.pointerPos.x, this.pointerPos.y);
+      gl.uniform2f(u.uTexel, 1 / this.width, 1 / this.height);
+      gl.uniform1f(u.uDt, dt);
+      gl.uniform1f(u.uStrength, this.active ? 0.8 : 0);
+      gl.uniform1f(u.uRadius, 0.0035);
+      gl.uniform1f(u.uDecay, 0.982);
+    });
+    this.warp.swap();
   }
 
   step(dt) {
@@ -324,6 +382,15 @@ export default class GpuFluid {
       this.splatDye(p.x, p.y, [0, 0.7, 0], 0.0017);
     }
     this.pending = [];
+
+    if (this.active) {
+      this.splatDye(
+        this.pointerPos.x,
+        this.pointerPos.y,
+        [0, 0.06, 0],
+        0.0022,
+      );
+    }
 
     const texelX = 1 / this.width;
     const texelY = 1 / this.height;
@@ -390,5 +457,7 @@ export default class GpuFluid {
       gl.uniform1f(u.uDissipation, 0.996);
     });
     this.dye.swap();
+
+    this.updateWarp(dt);
   }
 }

@@ -19,6 +19,7 @@ precision highp float;
 uniform sampler2D uText;
 uniform sampler2D uVelocity;
 uniform sampler2D uDye;
+uniform sampler2D uWarp;
 uniform vec2 uResolution;
 uniform float uTime;
 
@@ -60,6 +61,7 @@ void main() {
   float tealDye = dye.r;
   float pinkDye = dye.g;
   vec2 velocity = texture2D(uVelocity, uv).xy;
+  vec2 warp = texture2D(uWarp, uv).xy;
   float density = tealDye + pinkDye;
 
   vec2 q = vec2(
@@ -73,14 +75,11 @@ void main() {
   );
   float field = n1 * 0.55 + n2 * 0.3 + filament * 0.15;
 
-  vec2 displacement = velocity * 0.5 + (q - 0.5) * 0.18;
-  vec2 uvShift = vec2(
-    displacement.x / aspect.x,
-    displacement.y
-  ) * 0.03;
+  vec2 displacement = warp * 0.28 + velocity * 0.012 + (q - 0.5) * 0.04;
+  vec2 uvShift = displacement;
   float shiftLength = length(uvShift);
-  if (shiftLength > 0.05) {
-    uvShift *= 0.05 / shiftLength;
+  if (shiftLength > 0.03) {
+    uvShift *= 0.03 / shiftLength;
   }
 
   vec2 textUv = clamp(uv + uvShift, vec2(0.0), vec2(1.0));
@@ -280,12 +279,14 @@ export default function FluidTitle({ lines, onClick }) {
     const uText = gl.getUniformLocation(program, "uText");
     const uVelocity = gl.getUniformLocation(program, "uVelocity");
     const uDye = gl.getUniformLocation(program, "uDye");
+    const uWarp = gl.getUniformLocation(program, "uWarp");
     const uResolution = gl.getUniformLocation(program, "uResolution");
     const uTime = gl.getUniformLocation(program, "uTime");
 
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
+    gl.uniform1i(uWarp, 3);
 
     const dpr = Math.min(window.devicePixelRatio || 1, 1.1);
     let width = 0;
@@ -349,6 +350,10 @@ export default function FluidTitle({ lines, onClick }) {
       fluid.pointer(event.clientX / width, 1 - event.clientY / height);
     };
 
+    const onPointerLeave = () => {
+      fluid.pointerLeave();
+    };
+
     const render = (now) => {
       if (!disposed) {
         fluid.step(1 / 60);
@@ -363,6 +368,8 @@ export default function FluidTitle({ lines, onClick }) {
         gl.bindTexture(gl.TEXTURE_2D, fluid.velocity.read.texture);
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, fluid.dye.read.texture);
+        gl.activeTexture(gl.TEXTURE3);
+        gl.bindTexture(gl.TEXTURE_2D, fluid.warp.read.texture);
 
         gl.uniform1f(uTime, now / 1000);
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -391,6 +398,7 @@ export default function FluidTitle({ lines, onClick }) {
     window.addEventListener("pointermove", onPointerMove, {
       passive: true,
     });
+    window.addEventListener("pointerleave", onPointerLeave);
     frame = requestAnimationFrame(render);
 
     return () => {
@@ -398,6 +406,7 @@ export default function FluidTitle({ lines, onClick }) {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerleave", onPointerLeave);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
       gl.deleteProgram(program);
