@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { site } from "@/data/site";
 import { projects } from "@/data/projects";
@@ -14,6 +14,10 @@ const headings = {
 
 export default function StudioLanding() {
   const [view, setView] = useState("home");
+  const stageRef = useRef(null);
+  const turbulenceRef = useRef(null);
+  const displacementRef = useRef(null);
+  const blurRef = useRef(null);
 
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -30,6 +34,65 @@ export default function StudioLanding() {
     };
   }, []);
 
+  useEffect(() => {
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduce) return undefined;
+
+    let frame = 0;
+    let last = 0;
+
+    const tick = (now) => {
+      if (now - last < 45) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+      last = now;
+
+      const t = now / 1000;
+      const fx =
+        0.004 + Math.sin(t * 0.7) * 0.0022 + Math.sin(t * 1.7) * 0.0008;
+      const fy =
+        0.012 + Math.cos(t * 0.55) * 0.0045 + Math.sin(t * 1.1) * 0.0015;
+      const scale = 26 + Math.sin(t * 0.9) * 12;
+      const blur = 1.2 + Math.sin(t * 0.8) * 0.7;
+
+      turbulenceRef.current?.setAttribute(
+        "baseFrequency",
+        `${fx.toFixed(5)} ${fy.toFixed(5)}`,
+      );
+      displacementRef.current?.setAttribute("scale", scale.toFixed(1));
+      blurRef.current?.setAttribute("stdDeviation", blur.toFixed(2));
+
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const handlePointerMove = (event) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+    const mx = (event.clientX - rect.left) / rect.width - 0.5;
+    const my = (event.clientY - rect.top) / rect.height - 0.5;
+    stage.style.setProperty("--mx", mx.toFixed(3));
+    stage.style.setProperty("--my", my.toFixed(3));
+    stage.style.setProperty("--px", `${event.clientX - rect.left}px`);
+    stage.style.setProperty("--py", `${event.clientY - rect.top}px`);
+  };
+
+  const handlePointerLeave = () => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    stage.style.setProperty("--mx", "0");
+    stage.style.setProperty("--my", "0");
+    stage.style.setProperty("--px", "50vw");
+    stage.style.setProperty("--py", "50vh");
+  };
+
   const leftAction = view === "about" ? "home" : "about";
   const leftLabel = view === "about" ? "首页" : "关于";
   const leftSub = view === "about" ? "BACK TO TOP ↗" : "ABOUT ME ↗";
@@ -40,7 +103,13 @@ export default function StudioLanding() {
     view === "outputs" ? "BACK TO TOP ↗" : "WHAT I BUILT ↗";
 
   return (
-    <div className={styles.stage} data-view={view}>
+    <div
+      ref={stageRef}
+      className={styles.stage}
+      data-view={view}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
       <svg className={styles.filterDefs} aria-hidden="true" focusable="false">
         <defs>
           <filter
@@ -52,27 +121,22 @@ export default function StudioLanding() {
             colorInterpolationFilters="sRGB"
           >
             <feTurbulence
+              ref={turbulenceRef}
               type="fractalNoise"
               baseFrequency="0.004 0.012"
               numOctaves="2"
               seed="7"
               result="noise"
-            >
-              <animate
-                attributeName="baseFrequency"
-                dur="16s"
-                values="0.004 0.012;0.008 0.02;0.004 0.012"
-                repeatCount="indefinite"
-              />
-            </feTurbulence>
+            />
             <feDisplacementMap
+              ref={displacementRef}
               in="SourceGraphic"
               in2="noise"
-              scale="18"
+              scale="20"
               xChannelSelector="R"
               yChannelSelector="G"
             />
-            <feGaussianBlur stdDeviation="1.4" />
+            <feGaussianBlur ref={blurRef} stdDeviation="1.4" />
           </filter>
         </defs>
       </svg>
@@ -103,10 +167,23 @@ export default function StudioLanding() {
             onClick={() => setView("home")}
           >
             {headings[view].map((line) => (
-              <span key={line}>{line}</span>
+              <span key={line} className={styles.line}>
+                {line.split("").map((letter, index) => (
+                  <span
+                    key={`${letter}-${index}`}
+                    className={styles.letter}
+                    style={{ "--i": index }}
+                  >
+                    {letter}
+                  </span>
+                ))}
+              </span>
             ))}
           </h1>
         </div>
+
+        <span className={styles.smokeVeil} aria-hidden="true" />
+        <span className={styles.pointerGlow} aria-hidden="true" />
 
         {view === "about" && (
           <section className={styles.panel} aria-label="关于我">

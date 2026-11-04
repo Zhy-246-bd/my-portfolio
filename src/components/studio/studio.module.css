@@ -5,6 +5,10 @@
     "Microsoft YaHei", Arial, sans-serif;
   --studio-teal: #a9e8dd;
   --studio-purple: #c77fdd;
+  --mx: 0;
+  --my: 0;
+  --px: 50vw;
+  --py: 50vh;
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -69,9 +73,11 @@
   height: 52vw;
   border-radius: 50%;
   filter: blur(58px);
-  opacity: 0.55;
+  opacity: 0.65;
   mix-blend-mode: screen;
   pointer-events: none;
+  translate: calc(var(--mx) * 34px) calc(var(--my) * 26px);
+  transition: translate 0.55s ease-out;
 }
 
 .smokeTeal {
@@ -96,6 +102,55 @@
     transparent 70%
   );
   animation: smokePurple 22s ease-in-out infinite alternate;
+}
+
+.smokeVeil {
+  position: absolute;
+  top: 22%;
+  left: 8%;
+  z-index: 3;
+  width: 84%;
+  height: 56%;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse at 42% 55%,
+      rgba(128, 228, 212, 0.16),
+      transparent 62%
+    ),
+    radial-gradient(
+      ellipse at 68% 38%,
+      rgba(180, 100, 205, 0.1),
+      transparent 60%
+    );
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: veilDrift 13s ease-in-out infinite alternate;
+}
+
+.pointerGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(169, 232, 221, 0.16),
+    rgba(80, 200, 180, 0.06) 42%,
+    transparent 66%
+  );
+  filter: blur(24px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transform: translate(
+    calc(var(--px) - 310px),
+    calc(var(--py) - 310px)
+  );
+  transition: transform 0.18s ease-out;
 }
 
 .identity {
@@ -187,18 +242,31 @@
   letter-spacing: -0.075em;
   line-height: 0.78;
   text-shadow:
-    0 0 26px rgba(169, 232, 221, 0.28),
-    0 0 90px rgba(111, 206, 193, 0.16);
-  filter: url(#studioLiquid);
+    0 0 26px rgba(169, 232, 221, 0.3),
+    0 0 90px rgba(111, 206, 193, 0.18);
+  filter: url(#studioLiquid) drop-shadow(0 0 24px rgba(169, 232, 221, 0.2));
   opacity: 0.93;
   pointer-events: auto;
   cursor: pointer;
   user-select: none;
-  animation: titleIn 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  will-change: filter, transform, translate;
+  translate: calc(var(--mx) * 12px) calc(var(--my) * 9px);
+  transition: translate 0.45s ease-out;
+  animation:
+    titleIn 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+    titleFloat 9s ease-in-out 1.1s infinite,
+    titleGlow 6s ease-in-out 1.1s infinite alternate;
 }
 
-.title span {
+.line {
   display: block;
+}
+
+.letter {
+  display: inline-block;
+  will-change: transform;
+  animation: letterWave 4.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.22s);
 }
 
 .titleHome {
@@ -463,6 +531,50 @@
   }
 }
 
+@keyframes titleFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.35deg) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -7px, 0) rotate(0.4deg) scale(1.014);
+  }
+}
+
+@keyframes letterWave {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-2.8%) rotate(0.5deg);
+  }
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow:
+      0 0 26px rgba(169, 232, 221, 0.3),
+      0 0 90px rgba(111, 206, 193, 0.18);
+  }
+  to {
+    text-shadow:
+      0 0 42px rgba(169, 232, 221, 0.48),
+      0 0 130px rgba(111, 206, 193, 0.3);
+  }
+}
+
+@keyframes veilDrift {
+  from {
+    transform: translate3d(-3%, 2%, 0) scale(0.96);
+    opacity: 0.6;
+  }
+  to {
+    transform: translate3d(4%, -3%, 0) scale(1.08);
+    opacity: 0.95;
+  }
+}
+
 @keyframes panelIn {
   from {
     opacity: 0;
@@ -524,6 +636,10 @@
     width: 88vw;
     height: 88vw;
     filter: blur(46px);
+  }
+
+  .pointerGlow {
+    display: none;
   }
 
   .smokeTeal {
@@ -598,7 +714,9 @@
   .title,
   .panel,
   .outputs,
-  .smoke {
+  .smoke,
+  .smokeVeil,
+  .letter {
     animation: none !important;
   }
 }
