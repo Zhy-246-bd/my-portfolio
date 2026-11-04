@@ -185,22 +185,6 @@ void main() {
 }
 `;
 
-const CURRENT = `
-precision highp float;
-varying vec2 vUv;
-uniform sampler2D uVelocity;
-uniform float uTime;
-uniform float uStrength;
-void main() {
-  vec2 velocity = texture2D(uVelocity, vUv).xy;
-  float waveA = sin(vUv.y * 7.0 + uTime * 0.5);
-  float waveB = cos(vUv.x * 6.0 - uTime * 0.35);
-  float waveC = sin((vUv.x + vUv.y) * 5.0 + uTime * 0.25);
-  velocity += vec2(waveA * waveB, waveC * waveA) * uStrength;
-  gl_FragColor = vec4(velocity, 0.0, 1.0);
-}
-`;
-
 const BUOYANCY = `
 precision highp float;
 varying vec2 vUv;
@@ -290,7 +274,6 @@ export default class GpuFluid {
     this.emitProgram = makeProgram(EMIT);
     this.stirProgram = makeProgram(STIR);
     this.buoyancyProgram = makeProgram(BUOYANCY);
-    this.currentProgram = makeProgram(CURRENT);
 
     const createFBO = (w, h) => {
       const texture = gl.createTexture();
@@ -443,17 +426,6 @@ export default class GpuFluid {
     this.velocity.swap();
   }
 
-  applyCurrent() {
-    const { gl } = this;
-    this.bindTexture(this.velocity.read.texture, 0);
-    this.draw(this.velocity.write, this.currentProgram, (u) => {
-      gl.uniform1i(u.uVelocity, 0);
-      gl.uniform1f(u.uTime, this.time);
-      gl.uniform1f(u.uStrength, 0.0025);
-    });
-    this.velocity.swap();
-  }
-
   pointer(x, y) {
     this.active = true;
     this.pointerPos = { x, y };
@@ -508,7 +480,6 @@ export default class GpuFluid {
     const t = this.time;
 
     this.emitText();
-    this.applyCurrent();
     this.stir();
 
     for (const p of this.pending) {

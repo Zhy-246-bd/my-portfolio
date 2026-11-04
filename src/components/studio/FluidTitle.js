@@ -70,23 +70,14 @@ void main() {
   vec2 gradient = vec2(right - left, top - bottom);
 
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
-  vec2 ambientDrift = vec2(
-    fbm(uv * 2.3 + vec2(t * 0.07, 0.0)) - 0.5,
-    fbm(uv * 2.3 + vec2(4.1, -t * 0.055)) - 0.5
-  ) * 0.006;
-  float textDye = smoothstep(
-    0.12,
-    0.52,
-    texture2D(uDye, clamp(uv + ambientDrift, 0.0, 1.0)).r
-  );
+  float textDye = smoothstep(0.12, 0.52, dye.r);
   vec2 flowNoise = vec2(
     fbm(uv * 4.0 + vec2(t * 0.12, 0.0)) - 0.5,
     fbm(uv * 4.0 + vec2(5.2, -t * 0.1)) - 0.5
   );
   vec2 flowVelocity = texture2D(uVelocity, uv).xy;
   vec2 textUv = clamp(
-    uv + ambientDrift * 0.9 +
-      (flowNoise * 0.002 + flowVelocity * 0.004) * uCrisp,
+    uv + (flowNoise * 0.012 + flowVelocity * 0.022) * uCrisp,
     vec2(0.0),
     vec2(1.0)
   );
@@ -313,7 +304,7 @@ export default function FluidTitle({
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1f(uCrisp, variant === "backdrop" ? 0 : 1);
+    gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
 
     const dpr = isFullPage
       ? 1.25
