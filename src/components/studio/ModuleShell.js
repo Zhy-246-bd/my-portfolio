@@ -8,7 +8,7 @@ export default function ModuleShell({ title, label, index, children }) {
   return (
     <div className={styles.modulePage}>
       <div className={styles.moduleFluid}>
-        <FluidTitle lines={[]} variant="backdrop" />
+        <FluidTitle lines={[title]} variant="moduleStage" />
       </div>
       <span className={styles.moduleShade} aria-hidden="true" />
 
@@ -21,8 +21,6 @@ export default function ModuleShell({ title, label, index, children }) {
             {index} / 07 · {title}
           </span>
         </div>
-
-        <FluidTitle lines={[title]} variant="module" />
 
         <div className={styles.moduleHeroFoot}>
           <span>{label}</span>

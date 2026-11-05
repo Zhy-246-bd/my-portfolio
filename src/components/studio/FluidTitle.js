@@ -373,12 +373,15 @@ export default function FluidTitle({
     const isFullPage = variant === "moduleFull";
     const isBackdrop = variant === "backdrop";
     const isModuleCanvas = variant === "module";
+    const isModuleStage = variant === "moduleStage";
     const fluid = new GpuFluid(
       gl,
-      isBackdrop ? 256 : 448,
-      isBackdrop ? 160 : 280,
+      isBackdrop ? 256 : isModuleStage ? 512 : 448,
+      isBackdrop ? 160 : isModuleStage ? 320 : 280,
     );
-    fluid.setAutoInk(variant === "cover" || isBackdrop);
+    fluid.setAutoInk(
+      variant === "cover" || isBackdrop || isModuleStage,
+    );
 
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
@@ -409,10 +412,13 @@ export default function FluidTitle({
       ? 1.15
       : isBackdrop
         ? 0.65
-        : isModuleCanvas
-          ? 1.05
-          : Math.min(window.devicePixelRatio || 1, 0.9);
-    const textDpr = isFullPage || isModuleCanvas ? 2 : dpr;
+        : isModuleStage
+          ? 1
+          : isModuleCanvas
+            ? 1.05
+            : Math.min(window.devicePixelRatio || 1, 0.9);
+    const textDpr =
+      isFullPage || isModuleCanvas || isModuleStage ? 2 : dpr;
     let width = 0;
     let height = 0;
     let frame = 0;
@@ -435,21 +441,25 @@ export default function FluidTitle({
         typeof window === "undefined" ? height : window.innerHeight;
       let fontSize = isFullModule
         ? Math.min(width * 0.24, viewportHeight * 0.24)
-        : isModule
-          ? Math.min(width * 0.26, height * 0.62)
-          : lines.length > 1
-            ? Math.min(width * 0.16, height * 0.255)
-            : Math.min(width * 0.205, height * 0.34);
+        : isModuleStage
+          ? Math.min(width * 0.26, viewportHeight * 0.22)
+          : isModule
+            ? Math.min(width * 0.26, height * 0.62)
+            : lines.length > 1
+              ? Math.min(width * 0.16, height * 0.255)
+              : Math.min(width * 0.205, height * 0.34);
       const lineHeight = fontSize * 0.82;
       const totalHeight = (lines.length - 1) * lineHeight;
       const startY = isFullModule
         ? Math.min(viewportHeight * 0.2, 230)
-        : isModule
-          ? height * 0.56
-          : height / 2 - totalHeight / 2 + fontSize * 0.02;
+        : isModuleStage
+          ? Math.min(viewportHeight * 0.2, 230)
+          : isModule
+            ? height * 0.56
+            : height / 2 - totalHeight / 2 + fontSize * 0.02;
 
       ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
-      if (isModule && lines[0]) {
+      if ((isModule || isModuleStage) && lines[0]) {
         const measured = ctx.measureText(lines[0]).width;
         const available = width * 0.9;
         if (measured > available) {
