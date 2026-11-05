@@ -458,7 +458,7 @@ export default function FluidTitle({
             ? height * 0.56
             : height / 2 - totalHeight / 2 + fontSize * 0.02;
 
-      ctx.font = `400 ${fontSize}px "Copperplate Gothic Light", "Copperplate Gothic", "Marcellus", "Cinzel", "Palatino Linotype", serif`;
+      ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
       if ((isModule || isModuleStage) && lines[0]) {
         const measured = ctx.measureText(lines[0]).width;
         const available = width * 0.9;
@@ -466,11 +466,11 @@ export default function FluidTitle({
           fontSize *= available / measured;
         }
       }
-      ctx.font = `400 ${fontSize}px "Copperplate Gothic Light", "Copperplate Gothic", "Marcellus", "Cinzel", "Palatino Linotype", serif`;
+      ctx.font = `900 ${fontSize}px "StudioPoppins", "Segoe UI Black", "Arial Black", "Helvetica Neue", sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       if ("letterSpacing" in ctx) {
-        ctx.letterSpacing = `${-fontSize * 0.012}px`;
+        ctx.letterSpacing = `${-fontSize * 0.035}px`;
       }
       ctx.fillStyle = "#ffffff";
 
@@ -609,7 +609,7 @@ export default function FluidTitle({
 
     resize();
     document.fonts
-      .load('400 200px "Copperplate Gothic Light"')
+      .load('900 200px "StudioPoppins"')
       .then(() => {
         if (!disposed) buildText();
       })

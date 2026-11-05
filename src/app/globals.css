@@ -1,29 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Copperplate Gothic Light";
-  src: url("/fonts/copperplate-gothic-light.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Marcellus";
-  src: url("/fonts/marcellus-400.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Cinzel";
-  src: url("/fonts/cinzel-400.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ================================================================
    全站基础样式（颜色 + 字体）
    想换配色，改下面的 --background（底色）和 --foreground（字色）即可。

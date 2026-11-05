@@ -1237,12 +1237,3 @@
     padding: 28px 0 12px;
   }
 }
-
-.identity span,
-.sidebarHead,
-.sidebarText small,
-.moduleTopline,
-.moduleHeroFoot {
-  font-family: "Copperplate Gothic Light", "Marcellus", "Cinzel", serif;
-  font-weight: 400;
-}
