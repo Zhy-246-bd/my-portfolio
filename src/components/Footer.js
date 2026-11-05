@@ -9,7 +9,7 @@ export default function Footer() {
         <h2 className="font-semibold text-slate-800">关于 AI 辅助的说明</h2>
         <p className="mt-2 leading-6">
           本网站由我本人规划、编写和修改，过程中使用了 AI
-          编程助手（Claude）辅助。AI 参与较多的部分，我都记录在「过程证据」页的提示词记录里，并写清了我自己做了哪些调整。
+          编程助手（DeepSeek Harness）辅助。AI 参与较多的部分，我都记录在「过程证据」页的提示词记录里，并写清了我自己做了哪些调整。
           <Link
             href="/credits"
             className="ml-1 font-medium text-indigo-600 hover:underline"
