@@ -1,6 +1,7 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./projects.module.css";
 
 export default function ProjectDetail({ projects }) {
@@ -43,12 +44,47 @@ export default function ProjectDetail({ projects }) {
         </button>
 
         <article className={styles.detailPanel} key={project.id}>
-          <div className={styles.detailTopline}>
-            <span>{String(index + 1).padStart(2, "0")} / PROJECT</span>
-            <span>{project.role || "独立完成"}</span>
+          <div className={styles.detailHero}>
+            {project.entry ? (
+              <a
+                href={project.entry}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.detailThumbLink}
+                aria-label={`打开项目：${project.name}`}
+              >
+                <Image
+                  src={project.cover}
+                  alt={`${project.name} 页面截图`}
+                  width={420}
+                  height={280}
+                  className={styles.detailThumb}
+                />
+              </a>
+            ) : (
+              <span className={styles.detailThumbLink}>
+                <Image
+                  src={project.cover}
+                  alt={`${project.name} 页面截图`}
+                  width={420}
+                  height={280}
+                  className={styles.detailThumb}
+                />
+              </span>
+            )}
+
+            <div className={styles.detailHeading}>
+              <div className={styles.detailTopline}>
+                <span>
+                  {String(index + 1).padStart(2, "0")} / PROJECT
+                </span>
+                <span>{project.role || "独立完成"}</span>
+              </div>
+
+              <h2>{project.name}</h2>
+            </div>
           </div>
 
-          <h2>{project.name}</h2>
           <p className={styles.detailSummary}>{project.summary}</p>
 
           {project.features?.length > 0 && (
