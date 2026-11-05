@@ -21,8 +21,8 @@
 
 .floatField {
   position: relative;
-  width: 100%;
-  height: 760px;
+  width: min(100%, 940px);
+  height: 640px;
   margin: 0 auto;
 }
 

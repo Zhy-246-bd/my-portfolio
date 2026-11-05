@@ -4,13 +4,13 @@ import Image from "next/image";
 import styles from "./projects.module.css";
 
 const layout = [
-  { x: 15, y: 20, s: 28, z: 1, dur: 17.5, delay: -3.2, r: -3.2 },
-  { x: 78, y: 15, s: 24, z: 2, dur: 14.8, delay: -6.4, r: 2.4 },
-  { x: 47, y: 31, s: 31, z: 3, dur: 19.2, delay: -1.7, r: -1.2 },
-  { x: 88, y: 54, s: 19, z: 4, dur: 13.6, delay: -5.1, r: 3.6 },
-  { x: 21, y: 57, s: 25, z: 2, dur: 16.2, delay: -7.3, r: 2.1 },
-  { x: 65, y: 67, s: 27, z: 5, dur: 15.4, delay: -2.8, r: -2.7 },
-  { x: 40, y: 83, s: 25, z: 6, dur: 18.7, delay: -4.6, r: 1.4 },
+  { x: 20, y: 20, s: 25, z: 1, dur: 17.5, delay: -3.2, r: -3.2 },
+  { x: 77, y: 16, s: 22, z: 2, dur: 14.8, delay: -6.4, r: 2.4 },
+  { x: 48, y: 33, s: 28, z: 3, dur: 19.2, delay: -1.7, r: -1.2 },
+  { x: 84, y: 53, s: 18, z: 4, dur: 13.6, delay: -5.1, r: 3.6 },
+  { x: 25, y: 58, s: 23, z: 2, dur: 16.2, delay: -7.3, r: 2.1 },
+  { x: 63, y: 68, s: 25, z: 5, dur: 15.4, delay: -2.8, r: -2.7 },
+  { x: 42, y: 82, s: 23, z: 6, dur: 18.7, delay: -4.6, r: 1.4 },
 ];
 
 export default function ProjectStack({ projects }) {
