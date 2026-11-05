@@ -13,28 +13,15 @@ const layout = [
   { x: 150, y: 238, r: -7, z: 5 },
 ];
 
-function Paperclip() {
-  return (
-    <svg className={styles.paperclip} viewBox="0 0 34 86" aria-hidden="true">
-      <path
-        d="M24 18v43c0 9-5 15-13 15S0 69 0 60V22c0-8 5-14 12-14s12 6 12 14v38c0 5-3 8-7 8s-7-3-7-8V26"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function Sticker() {
-  return (
-    <span className={styles.sticker} aria-hidden="true">
-      <span>07</span>
-      <small>PROJECTS</small>
-    </span>
-  );
-}
+const pinColors = [
+  "#b8862e",
+  "#a33a32",
+  "#6d7f57",
+  "#b08a43",
+  "#4f6f7a",
+  "#9a5c38",
+  "#a88b45",
+];
 
 export default function ProjectStack({ projects }) {
   return (
@@ -73,9 +60,11 @@ export default function ProjectStack({ projects }) {
                   "--z": item.z,
                 }}
               >
-                <div className={styles.tape} />
-                {index === 2 && <Sticker />}
-                {index === 3 && <Paperclip />}
+                <span
+                  className={styles.pin}
+                  style={{ "--pin": pinColors[index % pinColors.length] }}
+                  aria-hidden="true"
+                />
                 <div className={styles.photo}>
                   <Image
                     src={project.cover}
