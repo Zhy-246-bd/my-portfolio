@@ -235,6 +235,7 @@ export default class GpuFluid {
     this.time = 0;
     this.frameCount = 0;
     this.autoInk = false;
+    this.motionSpeed = 0;
     this.pending = [];
     this.last = null;
 
@@ -486,6 +487,9 @@ export default class GpuFluid {
       const dx = x - this.last.x;
       const dy = y - this.last.y;
       const distance = Math.hypot(dx, dy);
+      const speed = Math.min(1, distance * 35);
+      this.motionSpeed =
+        this.motionSpeed * 0.65 + speed * 0.35;
       if (distance > 0.0005) {
         const steps = Math.max(
           1,
@@ -545,7 +549,8 @@ export default class GpuFluid {
       this.splatDye(
         p.x,
         p.y,
-        [0, 0, 0.004 + 0.007 * variation],
+        [0, 0, (0.004 + 0.007 * variation) *
+          (0.8 + 0.2 * this.motionSpeed)],
         0.00026 + 0.0003 * variation,
       );
     }
@@ -555,7 +560,9 @@ export default class GpuFluid {
       const phase = this.frameCount * 0.92;
       const offsetX = Math.cos(phase) * 0.008;
       const offsetY = Math.sin(phase * 0.73) * 0.005;
-      const amount = 0.014 + 0.008 * (0.5 + 0.5 * Math.sin(phase * 1.4));
+      const amount =
+        (0.014 + 0.008 * (0.5 + 0.5 * Math.sin(phase * 1.4))) *
+        (0.8 + 0.2 * this.motionSpeed);
       this.splatVelocity(
         this.pointerPos.x + offsetX,
         this.pointerPos.y + offsetY,
