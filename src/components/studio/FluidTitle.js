@@ -92,6 +92,10 @@ void main() {
   float dyeSoft = (
     dyeCenter * 2.0 + dyeLeft + dyeRight + dyeTop + dyeBottom
   ) / 6.0;
+  vec2 titleGradient = vec2(
+    dyeRight - dyeLeft,
+    dyeTop - dyeBottom
+  );
   float textDye = smoothstep(0.1, 0.52, dyeSoft);
   vec2 flowNoise = vec2(
     fbm(uv * 4.0 + vec2(t * 0.12, 0.0)) - 0.5,
@@ -115,11 +119,14 @@ void main() {
   text *= 0.92 + 0.08 * grain;
   text = pow(text, 1.04);
 
-  float rim = smoothstep(0.06, 0.2, density) *
-    (1.0 - smoothstep(0.2, 0.48, density));
-  float specular = pow(clamp(length(gradient) * 9.0, 0.0, 1.0), 1.5);
+  float rim = smoothstep(0.06, 0.2, dyeSoft) *
+    (1.0 - smoothstep(0.2, 0.48, dyeSoft));
+  float specular = pow(
+    clamp(length(titleGradient) * 9.0, 0.0, 1.0),
+    1.5
+  );
   float caustic = pow(
-    abs(sin(uv.x * 28.0 + grain * 6.0 + t * 1.2)),
+    abs(sin(titleUv.x * 28.0 + grain * 6.0 + t * 1.2)),
     8.0
   ) * text;
 
@@ -132,10 +139,10 @@ void main() {
     pink,
     clamp(pinkDye * 0.1, 0.0, 1.0)
   );
-  ink = mix(ink, purple, clamp(density * 0.08, 0.0, 0.12));
+  ink = mix(ink, purple, clamp(dyeSoft * 0.08, 0.0, 0.12));
 
   vec3 normal = normalize(
-    vec3(-gradient.x * 16.0, -gradient.y * 16.0, 1.0)
+    vec3(-titleGradient.x * 16.0, -titleGradient.y * 16.0, 1.0)
   );
   vec3 lightDirection = normalize(vec3(-0.45, 0.65, 0.8));
   vec3 halfDirection = normalize(lightDirection + vec3(0.0, 0.0, 1.0));
@@ -150,7 +157,7 @@ void main() {
 
   float shadowDensity = texture2D(
     uDye,
-    uv + vec2(0.004, -0.005)
+    titleUv + vec2(0.004, -0.005)
   ).r;
   float occlusion = smoothstep(0.08, 0.4, shadowDensity) * (1.0 - text);
   color *= 1.0 - occlusion * 0.55;
