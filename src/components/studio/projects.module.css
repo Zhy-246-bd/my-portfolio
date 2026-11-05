@@ -52,7 +52,18 @@
 
 .floatInner {
   display: block;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  --push-x: 0px;
+  --push-y: 0px;
+  --push-r: 0deg;
+  --hover-y: 0px;
+  --hover-scale: 1;
+  transform: translate3d(
+      var(--push-x),
+      calc(var(--push-y) + var(--hover-y)),
+      0
+    )
+    rotate(var(--push-r)) scale(var(--hover-scale));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .floatImage {
@@ -114,7 +125,8 @@
 
 .floatCard:hover .floatInner,
 .floatCard:focus-visible .floatInner {
-  transform: translateY(-10px) scale(1.035);
+  --hover-y: -10px;
+  --hover-scale: 1.035;
 }
 
 .floatCard:hover .floatImage,

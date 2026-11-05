@@ -550,7 +550,7 @@ export default class GpuFluid {
         p.x,
         p.y,
         [0, 0, (0.004 + 0.007 * variation) *
-          (0.64 + 0.36 * this.motionSpeed)],
+          (0.55 + 0.45 * this.motionSpeed)],
         0.00026 + 0.0003 * variation,
       );
     }
@@ -562,7 +562,7 @@ export default class GpuFluid {
       const offsetY = Math.sin(phase * 0.73) * 0.005;
       const amount =
         (0.014 + 0.008 * (0.5 + 0.5 * Math.sin(phase * 1.4))) *
-        (0.64 + 0.36 * this.motionSpeed);
+        (0.55 + 0.45 * this.motionSpeed);
       this.splatVelocity(
         this.pointerPos.x + offsetX,
         this.pointerPos.y + offsetY,
@@ -653,4 +653,5 @@ export default class GpuFluid {
     }
   }
 }
+
 

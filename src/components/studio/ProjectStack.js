@@ -22,8 +22,13 @@ export default function ProjectStack({ projects }) {
     if (!field) return undefined;
 
     let frame = 0;
+    let resetTimer = 0;
     let pointerX = 0;
     let pointerY = 0;
+    let lastX = 0;
+    let lastY = 0;
+    let velocityX = 0;
+    let velocityY = 0;
 
     const update = () => {
       frame = 0;
@@ -32,19 +37,57 @@ export default function ProjectStack({ projects }) {
         const rect = card.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const distance = Math.hypot(pointerX - cx, pointerY - cy);
-        const near = Math.max(0, 1 - distance / 280);
+        const dx = cx - pointerX;
+        const dy = cy - pointerY;
+        const distance = Math.hypot(dx, dy);
+        const near = Math.max(0, 1 - distance / 330);
+        const force = near * near;
+        const nx = dx / Math.max(1, distance);
+        const ny = dy / Math.max(1, distance);
+        const flowX = Math.max(-1, Math.min(1, velocityX / 26));
+        const flowY = Math.max(-1, Math.min(1, velocityY / 26));
+
+        const pushX = nx * force * 32 + flowX * force * 22;
+        const pushY = ny * force * 24 + flowY * force * 16;
+        const pushR = Math.max(
+          -4.5,
+          Math.min(4.5, (flowX * 2.8 + nx * 1.2) * force),
+        );
+
         card.style.setProperty("--amp", (1 + near * 0.95).toFixed(3));
+        card.style.setProperty("--push-x", `${pushX.toFixed(2)}px`);
+        card.style.setProperty("--push-y", `${pushY.toFixed(2)}px`);
+        card.style.setProperty("--push-r", `${pushR.toFixed(2)}deg`);
+      });
+    };
+
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    const clearPush = () => {
+      field.querySelectorAll("[data-float-card]").forEach((card) => {
+        card.style.setProperty("--push-x", "0px");
+        card.style.setProperty("--push-y", "0px");
+        card.style.setProperty("--push-r", "0deg");
       });
     };
 
     const onMove = (event) => {
+      velocityX = event.clientX - lastX;
+      velocityY = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
       pointerX = event.clientX;
       pointerY = event.clientY;
-      if (!frame) frame = window.requestAnimationFrame(update);
+
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(clearPush, 170);
+      schedule();
     };
 
     const reset = () => {
+      window.clearTimeout(resetTimer);
       if (frame) {
         window.cancelAnimationFrame(frame);
         frame = 0;
@@ -52,11 +95,13 @@ export default function ProjectStack({ projects }) {
       field.querySelectorAll("[data-float-card]").forEach((card) => {
         card.style.setProperty("--amp", "1");
       });
+      clearPush();
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("pointerleave", reset);
     return () => {
+      window.clearTimeout(resetTimer);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", reset);
       if (frame) window.cancelAnimationFrame(frame);
