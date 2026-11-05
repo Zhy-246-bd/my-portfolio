@@ -1,6 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { process as processData } from "@/data/process";
+import { process as baseProcess } from "@/data/process";
+import { latestProcess } from "@/data/process-latest";
+
+const processData = {
+  ...baseProcess,
+  prompts: [...baseProcess.prompts, ...latestProcess.prompts],
+  versions: [...baseProcess.versions, ...latestProcess.versions],
+  problems: [...baseProcess.problems, ...latestProcess.problems],
+};
 
 export const metadata = { title: "过程证据" };
 
