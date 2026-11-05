@@ -47,7 +47,7 @@ export const works = [
   {
     order: 3,
     stage: "第 4-6 周",
-    title: "今天吃什么？美食翻牌盲盒",
+    title: "美食盲盒",
     date: "2026年9-10月 · 第 4-6 周",
     goal: "课程要求：按照完整的项目开发流程，做一个自己想做的东西。",
     whatIdid:

@@ -109,7 +109,7 @@ export const projects = [
   },
   {
     id: "project-3",
-    name: "今天吃什么？美食翻牌盲盒",
+    name: "美食盲盒",
     cover: "/images/project-3.webp",
     summary:
       "9 张卡片翻牌抽取今天吃什么，带抽取权重与结果展示，解决「今天吃什么」的选择困难。",
