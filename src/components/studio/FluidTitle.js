@@ -27,6 +27,9 @@ uniform vec3 uPaintCore;
 uniform vec3 uPaintEdge;
 uniform vec3 uPaintBase;
 uniform float uTime;
+uniform float uTitleScale;
+uniform float uTitleOffset;
+uniform float uTitleOpacity;
 varying vec2 vUv;
 
 float hash(vec2 p) {
@@ -74,11 +77,18 @@ void main() {
 
   float grain = fbm(vec2(uv.x * 36.0, uv.y * 26.0 + t * 0.12));
   vec2 dyeTexel = texel * 1.0;
-  float dyeCenter = dye.r;
-  float dyeLeft = texture2D(uDye, uv - vec2(dyeTexel.x, 0.0)).r;
-  float dyeRight = texture2D(uDye, uv + vec2(dyeTexel.x, 0.0)).r;
-  float dyeTop = texture2D(uDye, uv + vec2(0.0, dyeTexel.y)).r;
-  float dyeBottom = texture2D(uDye, uv - vec2(0.0, dyeTexel.y)).r;
+  vec2 titlePivot = vec2(0.5, 0.8);
+  vec2 titleUv = clamp(
+    (uv - titlePivot) / max(uTitleScale, 0.01) + titlePivot +
+      vec2(0.0, uTitleOffset),
+    vec2(0.0),
+    vec2(1.0)
+  );
+  float dyeCenter = texture2D(uDye, titleUv).r;
+  float dyeLeft = texture2D(uDye, titleUv - vec2(dyeTexel.x, 0.0)).r;
+  float dyeRight = texture2D(uDye, titleUv + vec2(dyeTexel.x, 0.0)).r;
+  float dyeTop = texture2D(uDye, titleUv + vec2(0.0, dyeTexel.y)).r;
+  float dyeBottom = texture2D(uDye, titleUv - vec2(0.0, dyeTexel.y)).r;
   float dyeSoft = (
     dyeCenter * 2.0 + dyeLeft + dyeRight + dyeTop + dyeBottom
   ) / 6.0;
@@ -101,6 +111,7 @@ void main() {
     texture2D(uText, textUv - vec2(0.0, soft.y)).a
   ) * 0.25;
   float text = mix(textDye, glyph, uCrisp);
+  text *= uTitleOpacity;
   text *= 0.92 + 0.08 * grain;
   text = pow(text, 1.04);
 
@@ -374,6 +385,16 @@ export default function FluidTitle({
     const isBackdrop = variant === "backdrop";
     const isModuleCanvas = variant === "module";
     const isModuleStage = variant === "moduleStage";
+    let scrollProgress = 0;
+    const updateTitleScroll = () => {
+      if (!isModuleStage) return;
+      const range = Math.max(1, window.innerHeight * 0.38);
+      scrollProgress = Math.min(1, Math.max(0, window.scrollY / range));
+    };
+    if (isModuleStage) {
+      updateTitleScroll();
+      window.addEventListener("scroll", updateTitleScroll, { passive: true });
+    }
     const fluid = new GpuFluid(
       gl,
       isBackdrop ? 256 : isModuleStage ? 512 : 448,
@@ -403,10 +424,16 @@ export default function FluidTitle({
     const uPaintEdge = gl.getUniformLocation(program, "uPaintEdge");
     const uPaintBase = gl.getUniformLocation(program, "uPaintBase");
     const uTime = gl.getUniformLocation(program, "uTime");
+    const uTitleScale = gl.getUniformLocation(program, "uTitleScale");
+    const uTitleOffset = gl.getUniformLocation(program, "uTitleOffset");
+    const uTitleOpacity = gl.getUniformLocation(program, "uTitleOpacity");
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
     gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
+    gl.uniform1f(uTitleScale, 1);
+    gl.uniform1f(uTitleOffset, 0);
+    gl.uniform1f(uTitleOpacity, 1);
 
     const dpr = isFullPage
       ? 1.15
@@ -586,6 +613,13 @@ export default function FluidTitle({
         gl.uniform3fv(uPaintEdge, edge);
         gl.uniform3fv(uPaintBase, base);
         gl.uniform1f(uTime, now / 1000);
+        const titleProgress = isModuleStage ? scrollProgress : 0;
+        gl.uniform1f(uTitleScale, 1 - 0.52 * titleProgress);
+        gl.uniform1f(uTitleOffset, -0.18 * titleProgress);
+        gl.uniform1f(
+          uTitleOpacity,
+          Math.max(0, 1 - 1.08 * titleProgress),
+        );
         gl.uniform2f(
           uPointer,
           fluid.pointerPos.x,
@@ -629,6 +663,7 @@ export default function FluidTitle({
       window.removeEventListener("resize", scheduleResize);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
+      window.removeEventListener("scroll", updateTitleScroll);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
       if (sceneTexture) gl.deleteTexture(sceneTexture);
