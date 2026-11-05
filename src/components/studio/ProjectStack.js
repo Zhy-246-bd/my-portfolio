@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import styles from "./projects.module.css";
 
@@ -14,6 +15,54 @@ const layout = [
 ];
 
 export default function ProjectStack({ projects }) {
+  const fieldRef = useRef(null);
+
+  useEffect(() => {
+    const field = fieldRef.current;
+    if (!field) return undefined;
+
+    let frame = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    const update = () => {
+      frame = 0;
+      const cards = field.querySelectorAll("[data-float-card]");
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const distance = Math.hypot(pointerX - cx, pointerY - cy);
+        const near = Math.max(0, 1 - distance / 280);
+        card.style.setProperty("--amp", (1 + near * 0.95).toFixed(3));
+      });
+    };
+
+    const onMove = (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    const reset = () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      field.querySelectorAll("[data-float-card]").forEach((card) => {
+        card.style.setProperty("--amp", "1");
+      });
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", reset);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", reset);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <section className={styles.floatSection} aria-label="项目成果">
       <div className={styles.floatHead}>
@@ -21,13 +70,14 @@ export default function ProjectStack({ projects }) {
         <span>07 PROJECTS / 2026</span>
       </div>
 
-      <div className={styles.floatField}>
+      <div className={styles.floatField} ref={fieldRef}>
         {projects.slice(0, layout.length).map((project, index) => {
           const item = layout[index];
           return (
             <a
               key={project.id}
               id={project.id}
+              data-float-card
               href={project.entry || `#${project.id}`}
               target={project.entry ? "_blank" : undefined}
               rel={project.entry ? "noopener noreferrer" : undefined}

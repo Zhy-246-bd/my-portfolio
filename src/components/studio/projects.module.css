@@ -26,7 +26,14 @@
   margin: 0 auto;
 }
 
+@property --amp {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
 .floatCard {
+  --amp: 1;
   position: absolute;
   top: var(--y);
   left: var(--x);
@@ -39,6 +46,7 @@
   transform: translate(-50%, -50%);
   animation: floatCurrent var(--dur) ease-in-out infinite;
   animation-delay: var(--delay);
+  transition: --amp 0.45s ease-out;
   will-change: transform;
 }
 
@@ -102,7 +110,6 @@
 .floatCard:hover,
 .floatCard:focus-visible {
   z-index: 30;
-  animation-play-state: paused;
 }
 
 .floatCard:hover .floatInner,
@@ -136,16 +143,19 @@
     transform: translate(-50%, -50%) translate(0, 0) rotate(var(--r));
   }
   25% {
-    transform: translate(-50%, -50%) translate(16px, -10px)
-      rotate(calc(var(--r) + 1.7deg));
+    transform: translate(-50%, -50%)
+      translate(calc(26px * var(--amp)), calc(-18px * var(--amp)))
+      rotate(calc(var(--r) + 2.8deg));
   }
   50% {
-    transform: translate(-50%, -50%) translate(4px, 14px)
-      rotate(calc(var(--r) - 1.1deg));
+    transform: translate(-50%, -50%)
+      translate(calc(10px * var(--amp)), calc(22px * var(--amp)))
+      rotate(calc(var(--r) - 2deg));
   }
   75% {
-    transform: translate(-50%, -50%) translate(-13px, 4px)
-      rotate(calc(var(--r) + 0.8deg));
+    transform: translate(-50%, -50%)
+      translate(calc(-22px * var(--amp)), calc(7px * var(--amp)))
+      rotate(calc(var(--r) + 1.5deg));
   }
 }
 
