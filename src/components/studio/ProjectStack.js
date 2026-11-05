@@ -4,124 +4,72 @@ import Image from "next/image";
 import styles from "./projects.module.css";
 
 const layout = [
-  { x: 0, y: 80, r: -3, z: 2 },
-  { x: -268, y: 34, r: -9, z: 1 },
-  { x: 262, y: 48, r: 7, z: 3 },
-  { x: -350, y: 168, r: -12, z: 1 },
-  { x: 342, y: 154, r: 10, z: 2 },
-  { x: -132, y: 228, r: 5, z: 4 },
-  { x: 150, y: 238, r: -7, z: 5 },
-];
-
-const pinColors = [
-  "#b8862e",
-  "#a33a32",
-  "#6d7f57",
-  "#b08a43",
-  "#4f6f7a",
-  "#9a5c38",
-  "#a88b45",
+  { x: 15, y: 20, s: 28, z: 1, dur: 17.5, delay: -3.2, r: -3.2 },
+  { x: 78, y: 15, s: 24, z: 2, dur: 14.8, delay: -6.4, r: 2.4 },
+  { x: 47, y: 31, s: 31, z: 3, dur: 19.2, delay: -1.7, r: -1.2 },
+  { x: 88, y: 54, s: 19, z: 4, dur: 13.6, delay: -5.1, r: 3.6 },
+  { x: 21, y: 57, s: 25, z: 2, dur: 16.2, delay: -7.3, r: 2.1 },
+  { x: 65, y: 67, s: 27, z: 5, dur: 15.4, delay: -2.8, r: -2.7 },
+  { x: 40, y: 83, s: 25, z: 6, dur: 18.7, delay: -4.6, r: 1.4 },
 ];
 
 export default function ProjectStack({ projects }) {
   return (
-    <section className={styles.stackSection} aria-label="项目成果">
-      <div className={styles.stackHead}>
+    <section className={styles.floatSection} aria-label="项目成果">
+      <div className={styles.floatHead}>
         <span>SELECTED WORKS</span>
-        <span>07 PIECES / 2026</span>
+        <span>07 PROJECTS / 2026</span>
       </div>
 
-      <div className={styles.stackFrame}>
-        <svg
-          className={styles.dashedLine}
-          viewBox="0 0 240 420"
-          aria-hidden="true"
-        >
-          <path
-            d="M15 20c110-30 190 35 145 90-45 55-155 30-120 105 25 55 120 45 175 88"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeDasharray="7 10"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        <div className={styles.stack}>
-          {projects.map((project, index) => {
-            const item = layout[index % layout.length];
-            const card = (
-              <div
-                className={styles.cardInner}
-                style={{
-                  "--x": `${item.x}px`,
-                  "--y": `${item.y}px`,
-                  "--r": `${item.r}deg`,
-                  "--z": item.z,
-                }}
-              >
-                <span
-                  className={styles.pin}
-                  style={{ "--pin": pinColors[index % pinColors.length] }}
-                  aria-hidden="true"
-                />
-                <div className={styles.photo}>
+      <div className={styles.floatField}>
+        {projects.slice(0, layout.length).map((project, index) => {
+          const item = layout[index];
+          return (
+            <a
+              key={project.id}
+              id={project.id}
+              href={project.entry || `#${project.id}`}
+              target={project.entry ? "_blank" : undefined}
+              rel={project.entry ? "noopener noreferrer" : undefined}
+              className={styles.floatCard}
+              style={{
+                "--x": `${item.x}%`,
+                "--y": `${item.y}%`,
+                "--s": `${item.s}%`,
+                "--z": item.z,
+                "--dur": `${item.dur}s`,
+                "--delay": `${item.delay}s`,
+                "--r": `${item.r}deg`,
+              }}
+              aria-label={`打开项目：${project.name}`}
+            >
+              <span className={styles.floatInner}>
+                <span className={styles.floatImage}>
                   <Image
                     src={project.cover}
                     alt={`${project.name} 首页截图`}
-                    width={640}
-                    height={460}
+                    width={720}
+                    height={520}
                     className={styles.image}
                   />
-                </div>
-                <div className={styles.caption}>
-                  <span className={styles.number}>
+                </span>
+                <span className={styles.floatMeta}>
+                  <span className={styles.floatNumber}>
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <div>
-                    <h2>{project.name}</h2>
-                    <p>{project.role || project.summary}</p>
-                  </div>
-                  <span className={styles.arrow} aria-hidden="true">
+                  <strong>{project.name}</strong>
+                  <span className={styles.floatArrow} aria-hidden="true">
                     ↗
                   </span>
-                </div>
-              </div>
-            );
-
-            return (
-              <div
-                key={project.id}
-                id={project.id}
-                className={styles.cardSlot}
-                style={{
-                  "--x": `${item.x}px`,
-                  "--y": `${item.y}px`,
-                  "--r": `${item.r}deg`,
-                  "--z": item.z,
-                }}
-              >
-                {project.entry ? (
-                  <a
-                    href={project.entry}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.cardLink}
-                    aria-label={`打开项目：${project.name}`}
-                  >
-                    {card}
-                  </a>
-                ) : (
-                  card
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </span>
+              </span>
+            </a>
+          );
+        })}
       </div>
 
-      <p className={styles.stackHint}>
-        把鼠标移到照片上，拿起一张看看。照片可以直接打开对应项目。
+      <p className={styles.floatHint}>
+        项目图片浮在水面，跟着水流缓慢漂移。
       </p>
     </section>
   );
