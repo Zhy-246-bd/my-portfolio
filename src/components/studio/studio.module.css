@@ -1057,7 +1057,6 @@
 .moduleSheet {
   width: min(1040px, 100%);
   margin: 0 auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
   padding: 38px 0 20px;
   color: #dfeae5;
 }

@@ -513,10 +513,14 @@ export default function FluidTitle({
 
     const onPointerMove = (event) => {
       const rect = canvas.getBoundingClientRect();
-      fluid.pointer(
-        (event.clientX - rect.left) / Math.max(1, rect.width),
-        1 - (event.clientY - rect.top) / Math.max(1, rect.height),
-      );
+      const useViewport = variant === "module";
+      const pointerX = useViewport
+        ? event.clientX / Math.max(1, window.innerWidth)
+        : (event.clientX - rect.left) / Math.max(1, rect.width);
+      const pointerY = useViewport
+        ? 1 - event.clientY / Math.max(1, window.innerHeight)
+        : 1 - (event.clientY - rect.top) / Math.max(1, rect.height);
+      fluid.pointer(pointerX, pointerY);
     };
 
     const onPointerLeave = () => {
