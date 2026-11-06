@@ -1,144 +1,249 @@
-import Link from "next/link";
+﻿import Link from "next/link";
+import AboutProfileCard from "@/components/about/AboutProfileCard";
 import { about } from "@/data/about";
 import { site } from "@/data/site";
 
 export const metadata = { title: "关于我" };
 
-// 三个能力等级对应的标签颜色（绿=熟练 / 蓝=会用 / 灰=学习中）
-const LEVEL_STYLES = {
-  熟练: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  会用: "border-indigo-200 bg-indigo-50 text-indigo-700",
-  学习中: "border-slate-200 bg-slate-100 text-slate-600",
-};
-
-// 判断这段文字是不是还没填写的草稿（草稿会显示成黄色提示框）
-function isDraft(text) {
-  return text.startsWith("【待填写】");
+function SectionHead({ index, title, note }) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-4">
+      <div className="flex items-baseline gap-3">
+        <span className="font-mono text-[10px] tracking-[0.18em] text-emerald-200/45">
+          {index}
+        </span>
+        <h2 className="text-lg font-semibold text-white sm:text-xl">{title}</h2>
+      </div>
+      {note && (
+        <p className="max-w-md text-xs leading-6 text-slate-400">{note}</p>
+      )}
+    </div>
+  );
 }
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">关于我</h1>
-      <p className="mt-3 text-sm text-slate-500">个人简介与能力</p>
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+      <p className="font-mono text-[10px] tracking-[0.2em] text-emerald-200/45">
+        ABOUT / 01
+      </p>
+      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">关于我</h1>
+      <p className="mt-4 max-w-2xl leading-7 text-slate-300/70">
+        一个正在学习用代码做东西的人。这里放我的照片、学习经历、能力、课程成果和日常，
+        也放这个作品集背后的过程。
+      </p>
 
-      {/* ① 自我介绍 */}
-      <section className="mt-8">
-        <h2 className="text-lg font-bold text-slate-900">自我介绍</h2>
-        <div className="mt-4 space-y-4">
-          {about.intro.map((paragraph) =>
-            isDraft(paragraph) ? (
-              <p
-                key={paragraph}
-                className="rounded-lg border border-dashed border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-800"
-              >
-                <span className="font-semibold">这段还是草稿，等我填上真实内容：</span>
-                {paragraph.replace("【待填写】", "")}
-              </p>
-            ) : (
-              <p key={paragraph} className="leading-7 text-slate-600">
-                {paragraph}
-              </p>
-            )
-          )}
-        </div>
+      <section className="mt-10" aria-label="个人照片">
+        <AboutProfileCard photos={about.photos} />
       </section>
 
-      {/* ② 能力清单 */}
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-slate-900">能力清单</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-500">
-          分三档如实标注：
-          <strong className="font-semibold text-slate-700">熟练</strong>
-          ＝不看教程也能独立做出来；
-          <strong className="font-semibold text-slate-700">会用</strong>
-          ＝需要查资料但能做出东西；
-          <strong className="font-semibold text-slate-700">学习中</strong>
-          ＝刚接触，还在跟着做。
+      <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+        <div className="flex flex-wrap items-baseline justify-between gap-4">
+          <div>
+            <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">
+              HELLO, I AM
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold text-white">
+              {about.profile.name}
+            </h2>
+          </div>
+          <p className="font-mono text-[10px] tracking-[0.12em] text-slate-400">
+            {about.profile.role}
+          </p>
+        </div>
+        <p className="mt-4 max-w-2xl leading-7 text-slate-300/75">
+          {about.profile.tagline}
+        </p>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+          {about.profile.intro}
         </p>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          {about.skills.map((group) => (
-            <section
-              key={group.category}
-              className="rounded-xl border border-slate-200 bg-white p-5"
-            >
-              <h3 className="font-semibold text-slate-900">{group.category}</h3>
-              <ul className="mt-3 space-y-2.5">
-                {group.items.map((skill) => (
-                  <li
-                    key={skill.name}
-                    className="flex items-start justify-between gap-3 text-sm"
-                  >
-                    <span className="leading-6 text-slate-700">
-                      {skill.name}
-                    </span>
-                    <span
-                      className={
-                        "shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium " +
-                        (LEVEL_STYLES[skill.level] ?? LEVEL_STYLES["学习中"])
-                      }
-                    >
-                      {skill.level}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-5 sm:grid-cols-4">
+          {about.profile.facts.map(([label, value]) => (
+            <div key={label}>
+              <dt className="font-mono text-[8px] tracking-[0.14em] text-slate-500">
+                {label}
+              </dt>
+              <dd className="mt-1 text-xs text-slate-200">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="mt-12">
+        <SectionHead
+          index="01"
+          title="我的故事"
+          note="为什么开始学编程，以及这个作品集想留下什么。"
+        />
+        <div className="mt-5 max-w-3xl space-y-4 text-sm leading-8 text-slate-300/70">
+          {about.story.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
       </section>
 
-      {/* ③ 学习目标 */}
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-slate-900">学习目标</h2>
-        <ul className="mt-4 space-y-3">
-          {about.goals.map((goal) => (
+      <section className="mt-12">
+        <SectionHead
+          index="02"
+          title="学习经历"
+          note="从零基础到能把一个网站做出来、部署上线。"
+        />
+        <ol className="mt-5">
+          {about.journey.map((item, index) => (
             <li
-              key={goal.period}
-              className="rounded-xl border border-slate-200 bg-white p-5"
+              key={item.date}
+              className={
+                "relative border-l border-white/10 pl-5 " +
+                (index === about.journey.length - 1 ? "pb-0" : "pb-6")
+              }
             >
-              <p className="text-sm font-semibold text-indigo-600">
-                {goal.period}
+              <span className="absolute top-1.5 -left-[4px] h-2 w-2 rounded-full bg-emerald-200/60 ring-4 ring-[#06100d]" />
+              <div className="flex flex-wrap items-baseline gap-3">
+                <span className="font-mono text-[9px] tracking-[0.12em] text-emerald-200/45">
+                  {item.date}
+                </span>
+                <h3 className="text-sm font-semibold text-slate-100">
+                  {item.title}
+                </h3>
+              </div>
+              <p className="mt-1.5 max-w-2xl text-sm leading-7 text-slate-400">
+                {item.text}
               </p>
-              {isDraft(goal.text) ? (
-                <p className="mt-1.5 rounded-lg border border-dashed border-amber-300 bg-amber-50 p-3 text-sm leading-6 text-amber-800">
-                  <span className="font-semibold">这段还是草稿，等我填上真实内容：</span>
-                  {goal.text.replace("【待填写】", "")}
-                </p>
-              ) : (
-                <p className="mt-1.5 leading-6 text-slate-600">{goal.text}</p>
-              )}
             </li>
           ))}
-        </ul>
+        </ol>
       </section>
 
-      {/* ④ 关于本网站的声明 */}
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-slate-900">关于本网站的说明</h2>
-        <p className="mt-4 rounded-xl border border-slate-200 bg-white p-5 leading-7 text-slate-600">
-          {about.aiStatement}
-        </p>
+      <section className="mt-12">
+        <SectionHead
+          index="03"
+          title="能力与工具"
+          note="不写空泛的“学习能力强”，只写现在能做出什么。"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {about.capabilities.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+            >
+              <h3 className="text-sm font-semibold text-slate-100">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-slate-400">
+                {item.text}
+              </p>
+              <p className="mt-3 font-mono text-[9px] leading-5 tracking-[0.08em] text-emerald-200/35">
+                {item.tools}
+              </p>
+            </article>
+          ))}
+        </div>
       </section>
 
-      {/* ⑤ 联系方式 */}
-      <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="font-semibold text-slate-900">联系我</h2>
-        <p className="mt-2 text-sm text-slate-600">
+      <section className="mt-12">
+        <SectionHead
+          index="04"
+          title="成绩与成果"
+          note="课程完成情况、上线地址和过程记录，都可以在站内点开核对。"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {about.achievements.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+            >
+              <p className="font-mono text-[8px] tracking-[0.16em] text-slate-500">
+                {item.label}
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-emerald-100/90">
+                {item.value}
+              </p>
+              <h3 className="mt-1 text-sm font-semibold text-slate-100">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-xs leading-6 text-slate-400">
+                {item.text}
+              </p>
+            </article>
+          ))}
+        </div>
+        <Link
+          href="/projects/"
+          className="mt-4 inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
+        >
+          查看全部项目成果 ↗
+        </Link>
+      </section>
+
+      <section className="mt-12">
+        <SectionHead
+          index="05"
+          title="爱好与日常"
+          note="除了作业和项目，我也是会为光线、咖啡和散步停下来的人。"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {about.hobbies.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+            >
+              <p className="font-mono text-[8px] tracking-[0.16em] text-emerald-200/35">
+                {item.tag}
+              </p>
+              <h3 className="mt-2 text-sm font-semibold text-slate-100">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-xs leading-6 text-slate-400">
+                {item.text}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12">
+        <SectionHead
+          index="06"
+          title="下一步"
+          note="这门课结束后，还想继续补什么、做什么。"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          {about.goals.map((goal) => (
+            <article
+              key={goal.period}
+              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+            >
+              <p className="font-mono text-[9px] tracking-[0.14em] text-emerald-200/45">
+                {goal.period}
+              </p>
+              <p className="mt-2 text-sm leading-7 text-slate-300/75">
+                {goal.text}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.025] p-6">
+        <h2 className="text-sm font-semibold text-slate-100">联系我</h2>
+        <p className="mt-2 text-sm text-slate-400">
           邮箱：
           <a
             href={`mailto:${site.email}`}
-            className="font-medium text-indigo-600 hover:underline"
+            className="text-emerald-200/80 hover:underline"
           >
             {site.email}
           </a>
+        </p>
+        <p className="mt-4 border-t border-white/10 pt-4 text-xs leading-6 text-slate-500">
+          {about.aiStatement}
         </p>
       </section>
 
       <Link
         href="/"
-        className="mt-8 inline-block text-sm font-semibold text-indigo-600 hover:underline"
+        className="mt-8 inline-block font-mono text-[10px] tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
       >
         ← 回到首页
       </Link>

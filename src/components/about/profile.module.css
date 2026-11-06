@@ -1,0 +1,255 @@
+﻿.profile {
+  width: 100%;
+}
+
+.photoStage {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  height: 540px;
+  margin: 0 auto;
+  perspective: 1200px;
+}
+
+.centerCard,
+.sideCard {
+  position: absolute;
+  top: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(220, 240, 233, 0.16);
+  background: #0b1513;
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(88, 175, 154, 0.08);
+}
+
+.centerCard {
+  left: 50%;
+  z-index: 3;
+  width: min(45%, 340px);
+  aspect-ratio: 3 / 4;
+  border-radius: 18px;
+  transform: translate(-50%, -50%);
+  animation: photoFlipIn 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  backface-visibility: hidden;
+}
+
+.sideCard {
+  z-index: 2;
+  width: min(31%, 228px);
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+  outline: none;
+}
+
+.sideLeft {
+  left: 1%;
+  transform: translateY(-50%) rotate(-7deg);
+}
+
+.sideRight {
+  right: 1%;
+  transform: translateY(-50%) rotate(7deg);
+}
+
+.sideCard:hover,
+.sideCard:focus-visible {
+  z-index: 4;
+  border-color: rgba(169, 232, 221, 0.42);
+  box-shadow:
+    0 34px 80px rgba(0, 0, 0, 0.62),
+    0 0 46px rgba(111, 203, 179, 0.16);
+}
+
+.sideLeft:hover,
+.sideLeft:focus-visible {
+  transform: translateY(-51%) rotate(-4deg) scale(1.04);
+}
+
+.sideRight:hover,
+.sideRight:focus-visible {
+  transform: translateY(-51%) rotate(4deg) scale(1.04);
+}
+
+.photo {
+  object-fit: cover;
+  object-position: center 34%;
+}
+
+.sideLabel,
+.centerLabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 14px 11px;
+  background: linear-gradient(transparent, rgba(4, 10, 8, 0.8));
+  color: rgba(240, 249, 244, 0.82);
+  font-family: var(--studio-mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-align: left;
+}
+
+.centerLabel {
+  padding: 36px 18px 14px;
+  font-size: 9px;
+}
+
+.bubble {
+  position: absolute;
+  top: 1.5%;
+  left: 27%;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 13px 18px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px 16px 16px 4px;
+  background: rgba(247, 243, 231, 0.95);
+  color: #17231f;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  transform: rotate(-3deg);
+}
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 24px;
+  width: 16px;
+  height: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(247, 243, 231, 0.95);
+  transform: skewY(35deg) rotate(12deg);
+}
+
+.bubble strong {
+  font-family: var(--studio-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.bubble span {
+  color: rgba(23, 35, 31, 0.58);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.counter {
+  position: absolute;
+  right: 5%;
+  bottom: 2%;
+  z-index: 5;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: rgba(180, 236, 224, 0.62);
+  font-family: var(--studio-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.counter span:last-child {
+  color: rgba(230, 240, 236, 0.3);
+  font-size: 8px;
+}
+
+.hint {
+  margin: 8px 0 0;
+  color: rgba(220, 232, 226, 0.3);
+  font-size: 9px;
+  text-align: center;
+}
+
+@keyframes photoFlipIn {
+  0% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) perspective(900px) rotateY(-68deg)
+      scale(0.94);
+  }
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) perspective(900px) rotateY(0deg)
+      scale(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .photoStage {
+    height: 410px;
+    max-width: 460px;
+  }
+
+  .centerCard {
+    width: 55%;
+    border-radius: 14px;
+  }
+
+  .sideCard {
+    width: 30%;
+    border-radius: 11px;
+  }
+
+  .sideLeft {
+    left: 0;
+  }
+
+  .sideRight {
+    right: 0;
+  }
+
+  .bubble {
+    top: 0;
+    left: 50%;
+    padding: 9px 12px 8px;
+    border-radius: 12px 12px 12px 3px;
+    transform: translateX(-50%) rotate(-2deg);
+  }
+
+  .bubble strong {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .bubble span {
+    font-size: 9px;
+  }
+
+  .sideLabel {
+    display: none;
+  }
+
+  .centerLabel {
+    padding: 28px 12px 10px;
+    font-size: 7px;
+  }
+
+  .counter {
+    right: 2%;
+    bottom: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .centerCard {
+    animation: none;
+  }
+
+  .sideCard {
+    transition: none;
+  }
+}
