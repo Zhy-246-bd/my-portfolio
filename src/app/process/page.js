@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { process as baseProcess } from "@/data/process";
 import { recentProcess } from "@/data/process-recent";
 
@@ -10,9 +13,6 @@ const processData = {
   problems: [...baseProcess.problems, ...recentProcess.problems],
 };
 
-export const metadata = { title: "过程证据" };
-
-// 页面顶部的目录 —— 这 5 项就是课程要求本页必须包含的 5 个要素
 const SECTIONS = [
   { id: "requirement", no: "①", label: "需求" },
   { id: "prototypes", no: "②", label: "原型" },
@@ -59,33 +59,86 @@ function SectionTitle({ id, no, title, hint }) {
   );
 }
 
+function SectionNav({ active, onSelect, bottom = false }) {
+  return (
+    <nav
+      aria-label="过程证据目录"
+      className={
+        bottom
+          ? "mt-8 grid grid-cols-2 gap-2.5 border-t border-white/10 pt-6 sm:grid-cols-5"
+          : "mt-7 grid grid-cols-2 gap-2.5 sm:grid-cols-5"
+      }
+    >
+      {SECTIONS.map((section) => {
+        const isActive = active === section.id;
+        return (
+          <button
+            key={section.id}
+            type="button"
+            onClick={() => onSelect(section.id)}
+            aria-pressed={isActive}
+            className={
+              "flex min-h-[58px] flex-col items-start justify-center rounded-xl border px-4 py-3 text-left transition-all duration-200 " +
+              (isActive
+                ? "border-emerald-200/70 bg-emerald-200 text-slate-950 shadow-[0_10px_30px_rgba(110,231,183,0.16)]"
+                : "border-white/15 bg-white/[0.04] text-slate-200 hover:border-emerald-200/40 hover:bg-white/[0.08]")
+            }
+          >
+            <span
+              className={
+                "text-[11px] font-semibold " +
+                (isActive ? "text-slate-700" : "text-emerald-200/60")
+              }
+            >
+              {section.no}
+            </span>
+            <span className="mt-1 text-sm font-semibold sm:text-base">
+              {section.label}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 export default function ProcessPage() {
   const { requirement, prototypes, prompts, versions, problems } = processData;
+  const [active, setActive] = useState("requirement");
+  const [showTop, setShowTop] = useState(false);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 360);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const selectSection = (id) => {
+    setActive(id);
+    window.requestAnimationFrame(() => {
+      contentRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">过程证据</h1>
       <p className="mt-4 leading-7 text-slate-600">
-        这一页记录我是怎么做这个网站的：动手前想清楚要什么、和 AI 的每一次对话、每个版本分别做了什么、遇到问题怎么解决。
-        课程要求这一页包含 5 个要素，下面按顺序排列。
+        这一页记录我是怎么做这个网站的：动手前想清楚要什么、和 AI
+        的每一次对话、每个版本分别做了什么、遇到问题怎么解决。
+        课程要求这一页包含 5 个要素，点下面的按钮切换查看。
       </p>
 
-      {/* 五个要素的目录（点一下跳转到对应板块） */}
-      <nav className="mt-6 flex flex-wrap gap-2">
-        {SECTIONS.map((section) => (
-          <a
-            key={section.id}
-            href={`#${section.id}`}
-            className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-600 transition-colors hover:border-indigo-300 hover:text-indigo-600"
-          >
-            <span className="mr-1 font-semibold">{section.no}</span>
-            {section.label}
-          </a>
-        ))}
-      </nav>
+      <SectionNav active={active} onSelect={selectSection} />
 
+      <div ref={contentRef} className="scroll-mt-24">
       {/* ① 需求 */}
-      <section className="mt-10">
+      <section className={active === "requirement" ? "mt-10" : "hidden"}>
         <SectionTitle
           id="requirement"
           no="①"
@@ -118,7 +171,7 @@ export default function ProcessPage() {
       </section>
 
       {/* ② 原型 */}
-      <section className="mt-10">
+      <section className={active === "prototypes" ? "mt-10" : "hidden"}>
         <SectionTitle
           id="prototypes"
           no="②"
@@ -202,7 +255,7 @@ export default function ProcessPage() {
       </section>
 
       {/* ③ 提示词 */}
-      <section className="mt-10">
+      <section className={active === "prompts" ? "mt-10" : "hidden"}>
         <SectionTitle
           id="prompts"
           no="③"
@@ -256,7 +309,7 @@ export default function ProcessPage() {
       </section>
 
       {/* ④ 版本 */}
-      <section className="mt-10">
+      <section className={active === "versions" ? "mt-10" : "hidden"}>
         <SectionTitle
           id="versions"
           no="④"
@@ -288,7 +341,7 @@ export default function ProcessPage() {
       </section>
 
       {/* ⑤ 问题解决 */}
-      <section className="mt-10">
+      <section className={active === "problems" ? "mt-10" : "hidden"}>
         <SectionTitle
           id="problems"
           no="⑤"
@@ -333,13 +386,27 @@ export default function ProcessPage() {
           )}
         </div>
       </section>
+      </div>
+
+      <SectionNav active={active} onSelect={selectSection} bottom />
 
       <Link
         href="/"
-        className="mt-10 inline-block text-sm font-semibold text-indigo-600 hover:underline"
+        className="mt-8 inline-block text-sm font-semibold text-indigo-600 hover:underline"
       >
         ← 回到首页
       </Link>
+
+      {showTop && (
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed right-4 bottom-6 z-40 rounded-full border border-emerald-200/25 bg-slate-950/85 px-4 py-2.5 text-xs font-semibold text-emerald-100 shadow-xl backdrop-blur transition-colors hover:border-emerald-200/60 hover:bg-slate-900 sm:right-6 sm:bottom-8"
+          aria-label="回到页面顶部"
+        >
+          ↑ 回到顶部
+        </button>
+      )}
     </div>
   );
 }
