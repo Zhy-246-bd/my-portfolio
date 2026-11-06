@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { iterations } from "@/data/iterations";
+import { iterations as baseIterations } from "@/data/iterations";
+import { recentIterations } from "@/data/iterations-recent";
+
+const iterations = [...baseIterations, ...recentIterations];
 
 export const metadata = { title: "迭代记录" };
 
