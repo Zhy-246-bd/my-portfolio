@@ -27,7 +27,6 @@ export default function AboutProfileCard({ photos }) {
           sizes="(max-width: 760px) 30vw, 220px"
           className={styles.photo}
         />
-        <span className={styles.sideLabel}>{photo.label}</span>
       </button>
     );
   };
@@ -47,20 +46,12 @@ export default function AboutProfileCard({ photos }) {
             sizes="(max-width: 760px) 56vw, 330px"
             className={styles.photo}
           />
-          <span className={styles.centerLabel}>{photos[active].label}</span>
         </div>
 
         <div className={styles.bubble} aria-hidden="true">
           <strong>A DIFFERENT ME</strong>
         </div>
-
-        <div className={styles.counter}>
-          <span>{String(active + 1).padStart(2, "0")}</span>
-          <span>/ {String(total).padStart(2, "0")}</span>
-        </div>
       </div>
-
-      <p className={styles.hint}>点击左右两张照片，翻到中间查看。</p>
     </div>
   );
 }

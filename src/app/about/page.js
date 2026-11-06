@@ -38,7 +38,7 @@ export default function AboutPage() {
           <AboutProfileCard photos={about.photos} />
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:mt-10">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <div>
               <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">

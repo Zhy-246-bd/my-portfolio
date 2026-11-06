@@ -1,4 +1,4 @@
-﻿.profile {
+.profile {
   width: 100%;
 }
 
@@ -133,6 +133,7 @@
 }
 
 .bubble strong {
+  color: #17231f;
   font-family: var(--studio-mono);
   font-size: 10px;
   font-weight: 600;
@@ -253,3 +254,4 @@
     transition: none;
   }
 }
+
