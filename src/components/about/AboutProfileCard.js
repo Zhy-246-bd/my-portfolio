@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -52,7 +52,6 @@ export default function AboutProfileCard({ photos }) {
 
         <div className={styles.bubble} aria-hidden="true">
           <strong>A DIFFERENT ME</strong>
-          <span>不一样的我</span>
         </div>
 
         <div className={styles.counter}>

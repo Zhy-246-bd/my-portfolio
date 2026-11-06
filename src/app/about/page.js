@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import AboutProfileCard from "@/components/about/AboutProfileCard";
 import { about } from "@/data/about";
 import { site } from "@/data/site";
@@ -33,42 +33,44 @@ export default function AboutPage() {
         也放这个作品集背后的过程。
       </p>
 
-      <section className="mt-10" aria-label="个人照片">
-        <AboutProfileCard photos={about.photos} />
-      </section>
+      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+        <section aria-label="个人照片">
+          <AboutProfileCard photos={about.photos} />
+        </section>
 
-      <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-        <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <div>
-            <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">
-              HELLO, I AM
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold text-white">
-              {about.profile.name}
-            </h2>
-          </div>
-          <p className="font-mono text-[10px] tracking-[0.12em] text-slate-400">
-            {about.profile.role}
-          </p>
-        </div>
-        <p className="mt-4 max-w-2xl leading-7 text-slate-300/75">
-          {about.profile.tagline}
-        </p>
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-          {about.profile.intro}
-        </p>
-
-        <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-5 sm:grid-cols-4">
-          {about.profile.facts.map(([label, value]) => (
-            <div key={label}>
-              <dt className="font-mono text-[8px] tracking-[0.14em] text-slate-500">
-                {label}
-              </dt>
-              <dd className="mt-1 text-xs text-slate-200">{value}</dd>
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-4">
+            <div>
+              <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">
+                HELLO, I AM
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold text-white">
+                {about.profile.name}
+              </h2>
             </div>
-          ))}
-        </dl>
-      </section>
+            <p className="font-mono text-[10px] tracking-[0.12em] text-slate-400">
+              {about.profile.role}
+            </p>
+          </div>
+          <p className="mt-4 max-w-2xl leading-7 text-slate-300/75">
+            {about.profile.tagline}
+          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+            {about.profile.intro}
+          </p>
+
+          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-5 sm:grid-cols-4 lg:grid-cols-2">
+            {about.profile.facts.map(([label, value]) => (
+              <div key={label}>
+                <dt className="font-mono text-[8px] tracking-[0.14em] text-slate-500">
+                  {label}
+                </dt>
+                <dd className="mt-1 text-xs text-slate-200">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
 
       <section className="mt-12">
         <SectionHead
