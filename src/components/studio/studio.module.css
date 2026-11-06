@@ -167,7 +167,7 @@
 .identity small {
   margin-top: 2px;
   font-family: var(--studio-mono);
-  font-size: 8px;
+  font-size: 9.5px;
   letter-spacing: 0.12em;
   color: rgba(230, 240, 236, 0.32);
 }
@@ -655,7 +655,7 @@
 
   .identity small {
     display: block;
-    font-size: 7px;
+    font-size: 8.5px;
     letter-spacing: 0.1em;
   }
 
