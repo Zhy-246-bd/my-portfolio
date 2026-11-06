@@ -65,8 +65,8 @@ function SectionNav({ active, onSelect, bottom = false }) {
       aria-label="过程证据目录"
       className={
         bottom
-          ? "mt-8 flex flex-nowrap items-center gap-2 overflow-x-auto border-t border-white/10 pt-5 sm:gap-2.5"
-          : "mt-6 flex flex-nowrap items-center gap-2 overflow-x-auto sm:gap-2.5"
+          ? "mt-8 grid grid-cols-5 gap-1.5 border-t border-white/10 pt-5 sm:gap-2"
+          : "mt-6 grid grid-cols-5 gap-1.5 sm:gap-2"
       }
     >
       {SECTIONS.map((section) => {
@@ -78,21 +78,21 @@ function SectionNav({ active, onSelect, bottom = false }) {
             onClick={() => onSelect(section.id)}
             aria-pressed={isActive}
             className={
-              "inline-flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-2 text-[10px] transition-colors duration-200 sm:gap-1.5 sm:px-4 sm:py-2.5 sm:text-base " +
+              "grid grid-cols-[12px_minmax(0,1fr)] items-center gap-1.5 rounded-xl border px-2 py-2.5 text-left backdrop-blur-[14px] transition-colors duration-200 sm:grid-cols-[16px_minmax(0,1fr)] sm:gap-2 sm:px-3 " +
               (isActive
-                ? "border-emerald-200/35 bg-emerald-200/[0.06] text-emerald-100"
-                : "border-white/15 bg-white/[0.025] text-slate-300 hover:border-emerald-200/30 hover:text-slate-100")
+                ? "border-emerald-200/40 bg-[rgba(16,34,30,0.86)] text-white"
+                : "border-white/10 bg-[rgba(7,13,12,0.62)] text-slate-200 hover:border-emerald-200/30 hover:bg-[rgba(12,24,22,0.82)]")
             }
           >
             <span
               className={
-                "text-[10px] font-semibold sm:text-[11px] " +
-                (isActive ? "text-emerald-200/80" : "text-slate-500")
+                "font-mono text-[7px] tracking-[0.06em] sm:text-[8px] " +
+                (isActive ? "text-emerald-200/60" : "text-emerald-100/35")
               }
             >
               {section.no}
             </span>
-            <span className="whitespace-nowrap font-medium">
+            <span className="whitespace-nowrap text-[10px] font-medium tracking-wide sm:text-[13px]">
               {section.label}
             </span>
           </button>
