@@ -19,6 +19,7 @@ export default function SiteChrome({ children }) {
   ];
 
   const bare =
+    pathname === "/" ||
     pathname === "/notebook" ||
     pathname?.startsWith("/notebook/") ||
     pathname === "/studio" ||
