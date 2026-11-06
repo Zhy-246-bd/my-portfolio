@@ -14,11 +14,11 @@ const processData = {
 };
 
 const SECTIONS = [
-  { id: "requirement", no: "①", label: "需求" },
-  { id: "prototypes", no: "②", label: "原型" },
-  { id: "prompts", no: "③", label: "提示词" },
-  { id: "versions", no: "④", label: "版本" },
-  { id: "problems", no: "⑤", label: "问题解决" },
+  { id: "requirement", no: "01", label: "需求", en: "REQUIREMENT" },
+  { id: "prototypes", no: "02", label: "原型", en: "PROTOTYPE" },
+  { id: "prompts", no: "03", label: "提示词", en: "PROMPTS" },
+  { id: "versions", no: "04", label: "版本", en: "VERSIONS" },
+  { id: "problems", no: "05", label: "问题解决", en: "PROBLEMS" },
 ];
 
 // 还没填写的内容会以【待填写】开头，显示成黄色草稿框
@@ -78,22 +78,33 @@ function SectionNav({ active, onSelect, bottom = false }) {
             onClick={() => onSelect(section.id)}
             aria-pressed={isActive}
             className={
-              "grid grid-cols-[12px_minmax(0,1fr)] items-center gap-1.5 rounded-xl border px-2 py-2.5 text-left backdrop-blur-[14px] transition-colors duration-200 sm:grid-cols-[16px_minmax(0,1fr)] sm:gap-2 sm:px-3 " +
+              "grid min-w-0 grid-cols-1 items-center gap-1.5 rounded-xl border px-2 py-2.5 text-left backdrop-blur-[14px] transition-colors duration-200 sm:grid-cols-[20px_minmax(0,1fr)_14px] sm:gap-[9px] sm:px-3 sm:py-2.5 " +
               (isActive
-                ? "border-emerald-200/40 bg-[rgba(16,34,30,0.86)] text-white"
-                : "border-white/10 bg-[rgba(7,13,12,0.62)] text-slate-200 hover:border-emerald-200/30 hover:bg-[rgba(12,24,22,0.82)]")
+                ? "border-[rgba(169,232,221,0.48)] bg-[rgba(16,34,30,0.86)] text-[#f5f8f4]"
+                : "border-white/[0.08] bg-[rgba(7,13,12,0.62)] text-[#f5f8f4] hover:border-[rgba(169,232,221,0.32)] hover:bg-[rgba(12,24,22,0.82)]")
             }
           >
             <span
               className={
-                "font-mono text-[7px] tracking-[0.06em] sm:text-[8px] " +
-                (isActive ? "text-emerald-200/60" : "text-emerald-100/35")
+                "hidden font-mono text-[7px] tracking-[0.08em] sm:block sm:text-[8px] " +
+                (isActive ? "text-[rgba(180,236,224,0.62)]" : "text-[rgba(180,236,224,0.38)]")
               }
             >
               {section.no}
             </span>
-            <span className="whitespace-nowrap text-[10px] font-medium tracking-wide sm:text-[13px]">
-              {section.label}
+            <span className="flex min-w-0 flex-col gap-0.5">
+              <strong className="truncate text-[10px] font-medium tracking-[0.02em] sm:text-[13px]">
+                {section.label}
+              </strong>
+              <small className="hidden truncate font-mono text-[6px] tracking-[0.12em] text-[rgba(230,240,236,0.42)] sm:block sm:text-[7px]">
+                {section.en}
+              </small>
+            </span>
+            <span
+              aria-hidden="true"
+              className="hidden text-[10px] text-[rgba(230,240,236,0.3)] sm:block"
+            >
+              ↗
             </span>
           </button>
         );
