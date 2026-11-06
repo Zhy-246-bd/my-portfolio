@@ -78,7 +78,7 @@ function SectionNav({ active, onSelect, bottom = false }) {
             onClick={() => onSelect(section.id)}
             aria-pressed={isActive}
             className={
-              "flex min-h-0 flex-col items-center justify-center rounded-lg border px-1.5 py-2 text-center transition-all duration-200 sm:px-3 sm:py-2.5 " +
+              "flex min-h-0 items-center justify-center gap-1 rounded-lg border px-0.5 py-2 text-center transition-all duration-200 sm:gap-1.5 sm:px-3 sm:py-2.5 " +
               (isActive
                 ? "border-emerald-200/45 bg-emerald-200/[0.09] text-emerald-100"
                 : "border-white/10 bg-white/[0.025] text-slate-300 hover:border-emerald-200/30 hover:bg-white/[0.06]")
@@ -86,13 +86,13 @@ function SectionNav({ active, onSelect, bottom = false }) {
           >
             <span
               className={
-                "text-[9px] font-semibold sm:text-[10px] " +
+                "hidden text-[9px] font-semibold sm:inline sm:text-[10px] " +
                 (isActive ? "text-emerald-200/80" : "text-slate-500")
               }
             >
               {section.no}
             </span>
-            <span className="mt-0.5 text-[11px] font-medium sm:text-sm">
+            <span className="whitespace-nowrap text-[10px] font-medium sm:text-sm">
               {section.label}
             </span>
           </button>
