@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { site } from "@/data/site";
 import FluidTitle from "./FluidTitle";
 import StudioSidebar from "./StudioSidebar";
@@ -15,13 +14,8 @@ export default function StudioLanding() {
       <header className={styles.identity}>
         <strong>{site.name}</strong>
         <span>ZHANG HAIYAN</span>
-        <small>数智编程 · 2026 作品集</small>
+        <small>MyPortfolio</small>
       </header>
-
-      <div className={styles.topLinks}>
-        <Link href="/notebook">手账版 ↗</Link>
-        <Link href="/">完整网站 ↗</Link>
-      </div>
 
       <main className={styles.main}>
         <h1
