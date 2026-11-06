@@ -30,6 +30,7 @@ uniform float uTime;
 uniform float uTitleScale;
 uniform float uTitleOffset;
 uniform float uTitleOpacity;
+uniform float uMobile;
 varying vec2 vUv;
 
 float hash(vec2 p) {
@@ -194,7 +195,7 @@ void main() {
   color += pink * pinkRim * 0.2;
   color += vec3(0.92, 0.72, 1.0) * pinkGloss * 0.12;
 
-  float paintDye = dye.b;
+  float paintDye = dye.b * (1.0 - step(0.5, uMobile));
   float paint = smoothstep(0.025, 0.45, paintDye);
   float paintRim = smoothstep(0.03, 0.13, paintDye) *
     (1.0 - smoothstep(0.13, 0.42, paintDye));
@@ -434,6 +435,7 @@ export default function FluidTitle({
     const uTitleScale = gl.getUniformLocation(program, "uTitleScale");
     const uTitleOffset = gl.getUniformLocation(program, "uTitleOffset");
     const uTitleOpacity = gl.getUniformLocation(program, "uTitleOpacity");
+    const uMobile = gl.getUniformLocation(program, "uMobile");
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
@@ -441,6 +443,7 @@ export default function FluidTitle({
     gl.uniform1f(uTitleScale, 1);
     gl.uniform1f(uTitleOffset, 0);
     gl.uniform1f(uTitleOpacity, 1);
+    gl.uniform1f(uMobile, 0);
 
     const dpr = isFullPage
       ? 1.15
@@ -627,6 +630,7 @@ export default function FluidTitle({
           uTitleOpacity,
           Math.max(0, 1 - 1.08 * titleProgress),
         );
+        gl.uniform1f(uMobile, window.innerWidth < 760 ? 1 : 0);
         gl.uniform2f(
           uPointer,
           fluid.pointerPos.x,

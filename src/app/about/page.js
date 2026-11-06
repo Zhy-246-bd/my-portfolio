@@ -48,9 +48,6 @@ export default function AboutPage() {
                 {about.profile.name}
               </h2>
             </div>
-            <p className="font-mono text-[10px] tracking-[0.12em] text-slate-400">
-              {about.profile.role}
-            </p>
           </div>
           <p className="mt-4 max-w-2xl leading-7 text-slate-300/75">
             {about.profile.tagline}
