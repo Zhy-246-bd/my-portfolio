@@ -65,8 +65,8 @@ function SectionNav({ active, onSelect, bottom = false }) {
       aria-label="过程证据目录"
       className={
         bottom
-          ? "mt-8 grid grid-cols-2 gap-2.5 border-t border-white/10 pt-6 sm:grid-cols-5"
-          : "mt-7 grid grid-cols-2 gap-2.5 sm:grid-cols-5"
+          ? "mt-8 grid grid-cols-5 gap-1.5 border-t border-white/10 pt-5 sm:gap-2"
+          : "mt-6 grid grid-cols-5 gap-1.5 sm:gap-2"
       }
     >
       {SECTIONS.map((section) => {
@@ -78,21 +78,21 @@ function SectionNav({ active, onSelect, bottom = false }) {
             onClick={() => onSelect(section.id)}
             aria-pressed={isActive}
             className={
-              "flex min-h-[58px] flex-col items-start justify-center rounded-xl border px-4 py-3 text-left transition-all duration-200 " +
+              "flex min-h-0 flex-col items-center justify-center rounded-lg border px-1.5 py-2 text-center transition-all duration-200 sm:px-3 sm:py-2.5 " +
               (isActive
-                ? "border-emerald-200/70 bg-emerald-200 text-slate-950 shadow-[0_10px_30px_rgba(110,231,183,0.16)]"
-                : "border-white/15 bg-white/[0.04] text-slate-200 hover:border-emerald-200/40 hover:bg-white/[0.08]")
+                ? "border-emerald-200/45 bg-emerald-200/[0.09] text-emerald-100"
+                : "border-white/10 bg-white/[0.025] text-slate-300 hover:border-emerald-200/30 hover:bg-white/[0.06]")
             }
           >
             <span
               className={
-                "text-[11px] font-semibold " +
-                (isActive ? "text-slate-700" : "text-emerald-200/60")
+                "text-[9px] font-semibold sm:text-[10px] " +
+                (isActive ? "text-emerald-200/80" : "text-slate-500")
               }
             >
               {section.no}
             </span>
-            <span className="mt-1 text-sm font-semibold sm:text-base">
+            <span className="mt-0.5 text-[11px] font-medium sm:text-sm">
               {section.label}
             </span>
           </button>
