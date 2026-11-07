@@ -406,8 +406,8 @@ export default function FluidTitle({
     }
     const fluid = new GpuFluid(
       gl,
-      isBackdrop ? 256 : isModuleStage ? 512 : 448,
-      isBackdrop ? 160 : isModuleStage ? 320 : 280,
+      isBackdrop ? 256 : isModuleStage ? 448 : 448,
+      isBackdrop ? 160 : isModuleStage ? 280 : 280,
     );
     fluid.setAutoInk(
       variant === "cover" || isBackdrop || isModuleStage,
@@ -445,11 +445,11 @@ export default function FluidTitle({
     gl.uniform1f(uTitleOpacity, 1);
 
     const dpr = isFullPage
-      ? 1.15
+      ? 1
       : isBackdrop
         ? 0.65
         : isModuleStage
-          ? 1
+          ? 0.8
           : isModuleCanvas
             ? 1.05
             : Math.min(window.devicePixelRatio || 1, 0.9);
@@ -576,15 +576,23 @@ export default function FluidTitle({
       fluid.pointerLeave();
     };
 
-    let lastBackdropDraw = 0;
+    let lastFrameDraw = 0;
 
     const render = (now) => {
       if (!disposed) {
-        if (isBackdrop && now - lastBackdropDraw < 33) {
+        const slowStage = isModuleStage && scrollProgress > 0.82;
+        const minInterval = isBackdrop
+          ? 33
+          : isModuleStage
+            ? slowStage
+              ? 42
+              : 22
+            : 0;
+        if (minInterval && now - lastFrameDraw < minInterval) {
           frame = requestAnimationFrame(render);
           return;
         }
-        lastBackdropDraw = now;
+        lastFrameDraw = now;
         fluid.step(1 / 60);
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);

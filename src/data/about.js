@@ -15,17 +15,17 @@ export const about = {
 
   photos: [
     {
-      src: "/images/about/profile-1.jpg",
+      src: "/images/about/profile-1.webp",
       alt: "张海燕的正式感肖像",
       label: "01 / PORTRAIT",
     },
     {
-      src: "/images/about/profile-2.jpg",
+      src: "/images/about/profile-2.webp",
       alt: "张海燕在校园草坪上的照片",
       label: "02 / CAMPUS",
     },
     {
-      src: "/images/about/profile-3.jpg",
+      src: "/images/about/profile-3.webp",
       alt: "张海燕在咖啡馆门口的照片",
       label: "03 / CAFE",
     },

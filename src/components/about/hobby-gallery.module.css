@@ -7,6 +7,10 @@
   transform-origin: center;
 }
 
+.paused .item {
+  animation-play-state: paused;
+}
+
 @keyframes popCycle {
   0% {
     opacity: 0;
