@@ -123,13 +123,15 @@ export default function HobbyGallery() {
             "--delay": `${index * 0.72}s`,
           }}
         >
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            fill
-            sizes="(max-width: 760px) 34vw, 300px"
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-          />
+          {active && (
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="(max-width: 760px) 34vw, 300px"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            />
+          )}
         </figure>
       ))}
     </div>
