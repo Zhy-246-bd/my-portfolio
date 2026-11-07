@@ -172,7 +172,7 @@ export default function AboutPage() {
         <SectionHead
           index="05"
           title="爱好与日常"
-          note="除了作业和项目，我也是会出门走走、找好吃的、打游戏和做饭的人。"
+          note="除了作业和项目，我也是会出门走走、寻找美食、打游戏和做饭的人。"
         />
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {about.hobbies.map((item) => (
