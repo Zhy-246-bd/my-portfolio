@@ -60,17 +60,17 @@ export default function WorksBoard({ works, projects }) {
               key={work.order}
               type="button"
               onClick={() => setSelected(work)}
-              className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/10 bg-[rgba(7,13,12,0.62)] p-3 text-left backdrop-blur-[14px] transition-colors duration-200 hover:border-emerald-200/35 hover:bg-[rgba(12,24,22,0.86)]"
+              className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/10 bg-[rgba(7,13,12,0.62)] p-3 text-left backdrop-blur-[14px] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200/40 hover:bg-[rgba(12,24,22,0.9)] hover:shadow-[0_14px_34px_rgba(0,0,0,0.35),0_0_24px_rgba(111,203,179,0.12)] active:translate-y-0 active:scale-[0.99]"
               aria-label={`查看作业：${work.title}`}
             >
-              <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+              <span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40 transition-colors duration-300 group-hover:border-emerald-200/30">
                 {project?.cover ? (
                   <Image
                     src={project.cover}
                     alt=""
                     fill
                     sizes="56px"
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
                   <span className="grid h-full w-full place-items-center font-mono text-[10px] text-white/40">
@@ -80,7 +80,7 @@ export default function WorksBoard({ works, projects }) {
               </span>
 
               <span className="min-w-0">
-                <span className="block truncate text-sm font-semibold text-slate-100">
+                <span className="block truncate text-sm font-semibold text-slate-100 transition-colors duration-300 group-hover:text-white">
                   {work.title}
                 </span>
                 <span className="mt-1 flex items-center gap-2 font-mono text-[10px] tracking-[0.06em] text-slate-500">
@@ -89,6 +89,13 @@ export default function WorksBoard({ works, projects }) {
                   </span>
                   <span className="truncate">{work.date}</span>
                 </span>
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="ml-auto shrink-0 text-sm text-emerald-200/0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-emerald-200/70"
+              >
+                ↗
               </span>
             </button>
           );
