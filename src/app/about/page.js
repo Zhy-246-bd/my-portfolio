@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AboutProfileCard from "@/components/about/AboutProfileCard";
+import HobbyGallery from "@/components/about/HobbyGallery";
 import { about } from "@/data/about";
 import { site } from "@/data/site";
 
@@ -75,6 +76,33 @@ export default function AboutPage() {
       <section className="mt-12">
         <SectionHead
           index="02"
+          title="爱好与日常"
+          note="除了作业和项目，我也是会出门走走、寻找美食、打游戏和做饭的人。"
+        />
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {about.hobbies.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
+            >
+              <p className="font-mono text-[11px] tracking-[0.16em] text-emerald-200/35">
+                {item.tag}
+              </p>
+              <h3 className="mt-2 text-base font-semibold text-slate-100">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-slate-400">
+                {item.text}
+              </p>
+            </article>
+          ))}
+        </div>
+        <HobbyGallery />
+      </section>
+
+      <section className="mt-12">
+        <SectionHead
+          index="03"
           title="能力与工具"
           note="不写空泛的“学习能力强”，只写现在能做出什么。"
         />
@@ -100,7 +128,7 @@ export default function AboutPage() {
 
       <section className="mt-12">
         <SectionHead
-          index="03"
+          index="04"
           title="成绩与成果"
           note="课程完成情况、上线地址和过程记录，都可以在站内点开核对。"
         />
@@ -131,32 +159,6 @@ export default function AboutPage() {
         >
           查看全部项目成果 ↗
         </Link>
-      </section>
-
-      <section className="mt-12">
-        <SectionHead
-          index="04"
-          title="爱好与日常"
-          note="除了作业和项目，我也是会出门走走、寻找美食、打游戏和做饭的人。"
-        />
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {about.hobbies.map((item) => (
-            <article
-              key={item.title}
-              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
-            >
-              <p className="font-mono text-[11px] tracking-[0.16em] text-emerald-200/35">
-                {item.tag}
-              </p>
-              <h3 className="mt-2 text-base font-semibold text-slate-100">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-400">
-                {item.text}
-              </p>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section className="mt-12">
