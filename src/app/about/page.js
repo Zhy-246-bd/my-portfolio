@@ -9,13 +9,13 @@ function SectionHead({ index, title, note }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-4">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[10px] tracking-[0.18em] text-emerald-200/45">
+        <span className="font-mono text-xs tracking-[0.18em] text-emerald-200/45">
           {index}
         </span>
-        <h2 className="text-lg font-semibold text-white sm:text-xl">{title}</h2>
+        <h2 className="text-xl font-semibold text-white sm:text-2xl">{title}</h2>
       </div>
       {note && (
-        <p className="max-w-md text-xs leading-6 text-slate-400">{note}</p>
+        <p className="max-w-lg text-sm leading-7 text-slate-400">{note}</p>
       )}
     </div>
   );
@@ -23,39 +23,39 @@ function SectionHead({ index, title, note }) {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16">
+    <div className="mx-auto max-w-6xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16">
       <h1 className="text-3xl font-bold text-white sm:text-4xl">关于我</h1>
 
-      <div className="mt-10 grid gap-10 lg:-mt-40 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+      <div className="mt-10 grid gap-10 lg:-mt-40 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-8">
         <section aria-label="个人照片">
           <AboutProfileCard photos={about.photos} />
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:mt-16">
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-10 lg:mt-16">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <div>
-              <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">
+              <p className="font-mono text-[11px] tracking-[0.18em] text-emerald-200/45">
                 HELLO, I AM
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">
+              <h2 className="mt-2 text-3xl font-semibold text-white">
                 {about.profile.name}
               </h2>
             </div>
           </div>
-          <p className="mt-4 max-w-2xl leading-7 text-slate-300/75">
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300/75">
             {about.profile.tagline}
           </p>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+          <p className="mt-3 max-w-2xl text-base leading-8 text-slate-400">
             {about.profile.intro}
           </p>
 
-          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 pt-5 sm:grid-cols-4 lg:grid-cols-2">
+          <dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-white/10 pt-6 sm:grid-cols-4 lg:grid-cols-2">
             {about.profile.facts.map(([label, value]) => (
               <div key={label}>
-                <dt className="font-mono text-[8px] tracking-[0.14em] text-slate-500">
+                <dt className="font-mono text-[11px] tracking-[0.14em] text-slate-500">
                   {label}
                 </dt>
-                <dd className="mt-1 text-xs text-slate-200">{value}</dd>
+                <dd className="mt-1 text-sm text-slate-200">{value}</dd>
               </div>
             ))}
           </dl>
@@ -68,7 +68,7 @@ export default function AboutPage() {
           title="我的故事"
           note="为什么开始学编程，以及这个作品集想留下什么。"
         />
-        <div className="mt-5 max-w-3xl space-y-4 text-sm leading-8 text-slate-300/70">
+        <div className="mt-5 max-w-4xl space-y-4 text-base leading-8 text-slate-300/70">
           {about.story.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -92,14 +92,14 @@ export default function AboutPage() {
             >
               <span className="absolute top-1.5 -left-[4px] h-2 w-2 rounded-full bg-emerald-200/60 ring-4 ring-[#06100d]" />
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className="font-mono text-[9px] tracking-[0.12em] text-emerald-200/45">
+                <span className="font-mono text-[11px] tracking-[0.12em] text-emerald-200/45">
                   {item.date}
                 </span>
-                <h3 className="text-sm font-semibold text-slate-100">
+                <h3 className="text-base font-semibold text-slate-100">
                   {item.title}
                 </h3>
               </div>
-              <p className="mt-1.5 max-w-2xl text-sm leading-7 text-slate-400">
+              <p className="mt-2 max-w-3xl text-base leading-8 text-slate-400">
                 {item.text}
               </p>
             </li>
@@ -119,13 +119,13 @@ export default function AboutPage() {
               key={item.title}
               className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
             >
-              <h3 className="text-sm font-semibold text-slate-100">
+              <h3 className="text-base font-semibold text-slate-100">
                 {item.title}
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-400">
+              <p className="mt-2 text-base leading-8 text-slate-400">
                 {item.text}
               </p>
-              <p className="mt-3 font-mono text-[9px] leading-5 tracking-[0.08em] text-emerald-200/35">
+              <p className="mt-3 font-mono text-[11px] leading-6 tracking-[0.08em] text-emerald-200/35">
                 {item.tools}
               </p>
             </article>
@@ -145,16 +145,16 @@ export default function AboutPage() {
               key={item.title}
               className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
             >
-              <p className="font-mono text-[8px] tracking-[0.16em] text-slate-500">
+              <p className="font-mono text-[11px] tracking-[0.16em] text-slate-500">
                 {item.label}
               </p>
-              <p className="mt-2 text-2xl font-semibold text-emerald-100/90">
+              <p className="mt-2 text-3xl font-semibold text-emerald-100/90">
                 {item.value}
               </p>
-              <h3 className="mt-1 text-sm font-semibold text-slate-100">
+              <h3 className="mt-1 text-base font-semibold text-slate-100">
                 {item.title}
               </h3>
-              <p className="mt-2 text-xs leading-6 text-slate-400">
+              <p className="mt-2 text-sm leading-7 text-slate-400">
                 {item.text}
               </p>
             </article>
@@ -162,7 +162,7 @@ export default function AboutPage() {
         </div>
         <Link
           href="/projects/"
-          className="mt-4 inline-flex items-center gap-1 font-mono text-[10px] tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
+          className="mt-4 inline-flex items-center gap-1 font-mono text-xs tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
         >
           查看全部项目成果 ↗
         </Link>
@@ -180,13 +180,13 @@ export default function AboutPage() {
               key={item.title}
               className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
             >
-              <p className="font-mono text-[8px] tracking-[0.16em] text-emerald-200/35">
+              <p className="font-mono text-[11px] tracking-[0.16em] text-emerald-200/35">
                 {item.tag}
               </p>
-              <h3 className="mt-2 text-sm font-semibold text-slate-100">
+              <h3 className="mt-2 text-base font-semibold text-slate-100">
                 {item.title}
               </h3>
-              <p className="mt-2 text-xs leading-6 text-slate-400">
+              <p className="mt-2 text-sm leading-7 text-slate-400">
                 {item.text}
               </p>
             </article>
@@ -206,10 +206,10 @@ export default function AboutPage() {
               key={goal.period}
               className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
             >
-              <p className="font-mono text-[9px] tracking-[0.14em] text-emerald-200/45">
+              <p className="font-mono text-[11px] tracking-[0.14em] text-emerald-200/45">
                 {goal.period}
               </p>
-              <p className="mt-2 text-sm leading-7 text-slate-300/75">
+              <p className="mt-2 text-base leading-8 text-slate-300/75">
                 {goal.text}
               </p>
             </article>
@@ -217,9 +217,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.025] p-6">
-        <h2 className="text-sm font-semibold text-slate-100">联系我</h2>
-        <p className="mt-2 text-sm text-slate-400">
+      <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
+        <h2 className="text-base font-semibold text-slate-100">联系我</h2>
+        <p className="mt-2 text-base text-slate-400">
           邮箱：
           <a
             href={`mailto:${site.email}`}
@@ -228,14 +228,14 @@ export default function AboutPage() {
             {site.email}
           </a>
         </p>
-        <p className="mt-4 border-t border-white/10 pt-4 text-xs leading-6 text-slate-500">
+        <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-7 text-slate-500">
           {about.aiStatement}
         </p>
       </section>
 
       <Link
         href="/"
-        className="mt-8 inline-block font-mono text-[10px] tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
+        className="mt-8 inline-block font-mono text-xs tracking-[0.12em] text-emerald-200/60 hover:text-emerald-100"
       >
         ← 回到首页
       </Link>
