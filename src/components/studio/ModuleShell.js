@@ -4,11 +4,23 @@ import Link from "next/link";
 import FluidTitle from "./FluidTitle";
 import styles from "./studio.module.css";
 
-export default function ModuleShell({ title, label, index, children }) {
+export default function ModuleShell({
+  title,
+  label,
+  index,
+  titleScale,
+  titleY,
+  children,
+}) {
   return (
     <div className={styles.modulePage}>
       <div className={styles.moduleFluid}>
-        <FluidTitle lines={[title]} variant="moduleStage" />
+        <FluidTitle
+          lines={[title]}
+          variant="moduleStage"
+          titleScale={titleScale}
+          titleY={titleY}
+        />
       </div>
       <span className={styles.moduleShade} aria-hidden="true" />
 

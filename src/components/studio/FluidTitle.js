@@ -321,6 +321,8 @@ export default function FluidTitle({
   lines,
   onClick,
   variant = "cover",
+  titleScale = 1,
+  titleY,
 }) {
   const canvasRef = useRef(null);
 
@@ -482,12 +484,15 @@ export default function FluidTitle({
             : lines.length > 1
               ? Math.min(width * 0.16, height * 0.255)
               : Math.min(width * 0.205, height * 0.34);
+      if (isModuleStage) fontSize *= titleScale;
       const lineHeight = fontSize * 0.82;
       const totalHeight = (lines.length - 1) * lineHeight;
       const startY = isFullModule
         ? Math.min(viewportHeight * 0.2, 230)
         : isModuleStage
-          ? Math.min(viewportHeight * 0.2, 230)
+          ? titleY != null
+            ? viewportHeight * titleY
+            : Math.min(viewportHeight * 0.2, 230)
           : isModule
             ? height * 0.56
             : height / 2 - totalHeight / 2 + fontSize * 0.02;
@@ -681,7 +686,7 @@ export default function FluidTitle({
       gl.deleteShader(fragment);
       gl.deleteShader(fxaaFragment);
     };
-  }, [lines, variant]);
+  }, [lines, variant, titleScale, titleY]);
 
   return (
     <canvas
