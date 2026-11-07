@@ -186,7 +186,7 @@ export default function WorksBoard({ works, projects }) {
               }
             >
               {selectedProject?.cover && (
-                <div className="relative h-40 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-[300px]">
+                <div className="relative h-40 w-full overflow-hidden rounded-lg bg-black/20 sm:h-[190px]">
                   <Image
                     src={selectedProject.cover}
                     alt={`${selected.title} 页面预览`}
