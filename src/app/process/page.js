@@ -5,12 +5,25 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { process as baseProcess } from "@/data/process";
 import { recentProcess } from "@/data/process-recent";
+import { completeProcess } from "@/data/process-complete";
 
 const processData = {
   ...baseProcess,
   prompts: [...baseProcess.prompts, ...recentProcess.prompts],
-  versions: [...baseProcess.versions, ...recentProcess.versions],
-  problems: [...baseProcess.problems, ...recentProcess.problems],
+  prototypes: [
+    ...baseProcess.prototypes,
+    ...completeProcess.prototypes,
+  ],
+  versions: [
+    ...baseProcess.versions,
+    ...recentProcess.versions,
+    ...completeProcess.versions,
+  ],
+  problems: [
+    ...baseProcess.problems,
+    ...recentProcess.problems,
+    ...completeProcess.problems,
+  ],
 };
 
 const SECTIONS = [
