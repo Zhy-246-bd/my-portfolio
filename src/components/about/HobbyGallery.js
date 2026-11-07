@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 const photos = [
@@ -88,32 +87,12 @@ const photos = [
 ];
 
 export default function HobbyGallery() {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return undefined;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.18 },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div
-      ref={ref}
       className="relative mt-6 h-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[rgba(7,13,12,0.5)] sm:h-[520px]"
       aria-label="爱好照片墙"
     >
-      {photos.map((photo, index) => (
+      {photos.map((photo) => (
         <figure
           key={photo.src}
           className="group absolute overflow-hidden rounded-xl border border-white/15 bg-black/30 shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
@@ -123,11 +102,7 @@ export default function HobbyGallery() {
             width: `${photo.w}%`,
             zIndex: photo.z,
             aspectRatio: "4 / 3",
-            opacity: visible ? 1 : 0,
-            transform: visible
-              ? `translate(-50%, -50%) rotate(${photo.r}deg) scale(1)`
-              : `translate(-50%, calc(-50% + 72px)) rotate(${photo.r}deg) scale(0.9)`,
-            transition: `opacity 0.45s ease ${index * 110}ms, transform 0.8s cubic-bezier(0.22, 1.35, 0.36, 1) ${index * 110}ms`,
+            transform: `translate(-50%, -50%) rotate(${photo.r}deg)`,
           }}
         >
           <Image
