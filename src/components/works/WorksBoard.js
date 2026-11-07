@@ -178,61 +178,71 @@ export default function WorksBoard({ works, projects }) {
               ×
             </button>
 
-            {selectedProject?.cover && (
-              <div className="relative h-40 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-52">
-                <Image
-                  src={selectedProject.cover}
-                  alt={`${selected.title} 页面预览`}
-                  fill
-                  sizes="(max-width: 768px) 90vw, 700px"
-                  className="object-contain"
-                />
-              </div>
-            )}
-
-            <div className="mt-5 flex flex-wrap items-center gap-2 text-xs">
-              <span className="rounded-full bg-white/[0.08] px-3 py-1 font-mono text-emerald-200/70">
-                {selected.stage}
-              </span>
-              <span className="text-slate-400">{selected.date}</span>
-              {selected.status && (
-                <span className="rounded-full bg-emerald-200/10 px-3 py-1 text-emerald-200/80">
-                  {selected.status}
-                </span>
+            <div
+              className={
+                selectedProject?.cover
+                  ? "grid gap-5 sm:grid-cols-[280px_minmax(0,1fr)] sm:items-start sm:gap-6"
+                  : ""
+              }
+            >
+              {selectedProject?.cover && (
+                <div className="relative h-40 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-[300px]">
+                  <Image
+                    src={selectedProject.cover}
+                    alt={`${selected.title} 页面预览`}
+                    fill
+                    sizes="(max-width: 768px) 90vw, 280px"
+                    className="object-contain"
+                  />
+                </div>
               )}
-            </div>
 
-            <h2 className="mt-3 pr-10 text-2xl font-semibold text-white">
-              {selected.title}
-            </h2>
-
-            <dl className="mt-5 space-y-4 text-sm leading-7">
-              <div>
-                <dt className="font-semibold text-slate-100">作业要求</dt>
-                <dd className="mt-1 text-slate-400">{selected.goal}</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-slate-100">我的过程</dt>
-                <dd className="mt-1 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-slate-300">
-                  {selected.whatIdid}
-                </dd>
-              </div>
-            </dl>
-
-            {selected.skills?.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {selected.skills.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
-                  >
-                    {skill}
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                  <span className="rounded-full bg-white/[0.08] px-3 py-1 font-mono text-emerald-200/70">
+                    {selected.stage}
                   </span>
-                ))}
-              </div>
-            )}
+                  <span className="text-slate-400">{selected.date}</span>
+                  {selected.status && (
+                    <span className="rounded-full bg-emerald-200/10 px-3 py-1 text-emerald-200/80">
+                      {selected.status}
+                    </span>
+                  )}
+                </div>
 
-            <EntryArea project={selectedProject} />
+                <h2 className="mt-3 pr-10 text-2xl font-semibold text-white">
+                  {selected.title}
+                </h2>
+
+                <dl className="mt-5 space-y-4 text-sm leading-7">
+                  <div>
+                    <dt className="font-semibold text-slate-100">作业要求</dt>
+                    <dd className="mt-1 text-slate-400">{selected.goal}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-slate-100">我的过程</dt>
+                    <dd className="mt-1 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-slate-300">
+                      {selected.whatIdid}
+                    </dd>
+                  </div>
+                </dl>
+
+                {selected.skills?.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {selected.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <EntryArea project={selectedProject} />
+              </div>
+            </div>
           </div>
         </div>
       )}
