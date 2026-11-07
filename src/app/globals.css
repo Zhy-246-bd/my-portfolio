@@ -37,3 +37,17 @@ h3 {
 p {
   text-wrap: pretty;
 }
+
+/* 进入模块时，内容在波纹遮罩下慢慢浮现 */
+body.studio-arriving [data-module-page] {
+  animation: moduleReveal 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes moduleReveal {
+  from {
+    opacity: 0.15;
+  }
+  to {
+    opacity: 1;
+  }
+}

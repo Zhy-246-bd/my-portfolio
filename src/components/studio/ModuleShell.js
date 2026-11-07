@@ -13,7 +13,7 @@ export default function ModuleShell({
   children,
 }) {
   return (
-    <div className={styles.modulePage}>
+    <div className={styles.modulePage} data-module-page>
       <div className={styles.moduleFluid}>
         <FluidTitle
           lines={[title]}
