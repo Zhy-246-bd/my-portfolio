@@ -5,7 +5,7 @@ import { site } from "@/data/site";
 
 export const metadata = { title: "关于我" };
 
-function SectionHead({ index, title, note }) {
+function SectionHead({ index, title }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-4">
       <div className="flex items-baseline gap-3">
@@ -14,9 +14,6 @@ function SectionHead({ index, title, note }) {
         </span>
         <h2 className="text-xl font-semibold text-white sm:text-2xl">{title}</h2>
       </div>
-      {note && (
-        <p className="max-w-lg text-sm leading-7 text-slate-400">{note}</p>
-      )}
     </div>
   );
 }
@@ -78,38 +75,6 @@ export default function AboutPage() {
       <section className="mt-12">
         <SectionHead
           index="02"
-          title="学习经历"
-          note="从零基础到能把一个网站做出来、部署上线。"
-        />
-        <ol className="mt-5">
-          {about.journey.map((item, index) => (
-            <li
-              key={item.date}
-              className={
-                "relative border-l border-white/10 pl-5 " +
-                (index === about.journey.length - 1 ? "pb-0" : "pb-6")
-              }
-            >
-              <span className="absolute top-1.5 -left-[4px] h-2 w-2 rounded-full bg-emerald-200/60 ring-4 ring-[#06100d]" />
-              <div className="flex flex-wrap items-baseline gap-3">
-                <span className="font-mono text-[11px] tracking-[0.12em] text-emerald-200/45">
-                  {item.date}
-                </span>
-                <h3 className="text-base font-semibold text-slate-100">
-                  {item.title}
-                </h3>
-              </div>
-              <p className="mt-2 max-w-3xl text-base leading-8 text-slate-400">
-                {item.text}
-              </p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="mt-12">
-        <SectionHead
-          index="03"
           title="能力与工具"
           note="不写空泛的“学习能力强”，只写现在能做出什么。"
         />
@@ -135,7 +100,7 @@ export default function AboutPage() {
 
       <section className="mt-12">
         <SectionHead
-          index="04"
+          index="03"
           title="成绩与成果"
           note="课程完成情况、上线地址和过程记录，都可以在站内点开核对。"
         />
@@ -170,7 +135,7 @@ export default function AboutPage() {
 
       <section className="mt-12">
         <SectionHead
-          index="05"
+          index="04"
           title="爱好与日常"
           note="除了作业和项目，我也是会出门走走、寻找美食、打游戏和做饭的人。"
         />
@@ -196,7 +161,7 @@ export default function AboutPage() {
 
       <section className="mt-12">
         <SectionHead
-          index="06"
+          index="05"
           title="下一步"
           note="这门课结束后，还想继续补什么、做什么。"
         />
