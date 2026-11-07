@@ -181,7 +181,7 @@ export default function WorksBoard({ works, projects }) {
             <div
               className={
                 selectedProject?.cover
-                  ? "grid gap-5 sm:grid-cols-[280px_minmax(0,1fr)] sm:items-start sm:gap-6"
+                  ? "grid gap-5 sm:grid-cols-[1.1fr_0.9fr] sm:items-start sm:gap-6"
                   : ""
               }
             >
@@ -191,7 +191,7 @@ export default function WorksBoard({ works, projects }) {
                     src={selectedProject.cover}
                     alt={`${selected.title} 页面预览`}
                     fill
-                    sizes="(max-width: 768px) 90vw, 280px"
+                    sizes="(max-width: 768px) 90vw, 380px"
                     className="object-contain"
                   />
                 </div>
@@ -221,28 +221,28 @@ export default function WorksBoard({ works, projects }) {
                   </div>
                 </dl>
               </div>
-            </div>
 
-            <div className="mt-6">
-              <p className="text-sm font-semibold text-slate-100">我的过程</p>
-              <p className="mt-2 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-sm leading-7 text-slate-300">
-                {selected.whatIdid}
-              </p>
+              <div className="min-w-0 sm:col-start-1">
+                <p className="text-sm font-semibold text-slate-100">我的过程</p>
+                <p className="mt-2 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-sm leading-7 text-slate-300">
+                  {selected.whatIdid}
+                </p>
 
-              {selected.skills?.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {selected.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              )}
+                {selected.skills?.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {selected.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
-              <EntryArea project={selectedProject} />
+                <EntryArea project={selectedProject} />
+              </div>
             </div>
           </div>
         </div>
