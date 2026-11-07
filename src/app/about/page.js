@@ -24,21 +24,14 @@ function SectionHead({ index, title, note }) {
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
-      <p className="font-mono text-[10px] tracking-[0.2em] text-emerald-200/45">
-        ABOUT / 01
-      </p>
-      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">关于我</h1>
-      <p className="mt-4 max-w-2xl leading-7 text-slate-300/70">
-        一个正在学习用代码做东西的人。这里放我的照片、学习经历、能力、课程成果和日常，
-        也放这个作品集背后的过程。
-      </p>
+      <h1 className="text-3xl font-bold text-white sm:text-4xl">关于我</h1>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
         <section aria-label="个人照片">
           <AboutProfileCard photos={about.photos} />
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:mt-10">
+        <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 lg:mt-16">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <div>
               <p className="font-mono text-[9px] tracking-[0.18em] text-emerald-200/45">

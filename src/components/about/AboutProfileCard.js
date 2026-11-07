@@ -49,7 +49,7 @@ export default function AboutProfileCard({ photos }) {
         </div>
 
         <div className={styles.bubble} aria-hidden="true">
-          <strong>A DIFFERENT ME</strong>
+          <strong>CURIOUS · LEARNING · MAKING</strong>
         </div>
       </div>
     </div>
