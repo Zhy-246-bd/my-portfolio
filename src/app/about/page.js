@@ -23,10 +23,10 @@ function SectionHead({ index, title, note }) {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto max-w-5xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16">
       <h1 className="text-3xl font-bold text-white sm:text-4xl">关于我</h1>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
+      <div className="mt-10 grid gap-10 lg:-mt-40 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-6">
         <section aria-label="个人照片">
           <AboutProfileCard photos={about.photos} />
         </section>
