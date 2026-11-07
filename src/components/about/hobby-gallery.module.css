@@ -1,4 +1,4 @@
-﻿.item {
+.item {
   opacity: 0;
   animation: popCycle 7s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   animation-delay: var(--delay, 0s);
@@ -35,13 +35,5 @@
     opacity: 0;
     transform: translate(-50%, calc(-50% + 78px)) rotate(var(--r, 0deg))
       scale(0.82);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .item {
-    opacity: 1;
-    animation: none;
-    transform: translate(-50%, -50%) rotate(var(--r, 0deg));
   }
 }
