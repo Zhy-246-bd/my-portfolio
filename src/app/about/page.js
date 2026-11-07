@@ -62,7 +62,7 @@ export default function AboutPage() {
         </section>
       </div>
 
-      <section className="mt-12">
+      <section className="mt-24">
         <SectionHead
           index="01"
           title="我的故事"
