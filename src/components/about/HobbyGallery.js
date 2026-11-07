@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import styles from "./hobby-gallery.module.css";
 
 const photos = [
   {
@@ -92,17 +93,18 @@ export default function HobbyGallery() {
       className="relative mt-6 h-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[rgba(7,13,12,0.5)] sm:h-[520px]"
       aria-label="爱好照片墙"
     >
-      {photos.map((photo) => (
+      {photos.map((photo, index) => (
         <figure
           key={photo.src}
-          className="group absolute overflow-hidden rounded-xl border border-white/15 bg-black/30 shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
+          className={`${styles.item} group absolute overflow-hidden rounded-xl border border-white/15 bg-black/30 shadow-[0_20px_50px_rgba(0,0,0,0.45)]`}
           style={{
             left: `${photo.x}%`,
             top: `${photo.y}%`,
             width: `${photo.w}%`,
             zIndex: photo.z,
             aspectRatio: "4 / 3",
-            transform: `translate(-50%, -50%) rotate(${photo.r}deg)`,
+            "--r": `${photo.r}deg`,
+            "--delay": `${index * 0.72}s`,
           }}
         >
           <Image
