@@ -21,12 +21,6 @@ function EntryArea({ project }) {
         >
           访问项目 ↗
         </a>
-        <Link
-          href="/projects/"
-          className="text-sm font-medium text-indigo-600 hover:underline"
-        >
-          查看项目详情 ↗
-        </Link>
       </div>
     );
   }
@@ -36,12 +30,6 @@ function EntryArea({ project }) {
       <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-500">
         即将上线
       </span>
-      <Link
-        href="/projects/"
-        className="text-sm font-medium text-indigo-600 hover:underline"
-      >
-        查看项目详情 ↗
-      </Link>
     </div>
   );
 }
