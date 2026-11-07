@@ -186,13 +186,13 @@ export default function WorksBoard({ works, projects }) {
               }
             >
               {selectedProject?.cover && (
-                <div className="relative h-40 w-full overflow-hidden rounded-lg bg-black/20 sm:h-[190px]">
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-black/20">
                   <Image
                     src={selectedProject.cover}
                     alt={`${selected.title} 页面预览`}
                     fill
                     sizes="(max-width: 768px) 90vw, 340px"
-                    className="object-contain"
+                    className="object-cover"
                   />
                 </div>
               )}
