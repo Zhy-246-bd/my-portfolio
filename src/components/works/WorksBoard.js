@@ -165,7 +165,10 @@ export default function WorksBoard({ works, projects }) {
             aria-label="关闭详情"
           />
 
-          <div className="relative z-10 max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/15 bg-[#07100d] p-5 shadow-2xl sm:p-7">
+          <div
+            className="relative z-10 max-h-[88vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-white/15 bg-[#07100d] p-5 shadow-2xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:p-7"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             <button
               type="button"
               onClick={() => setSelected(null)}
@@ -176,7 +179,7 @@ export default function WorksBoard({ works, projects }) {
             </button>
 
             {selectedProject?.cover && (
-              <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-white/10">
+              <div className="relative h-40 w-full overflow-hidden rounded-xl border border-white/10 sm:h-52">
                 <Image
                   src={selectedProject.cover}
                   alt={`${selected.title} 页面预览`}
