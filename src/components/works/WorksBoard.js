@@ -214,34 +214,35 @@ export default function WorksBoard({ works, projects }) {
                   {selected.title}
                 </h2>
 
-                <dl className="mt-5 space-y-4 text-sm leading-7">
+                <dl className="mt-5 text-sm leading-7">
                   <div>
                     <dt className="font-semibold text-slate-100">作业要求</dt>
                     <dd className="mt-1 text-slate-400">{selected.goal}</dd>
                   </div>
-                  <div>
-                    <dt className="font-semibold text-slate-100">我的过程</dt>
-                    <dd className="mt-1 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-slate-300">
-                      {selected.whatIdid}
-                    </dd>
-                  </div>
                 </dl>
-
-                {selected.skills?.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {selected.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <EntryArea project={selectedProject} />
               </div>
+            </div>
+
+            <div className="mt-6">
+              <p className="text-sm font-semibold text-slate-100">我的过程</p>
+              <p className="mt-2 rounded-lg border border-emerald-200/10 bg-emerald-200/[0.05] p-4 text-sm leading-7 text-slate-300">
+                {selected.whatIdid}
+              </p>
+
+              {selected.skills?.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {selected.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded bg-white/[0.06] px-2.5 py-1 text-xs text-slate-400"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <EntryArea project={selectedProject} />
             </div>
           </div>
         </div>
