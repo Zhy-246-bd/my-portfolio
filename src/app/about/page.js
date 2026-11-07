@@ -26,7 +26,7 @@ export default function AboutPage() {
     <div className="mx-auto max-w-6xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16">
       <h1 className="text-3xl font-bold text-white sm:text-4xl">关于我</h1>
 
-      <div className="mt-10 grid gap-10 lg:-mt-40 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-8">
+      <div className="mt-10 grid gap-10 lg:-mt-32 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-8">
         <section aria-label="个人照片">
           <AboutProfileCard photos={about.photos} />
         </section>
