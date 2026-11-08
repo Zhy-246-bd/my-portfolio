@@ -415,7 +415,7 @@ export default function FluidTitle({
 
     const onWave = () => {
       if (variant === "cover") {
-        fluid.ripple(0.5, 0.54, 1.25);
+        fluid.ripple(0.5, 0.5, 1.25);
       }
     };
     if (variant === "cover") {
@@ -428,8 +428,8 @@ export default function FluidTitle({
       if (!isModuleStage || arrived) return;
       arrived = true;
       arrivalTimers.push(
-        window.setTimeout(() => fluid.ripple(0.5, 0.78, 1.05), 500),
-        window.setTimeout(() => fluid.ripple(0.5, 0.78, 0.55), 1150),
+        window.setTimeout(() => fluid.ripple(0.5, 0.5, 1.05), 500),
+        window.setTimeout(() => fluid.ripple(0.5, 0.5, 0.55), 1150),
       );
     };
     const onArrive = () => startArrival();
