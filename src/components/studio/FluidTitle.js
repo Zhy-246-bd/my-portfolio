@@ -423,18 +423,21 @@ export default function FluidTitle({
     }
 
     const arrivalTimers = [];
-    if (
-      isModuleStage &&
-      document.body.classList.contains("studio-arriving")
-    ) {
-      [1.1, 0.8, 0.55].forEach((strength, index) => {
-        arrivalTimers.push(
-          window.setTimeout(
-            () => fluid.ripple(0.5, 0.78, strength),
-            500 + index * 650,
-          ),
-        );
-      });
+    let arrived = false;
+    const startArrival = () => {
+      if (!isModuleStage || arrived) return;
+      arrived = true;
+      arrivalTimers.push(
+        window.setTimeout(() => fluid.ripple(0.5, 0.78, 1.05), 500),
+        window.setTimeout(() => fluid.ripple(0.5, 0.78, 0.55), 1150),
+      );
+    };
+    const onArrive = () => startArrival();
+    if (isModuleStage) {
+      window.addEventListener("studio-arrive", onArrive);
+      if (document.body.classList.contains("studio-arriving")) {
+        arrivalTimers.push(window.setTimeout(startArrival, 120));
+      }
     }
 
     const textTexture = gl.createTexture();
@@ -709,6 +712,7 @@ export default function FluidTitle({
       window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", updateTitleScroll);
       window.removeEventListener("studio-wave", onWave);
+      window.removeEventListener("studio-arrive", onArrive);
       arrivalTimers.forEach((timer) => window.clearTimeout(timer));
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);

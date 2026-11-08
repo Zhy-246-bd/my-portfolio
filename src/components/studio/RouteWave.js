@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import WaterVeil from "./WaterVeil";
 import styles from "./route-wave.module.css";
 
-const PUSH_DELAY = 620;
+const PUSH_DELAY = 650;
 
 const PRELOAD = {
   "/about": [
@@ -72,6 +71,7 @@ export default function RouteWave() {
     document.body.classList.remove("studio-departing");
     document.body.classList.add("studio-arriving");
     setPhase("reveal");
+    window.dispatchEvent(new CustomEvent("studio-arrive"));
     return undefined;
   }, [pathname, phase, target]);
 
@@ -81,6 +81,7 @@ export default function RouteWave() {
       document.body.classList.remove("studio-departing");
       document.body.classList.add("studio-arriving");
       setPhase("reveal");
+      window.dispatchEvent(new CustomEvent("studio-arrive"));
     }, 2800);
     return () => window.clearTimeout(fallback);
   }, [phase]);
@@ -105,8 +106,6 @@ export default function RouteWave() {
       className={styles.overlay}
       data-phase={phase}
       aria-hidden="true"
-    >
-      <WaterVeil phase={phase} />
-    </div>
+    />
   );
 }
