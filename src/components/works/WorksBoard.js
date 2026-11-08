@@ -51,7 +51,7 @@ export default function WorksBoard({ works, projects }) {
 
   return (
     <>
-      <div className="mt-28 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-36 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {sorted.map((work) => {
           const project = work.projectId
             ? projectById[work.projectId]
