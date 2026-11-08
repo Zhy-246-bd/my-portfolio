@@ -102,6 +102,8 @@ const INITIAL_SLOTS = INITIAL_LAYOUTS.map((layout, index) => ({
   id: index,
   photo: PHOTO_POOL[index],
   ...layout,
+  dur: 6.4 + (index % 4) * 0.75,
+  delay: -(index * 1.15),
 }));
 
 function randomLayout(existing = []) {
@@ -146,6 +148,8 @@ function randomSlots() {
       id: index,
       photo,
       ...layout,
+      dur: 5.8 + Math.random() * 4,
+      delay: -Math.random() * 9,
     };
   });
 }
@@ -203,7 +207,7 @@ export default function HobbyGallery() {
       className={`relative mt-6 h-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[rgba(7,13,12,0.5)] sm:h-[520px] ${active ? "" : styles.paused}`}
       aria-label="爱好照片墙"
     >
-      {slots.map((slot, index) => (
+      {slots.map((slot) => (
         <figure
           key={slot.id}
           className={`${styles.item} group absolute overflow-hidden rounded-xl border border-white/15 bg-black/30 shadow-[0_20px_50px_rgba(0,0,0,0.45)]`}
@@ -214,7 +218,8 @@ export default function HobbyGallery() {
             zIndex: slot.z,
             aspectRatio: "4 / 3",
             "--r": `${slot.r}deg`,
-            "--delay": `${index * 0.4}s`,
+            "--dur": `${slot.dur ?? 7}s`,
+            "--delay": `${slot.delay ?? 0}s`,
           }}
           onAnimationIteration={() => rotateSlot(slot.id)}
         >
