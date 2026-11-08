@@ -1,6 +1,6 @@
 .item {
   opacity: 0;
-  animation: popCycle var(--dur, 7s) cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: popCycle 7s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   animation-delay: var(--delay, 0s);
   animation-fill-mode: both;
   will-change: transform, opacity;
@@ -26,11 +26,11 @@
     opacity: 1;
     transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1);
   }
-  70% {
+  86% {
     opacity: 1;
     transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1);
   }
-  84% {
+  94% {
     opacity: 0;
     transform: translate(-50%, calc(-50% + 30px)) rotate(var(--r, 0deg))
       scale(0.92);

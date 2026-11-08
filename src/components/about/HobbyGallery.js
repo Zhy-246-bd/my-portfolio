@@ -83,55 +83,52 @@ const PHOTO_POOL = [
   },
 ];
 
-const SLOT_COUNT = 10;
+const SLOT_COUNT = 12;
 
-const INITIAL_LAYOUTS = [
-  { x: 20, y: 27, w: 27, z: 2, r: -6 },
-  { x: 44, y: 28, w: 30, z: 3, r: 3 },
-  { x: 71, y: 29, w: 25, z: 2, r: 5 },
-  { x: 27, y: 58, w: 29, z: 4, r: 4 },
-  { x: 55, y: 52, w: 33, z: 5, r: -3 },
-  { x: 81, y: 61, w: 24, z: 3, r: 6 },
-  { x: 40, y: 72, w: 25, z: 4, r: -4 },
-  { x: 67, y: 74, w: 23, z: 2, r: 3 },
-  { x: 13, y: 70, w: 22, z: 2, r: -5 },
-  { x: 88, y: 45, w: 21, z: 6, r: 7 },
+const ZONES = [
+  { x: 12, y: 29 },
+  { x: 28, y: 27 },
+  { x: 44, y: 27 },
+  { x: 60, y: 27 },
+  { x: 76, y: 28 },
+  { x: 88, y: 30 },
+  { x: 14, y: 70 },
+  { x: 30, y: 69 },
+  { x: 46, y: 70 },
+  { x: 62, y: 69 },
+  { x: 78, y: 70 },
+  { x: 88, y: 68 },
 ];
+
+const INITIAL_LAYOUTS = ZONES.map((zone, index) => ({
+  ...zone,
+  zone: index,
+  w: 20,
+  z: (index % 5) + 1,
+  r: index % 2 === 0 ? -4 : 4,
+}));
 
 const INITIAL_SLOTS = INITIAL_LAYOUTS.map((layout, index) => ({
   id: index,
   photo: PHOTO_POOL[index],
   ...layout,
-  dur: 6.4 + (index % 4) * 0.75,
-  delay: -(index * 1.15),
 }));
 
-function randomLayout(existing = []) {
-  let best = null;
-  let bestScore = -1;
-
-  for (let attempt = 0; attempt < 28; attempt += 1) {
-    const candidate = {
-      x: 14 + Math.random() * 72,
-      y: 18 + Math.random() * 62,
-      w: 21 + Math.random() * 9,
-      z: 1 + Math.floor(Math.random() * 10),
-      r: -8 + Math.random() * 16,
-    };
-    const score = existing.length
-      ? Math.min(
-          ...existing.map((slot) =>
-            Math.hypot(candidate.x - slot.x, candidate.y - slot.y),
-          ),
-        )
-      : 100;
-    if (score > bestScore) {
-      best = candidate;
-      bestScore = score;
-    }
-  }
-
-  return best;
+function zoneLayout(existing = []) {
+  const used = new Set(existing.map((slot) => slot.zone));
+  const free = ZONES.map((zone, index) => index).filter(
+    (index) => !used.has(index),
+  );
+  const zone = free[Math.floor(Math.random() * free.length)] ?? 0;
+  const base = ZONES[zone];
+  return {
+    zone,
+    x: base.x + (Math.random() - 0.5) * 4,
+    y: base.y + (Math.random() - 0.5) * 4,
+    w: 20,
+    z: 1 + Math.floor(Math.random() * 10),
+    r: -5 + Math.random() * 10,
+  };
 }
 
 function randomSlots() {
@@ -142,14 +139,12 @@ function randomSlots() {
   }
   const layouts = [];
   return shuffled.slice(0, SLOT_COUNT).map((photo, index) => {
-    const layout = randomLayout(layouts);
+    const layout = zoneLayout(layouts);
     layouts.push(layout);
     return {
       id: index,
       photo,
       ...layout,
-      dur: 5.8 + Math.random() * 4,
-      delay: -Math.random() * 9,
     };
   });
 }
@@ -168,7 +163,7 @@ export default function HobbyGallery() {
     if (!node) return undefined;
     const observer = new IntersectionObserver(
       (entries) => setActive(entries[0].isIntersecting),
-      { threshold: 0.05, rootMargin: "120px 0px" },
+      { threshold: 0.05, rootMargin: "420px 0px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -194,7 +189,7 @@ export default function HobbyGallery() {
           ? {
               ...item,
               photo: nextPhoto,
-              ...randomLayout(current.filter((slot) => slot.id !== id)),
+              ...zoneLayout(current.filter((slot) => slot.id !== id)),
             }
           : item,
       );
@@ -207,7 +202,7 @@ export default function HobbyGallery() {
       className={`relative mt-6 h-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[rgba(7,13,12,0.5)] sm:h-[520px] ${active ? "" : styles.paused}`}
       aria-label="爱好照片墙"
     >
-      {slots.map((slot) => (
+      {slots.map((slot, index) => (
         <figure
           key={slot.id}
           className={`${styles.item} group absolute overflow-hidden rounded-xl border border-white/15 bg-black/30 shadow-[0_20px_50px_rgba(0,0,0,0.45)]`}
@@ -218,8 +213,7 @@ export default function HobbyGallery() {
             zIndex: slot.z,
             aspectRatio: "4 / 3",
             "--r": `${slot.r}deg`,
-            "--dur": `${slot.dur ?? 7}s`,
-            "--delay": `${slot.delay ?? 0}s`,
+            "--delay": `${index * -(7 / SLOT_COUNT)}s`,
           }}
           onAnimationIteration={() => rotateSlot(slot.id)}
         >
