@@ -473,18 +473,8 @@ const modules = [
     pages: iterationPages,
   },
   {
-    key: "featured",
-    no: "06",
-    label: "代表作",
-    file: "featured.md",
-    eyebrow: "FEATURED WORK",
-    title: "标志性成果",
-    lead: "从所有作品里挑出最满意的一个，按问题、用户、方案、功能、过程、演示、复盘讲透。",
-    pages: [{ opener: true, content: <FeaturedContent /> }],
-  },
-  {
     key: "reflection",
-    no: "07",
+    no: "06",
     label: "复盘",
     file: "reflection.md",
     eyebrow: "FINAL REFLECTION",
@@ -494,7 +484,7 @@ const modules = [
   },
   {
     key: "credits",
-    no: "08",
+    no: "07",
     label: "引用",
     file: "credits.md",
     eyebrow: "CREDITS",

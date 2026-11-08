@@ -30,7 +30,7 @@ export default function ModuleShell({
             ← 回到首页
           </Link>
           <span>
-            {index} / 07 · {title}
+            {index} / 06 · {title}
           </span>
         </div>
 

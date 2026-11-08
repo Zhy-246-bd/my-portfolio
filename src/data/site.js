@@ -26,7 +26,6 @@ export const navItems = [
   { href: "/projects", label: "项目成果" },
   { href: "/process", label: "过程证据" },
   { href: "/iterations", label: "迭代记录" },
-  { href: "/featured", label: "标志性成果" },
   { href: "/reflection", label: "学习复盘" },
   { href: "/credits", label: "引用声明" },
 ];
@@ -62,12 +61,6 @@ export const sections = [
     emoji: "🔄",
     title: "迭代记录",
     desc: "每次改了什么、为什么改、效果如何、下一步做什么。",
-  },
-  {
-    href: "/featured",
-    emoji: "⭐",
-    title: "标志性成果",
-    desc: "我最满意的一个代表作，单独成页详细讲清楚。",
   },
   {
     href: "/reflection",

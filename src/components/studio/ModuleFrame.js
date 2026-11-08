@@ -15,8 +15,7 @@ const modules = {
   "/projects": { title: "PROJECTS", label: "项目成果", index: "03" },
   "/process": { title: "PROCESS", label: "过程证据", index: "04" },
   "/iterations": { title: "ITERATIONS", label: "迭代记录", index: "05" },
-  "/featured": { title: "FEATURED", label: "标志性成果", index: "06" },
-  "/reflection": { title: "REFLECTION", label: "学习复盘", index: "07" },
+  "/reflection": { title: "REFLECTION", label: "学习复盘", index: "06" },
 };
 
 export default function ModuleFrame({ children }) {

@@ -11,7 +11,6 @@ const modules = [
   { href: "/projects", label: "项目成果", sub: "PROJECTS" },
   { href: "/process", label: "过程证据", sub: "PROCESS" },
   { href: "/iterations", label: "迭代记录", sub: "ITERATIONS" },
-  { href: "/featured", label: "标志性成果", sub: "FEATURED" },
   { href: "/reflection", label: "学习复盘", sub: "REFLECTION" },
 ];
 
@@ -78,7 +77,7 @@ export default function StudioSidebar() {
       >
         <div className={styles.sidebarHead}>
           <span>INDEX</span>
-          <span>07 MODULES</span>
+          <span>06 MODULES</span>
         </div>
 
         <nav className={styles.sidebarNav}>

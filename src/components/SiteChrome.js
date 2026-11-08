@@ -14,7 +14,6 @@ export default function SiteChrome({ children }) {
     "/projects",
     "/process",
     "/iterations",
-    "/featured",
     "/reflection",
   ];
 
