@@ -111,11 +111,6 @@ export default function ProjectStack({ projects }) {
 
   return (
     <section className={styles.floatSection} aria-label="项目成果">
-      <div className={styles.floatHead}>
-        <span>SELECTED WORKS</span>
-        <span>08 PROJECTS / 2026</span>
-      </div>
-
       <div className={styles.floatField} ref={fieldRef}>
         {projects.slice(0, layout.length).map((project, index) => {
           const item = layout[index];
@@ -150,9 +145,6 @@ export default function ProjectStack({ projects }) {
                   />
                 </span>
                 <span className={styles.floatMeta}>
-                  <span className={styles.floatNumber}>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   <strong>{project.name}</strong>
                   <span className={styles.floatArrow} aria-hidden="true">
                     ↗
@@ -163,10 +155,6 @@ export default function ProjectStack({ projects }) {
           );
         })}
       </div>
-
-      <p className={styles.floatHint}>
-        项目图片浮在水面，跟着水流缓慢漂移。
-      </p>
     </section>
   );
 }

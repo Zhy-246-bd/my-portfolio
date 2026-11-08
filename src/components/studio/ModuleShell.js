@@ -24,18 +24,7 @@ export default function ModuleShell({
       </div>
       <span className={styles.moduleShade} aria-hidden="true" />
 
-      <header className={styles.moduleHero} data-module-hero>
-        <div className={styles.moduleTopline}>
-          <span>
-            {index} / 06 · {title}
-          </span>
-        </div>
-
-        <div className={styles.moduleHeroFoot}>
-          <span>{label}</span>
-          <span>{title}</span>
-        </div>
-      </header>
+      <header className={styles.moduleHero} data-module-hero aria-hidden="true" />
 
       <Link href="/studio" className={styles.moduleBackFixed}>
         ← 回到首页

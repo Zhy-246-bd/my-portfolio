@@ -26,13 +26,6 @@ export default function ProjectDetail({ projects }) {
 
   return (
     <section className={styles.detailSection} aria-label="项目介绍">
-      <div className={styles.detailHead}>
-        <span>PROJECT INDEX</span>
-        <span>
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-        </span>
-      </div>
-
       <div className={styles.detailFrame}>
         <button
           type="button"
@@ -74,13 +67,6 @@ export default function ProjectDetail({ projects }) {
             )}
 
             <div className={styles.detailHeading}>
-              <div className={styles.detailTopline}>
-                <span>
-                  {String(index + 1).padStart(2, "0")} / PROJECT
-                </span>
-                <span>{project.role || "独立完成"}</span>
-              </div>
-
               <h2>{project.name}</h2>
             </div>
           </div>
