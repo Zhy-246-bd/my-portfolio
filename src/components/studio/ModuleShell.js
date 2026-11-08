@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import FluidTitle from "./FluidTitle";
+import ModuleNav from "./ModuleNav";
 import styles from "./studio.module.css";
 
 export default function ModuleShell({
@@ -29,6 +30,8 @@ export default function ModuleShell({
       <Link href="/studio" className={styles.moduleBackFixed}>
         ← 回到首页
       </Link>
+
+      <ModuleNav />
 
       <div className={styles.moduleBody} data-module-body>
         <div className={styles.moduleSheet}>{children}</div>

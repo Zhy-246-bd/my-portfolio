@@ -428,8 +428,8 @@ export default function FluidTitle({
       if (!isModuleStage || arrived) return;
       arrived = true;
       arrivalTimers.push(
-        window.setTimeout(() => fluid.ripple(0.5, 0.5, 1.05), 500),
-        window.setTimeout(() => fluid.ripple(0.5, 0.5, 0.55), 1150),
+        window.setTimeout(() => fluid.ripple(0.5, 0.5, 1.05), 220),
+        window.setTimeout(() => fluid.ripple(0.5, 0.5, 0.55), 850),
       );
     };
     const onArrive = () => startArrival();
