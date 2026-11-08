@@ -51,7 +51,6 @@ export default function ReflectionStory({ reflection }) {
           <br />
           <span>是知道下一步做什么。</span>
         </p>
-        <p className={styles.intro}>{reflection.intro}</p>
       </section>
 
       <div className={styles.layout}>
