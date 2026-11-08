@@ -43,6 +43,33 @@ body.studio-arriving {
   background: #050908;
 }
 
+/* 可读性：把页面里偏小的辅助文字统一抬高一级 */
+.text-xs {
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+
+.text-sm {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+[class*="text-[10px]"] {
+  font-size: 0.75rem;
+}
+
+[class*="text-[11px]"] {
+  font-size: 0.78125rem;
+}
+
+[class*="text-[12px]"] {
+  font-size: 0.8125rem;
+}
+
+[class*="text-[13px]"] {
+  font-size: 0.875rem;
+}
+
 /* 离开当前页面时先慢慢变淡，像被水推散 */
 body.studio-departing [data-studio-cover],
 body.studio-departing [data-module-page] {

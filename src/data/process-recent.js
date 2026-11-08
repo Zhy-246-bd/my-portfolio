@@ -1,4 +1,4 @@
-﻿export const recentProcess = {
+export const recentProcess = {
   prompts: [
     {
       date: "2026-11-04",

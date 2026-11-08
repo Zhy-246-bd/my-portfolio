@@ -78,8 +78,8 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  color: rgba(223, 234, 229, 0.55);
-  font-size: 12.5px;
+  color: rgba(223, 234, 229, 0.65);
+  font-size: 13.5px;
 }
 
 .mouse {
@@ -212,7 +212,7 @@
   background: #07100e;
   color: rgba(169, 232, 221, 0.82);
   font-family: var(--studio-mono);
-  font-size: 9.5px;
+  font-size: 10.5px;
   letter-spacing: 0.04em;
   transform: translate(-50%, -50%);
 }
@@ -308,16 +308,16 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  color: rgba(223, 234, 229, 0.55);
+  color: rgba(223, 234, 229, 0.64);
   font-family: var(--studio-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.04em;
 }
 
 .card h2 {
   margin: 8px 0 10px;
   color: #ffffff;
-  font-size: 15.5px;
+  font-size: 16.5px;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.4;
@@ -339,9 +339,9 @@
 }
 
 .card dt {
-  color: rgba(169, 232, 221, 0.65);
+  color: rgba(169, 232, 221, 0.72);
   font-family: var(--studio-mono);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -350,8 +350,8 @@
   display: -webkit-box;
   overflow: hidden;
   margin: 0;
-  color: rgba(237, 247, 242, 0.86);
-  font-size: 12px;
+  color: rgba(237, 247, 242, 0.9);
+  font-size: 13px;
   line-height: 1.65;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -609,5 +609,6 @@
     gap: 6px;
   }
 }
+
 
 
