@@ -161,29 +161,6 @@ export default function AboutPage() {
         </Link>
       </section>
 
-      <section className="mt-12">
-        <SectionHead
-          index="05"
-          title="下一步"
-          note="这门课结束后，还想继续补什么、做什么。"
-        />
-        <div className="mt-5 grid gap-3">
-          {about.goals.map((goal) => (
-            <article
-              key={goal.period}
-              className="rounded-xl border border-white/10 bg-white/[0.025] p-5"
-            >
-              <p className="font-mono text-[11px] tracking-[0.14em] text-emerald-200/45">
-                {goal.period}
-              </p>
-              <p className="mt-2 text-base leading-8 text-slate-300/75">
-                {goal.text}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="mt-12 rounded-2xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
         <h2 className="text-base font-semibold text-slate-100">联系我</h2>
         <p className="mt-2 text-base text-slate-400">
