@@ -57,8 +57,8 @@
   margin: 30px 0 0;
   padding-left: 18px;
   border-left: 1px solid rgba(169, 232, 221, 0.44);
-  color: rgba(223, 234, 229, 0.58);
-  font-size: 13px;
+  color: rgba(223, 234, 229, 0.62);
+  font-size: 14px;
   line-height: 1.95;
 }
 
@@ -108,7 +108,7 @@
   padding: 8px 0 8px 12px;
   border-left: 1px solid rgba(255, 255, 255, 0.09);
   color: rgba(223, 234, 229, 0.4);
-  font-size: 11px;
+  font-size: 12px;
   text-decoration: none;
   transition:
     color 0.2s ease,
@@ -151,10 +151,6 @@
 }
 
 .sectionHead {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
-  gap: 18px;
-  align-items: baseline;
   margin-bottom: 28px;
 }
 
@@ -167,7 +163,7 @@
 .sectionHead h2 {
   margin: 0;
   color: #edf7f2;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
   letter-spacing: -0.035em;
 }
@@ -184,9 +180,7 @@
 }
 
 .change {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
-  gap: 20px;
+  display: block;
   padding: 26px 0 28px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -232,8 +226,8 @@
   display: block;
   margin-bottom: 7px;
   font-family: var(--studio-mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  letter-spacing: 0.08em;
 }
 
 .before span {
@@ -247,7 +241,7 @@
 .before p,
 .after p {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.85;
 }
 
@@ -275,9 +269,7 @@
 }
 
 .method {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 16px;
+  display: block;
   padding: 23px 22px 23px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: background-color 0.2s ease;
@@ -306,15 +298,15 @@
 .method h3 {
   margin: 0;
   color: #eaf5f0;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 1.5;
 }
 
 .method p {
   margin: 8px 0 0;
-  color: rgba(223, 234, 229, 0.48);
-  font-size: 11.5px;
+  color: rgba(223, 234, 229, 0.52);
+  font-size: 13px;
   line-height: 1.8;
 }
 
@@ -361,8 +353,8 @@
 .failure p {
   max-width: 690px;
   margin: 11px 0 0;
-  color: rgba(223, 234, 229, 0.52);
-  font-size: 12px;
+  color: rgba(223, 234, 229, 0.56);
+  font-size: 13px;
   line-height: 1.9;
 }
 
@@ -388,16 +380,16 @@
 }
 
 .period {
-  color: rgba(169, 232, 221, 0.52);
+  color: rgba(169, 232, 221, 0.58);
   font-family: var(--studio-mono);
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.05em;
 }
 
 .planRow p {
   margin: 0;
-  color: rgba(237, 247, 242, 0.78);
-  font-size: 13px;
+  color: rgba(237, 247, 242, 0.8);
+  font-size: 14px;
   line-height: 1.8;
 }
 
@@ -417,7 +409,7 @@
 
 .footer a {
   color: rgba(169, 232, 221, 0.68);
-  font-size: 11px;
+  font-size: 12px;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -571,4 +563,5 @@
     font-size: 12px;
   }
 }
+
 

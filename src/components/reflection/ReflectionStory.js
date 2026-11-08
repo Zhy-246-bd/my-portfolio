@@ -11,12 +11,10 @@ const SECTIONS = [
   { id: "plan", no: "04", label: "下一步" },
 ];
 
-function SectionHead({ no, title, note }) {
+function SectionHead({ title }) {
   return (
     <div className={styles.sectionHead}>
-      <span className={styles.sectionNo}>{no}</span>
       <h2>{title}</h2>
-      <p>{note}</p>
     </div>
   );
 }
@@ -47,13 +45,7 @@ export default function ReflectionStory({ reflection }) {
     <div className={styles.page}>
       <h1 className={styles.srOnly}>学习复盘</h1>
 
-      <div className={styles.metaLine}>
-        <span>学习复盘</span>
-        <span>从模板到独立完成 / 2026</span>
-      </div>
-
       <section className={styles.opening}>
-        <p className={styles.eyebrow}>一次把过程讲清楚的复盘</p>
         <p className={styles.headline}>
           不是学会了几个工具，
           <br />
@@ -75,7 +67,6 @@ export default function ReflectionStory({ reflection }) {
                 href={`#${section.id}`}
                 data-active={active === section.id ? "true" : "false"}
               >
-                <span>{section.no}</span>
                 {section.label}
               </a>
             ))}
@@ -84,18 +75,11 @@ export default function ReflectionStory({ reflection }) {
 
         <div className={styles.content}>
           <section id="ability" className={styles.section}>
-            <SectionHead
-              no="01"
-              title="能力变化"
-              note="同一件事，前后两种做法"
-            />
+            <SectionHead title="能力变化" />
 
             <div className={styles.changes}>
-              {reflection.abilityChanges.map((item, index) => (
+              {reflection.abilityChanges.map((item) => (
                 <article key={item.ability} className={styles.change}>
-                  <span className={styles.changeNo}>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
                   <div>
                     <h3>{item.ability}</h3>
                     <div className={styles.compare}>
@@ -118,16 +102,11 @@ export default function ReflectionStory({ reflection }) {
           </section>
 
           <section id="methods" className={styles.section}>
-            <SectionHead
-              no="02"
-              title="做事的办法"
-              note="不是灵感，是重复使用的工作方式"
-            />
+            <SectionHead title="做事的办法" />
 
             <div className={styles.methods}>
-              {reflection.methods.map((item, index) => (
+              {reflection.methods.map((item) => (
                 <article key={item.name} className={styles.method}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
                   <div>
                     <h3>{item.name}</h3>
                     <p>{item.detail}</p>
@@ -138,18 +117,13 @@ export default function ReflectionStory({ reflection }) {
           </section>
 
           <section id="failures" className={styles.section}>
-            <SectionHead
-              no="03"
-              title="踩过的坑"
-              note="真正留下来的，是修好它的过程"
-            />
+            <SectionHead title="踩过的坑" />
 
             <div className={styles.failures}>
-              {reflection.failures.map((item, index) => (
+              {reflection.failures.map((item) => (
                 <article key={item.what} className={styles.failure}>
                   <div className={styles.failureMark}>
                     <span>坑</span>
-                    {String(index + 1).padStart(2, "0")}
                   </div>
                   <div>
                     <h3>{item.what}</h3>
@@ -161,11 +135,7 @@ export default function ReflectionStory({ reflection }) {
           </section>
 
           <section id="plan" className={styles.section}>
-            <SectionHead
-              no="04"
-              title="下一步"
-              note="把这次学会的，继续用下去"
-            />
+            <SectionHead title="下一步" />
 
             <div className={styles.plan}>
               {reflection.plan.map((item) => (
@@ -190,3 +160,4 @@ export default function ReflectionStory({ reflection }) {
     </div>
   );
 }
+

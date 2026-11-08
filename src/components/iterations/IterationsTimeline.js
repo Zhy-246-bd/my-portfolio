@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./iterations.module.css";
@@ -73,14 +73,11 @@ export default function IterationsTimeline({ iterations }) {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <div>
-          <p className={styles.eyebrow}>31 个版本 · 2026.09.28 — 现在</p>
-          <h2 className={styles.heading}>
-            31 次迭代，
-            <br />
-            <span>把网站往右推。</span>
-          </h2>
-        </div>
+        <h2 className={styles.heading}>
+          31 次迭代，
+          <br />
+          <span>把网站往右推。</span>
+        </h2>
         <p className={styles.lead}>
           课程要求网站必须持续迭代。这里不是 31 张总结卡，而是一条从
           2026.09.28 延伸到现在的横轴：每一次改动都带着版本、原因、结果和下一步。
@@ -88,17 +85,12 @@ export default function IterationsTimeline({ iterations }) {
       </header>
 
       <div className={styles.control}>
-        <div className={styles.trackMeta}>
-          <span>v1</span>
-          <div className={styles.progress} aria-hidden="true">
-            <span style={{ width: `${progress * 100}%` }} />
-          </div>
-          <span>v31</span>
+        <div className={styles.progress} aria-hidden="true">
+          <span style={{ width: `${progress * 100}%` }} />
         </div>
-        <div className={styles.hint}>
-          <span className={styles.mouse}>滚轮</span>
-          <span>向下滚动 / 左右滑动，时间向右走</span>
-        </div>
+        <p className={styles.hint}>
+          向下滚动 / 左右滑动，时间向右走
+        </p>
       </div>
 
       <div
@@ -147,11 +139,6 @@ export default function IterationsTimeline({ iterations }) {
             <p>2026.11 · 还在继续</p>
           </div>
         </div>
-      </div>
-
-      <div className={styles.footerNote}>
-        <span>滚轮在时间轴内只负责横向移动</span>
-        <span>共 {iterations.length} 次迭代</span>
       </div>
     </div>
   );

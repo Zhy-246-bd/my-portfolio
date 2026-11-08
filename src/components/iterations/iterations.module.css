@@ -1,5 +1,6 @@
-.page {
+﻿.page {
   width: 100%;
+  margin-top: -50px;
   color: #dfeae5;
 }
 
@@ -8,7 +9,7 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
   gap: clamp(28px, 6vw, 80px);
   align-items: end;
-  padding: 8px 0 30px;
+  padding: 0 0 26px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -37,8 +38,8 @@
 .lead {
   margin: 0;
   max-width: 430px;
-  color: rgba(223, 234, 229, 0.55);
-  font-size: 12.5px;
+  color: rgba(223, 234, 229, 0.62);
+  font-size: 14px;
   line-height: 1.9;
 }
 
@@ -80,8 +81,8 @@
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  color: rgba(223, 234, 229, 0.45);
-  font-size: 10px;
+  color: rgba(223, 234, 229, 0.55);
+  font-size: 12.5px;
 }
 
 .mouse {
@@ -209,7 +210,7 @@
   background: #07100e;
   color: rgba(169, 232, 221, 0.82);
   font-family: var(--studio-mono);
-  font-size: 8px;
+  font-size: 9.5px;
   letter-spacing: 0.04em;
   transform: translate(-50%, -50%);
 }
@@ -255,14 +256,14 @@
   gap: 10px;
   color: rgba(223, 234, 229, 0.34);
   font-family: var(--studio-mono);
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.04em;
 }
 
 .card h2 {
   margin: 8px 0 10px;
   color: #edf7f2;
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.4;
@@ -286,7 +287,7 @@
 .card dt {
   color: rgba(169, 232, 221, 0.4);
   font-family: var(--studio-mono);
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -296,8 +297,8 @@
   overflow: hidden;
   margin: 0;
   color: rgba(223, 234, 229, 0.56);
-  font-size: 10px;
-  line-height: 1.62;
+  font-size: 11.5px;
+  line-height: 1.65;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -326,8 +327,8 @@
   left: 24px;
   color: rgba(169, 232, 221, 0.5);
   font-family: var(--studio-mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 11px;
+  letter-spacing: 0.1em;
 }
 
 .tail p {
@@ -403,3 +404,5 @@
     gap: 6px;
   }
 }
+
+
