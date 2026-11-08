@@ -422,6 +422,21 @@ export default function FluidTitle({
       window.addEventListener("studio-wave", onWave);
     }
 
+    const arrivalTimers = [];
+    if (
+      isModuleStage &&
+      document.body.classList.contains("studio-arriving")
+    ) {
+      [1.1, 0.8, 0.55].forEach((strength, index) => {
+        arrivalTimers.push(
+          window.setTimeout(
+            () => fluid.ripple(0.5, 0.78, strength),
+            500 + index * 650,
+          ),
+        );
+      });
+    }
+
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textTexture);
@@ -694,6 +709,7 @@ export default function FluidTitle({
       window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", updateTitleScroll);
       window.removeEventListener("studio-wave", onWave);
+      arrivalTimers.forEach((timer) => window.clearTimeout(timer));
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
       if (sceneTexture) gl.deleteTexture(sceneTexture);

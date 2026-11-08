@@ -5,12 +5,21 @@ import { useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
 const PUSH_DELAY = 620;
-const REVEAL_DELAY = 980;
+const REVEAL_DELAY = 1100;
+
+const PRELOAD = {
+  "/about": [
+    "/images/about/profile-1.webp",
+    "/images/about/profile-2.webp",
+    "/images/about/profile-3.webp",
+  ],
+};
 
 export default function RouteWave() {
   const router = useRouter();
   const [phase, setPhase] = useState("idle");
   const timers = useRef([]);
+  const preloaded = useRef([]);
 
   const clearTimers = () => {
     timers.current.forEach((timer) => window.clearTimeout(timer));
@@ -27,15 +36,23 @@ export default function RouteWave() {
       document.body.classList.add("studio-arriving");
       router.prefetch(href);
 
+      const target = href.replace(/\/+$/, "") || "/";
+      (PRELOAD[target] || []).forEach((src) => {
+        const image = new window.Image();
+        image.src = src;
+        preloaded.current.push(image);
+      });
+
       timers.current.push(
         window.setTimeout(() => router.push(href), PUSH_DELAY),
         window.setTimeout(() => {
           setPhase("reveal");
+          window.dispatchEvent(new CustomEvent("studio-arrive"));
         }, REVEAL_DELAY),
         window.setTimeout(() => {
           setPhase("idle");
           document.body.classList.remove("studio-arriving");
-        }, REVEAL_DELAY + 900),
+        }, REVEAL_DELAY + 1100),
       );
     };
 
