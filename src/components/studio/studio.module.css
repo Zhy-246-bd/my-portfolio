@@ -1280,14 +1280,13 @@
 
 .moduleNav {
   position: fixed;
-  top: 50%;
-  left: 20px;
+  top: 64px;
+  left: 24px;
   z-index: 130;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  transform: translateY(-50%);
 }
 
 .moduleNavToggle {
@@ -1321,8 +1320,8 @@
 }
 
 .moduleNavPanel {
-  width: 176px;
-  padding: 6px;
+  width: 120px;
+  padding: 5px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   background: rgba(5, 12, 10, 0.84);
@@ -1345,12 +1344,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 8px 10px;
+  gap: 8px;
+  padding: 7px 8px;
   border-radius: 9px;
   color: rgba(230, 240, 236, 0.62);
   font-family: var(--studio-sans);
-  font-size: 13px;
+  font-size: 12.5px;
   text-decoration: none;
   transition:
     color 0.2s ease,
@@ -1370,16 +1369,14 @@
 
 @media (max-width: 640px) {
   .moduleNav {
-    top: auto;
-    bottom: 16px;
+    top: 62px;
+    bottom: auto;
     left: 12px;
     transform: none;
   }
 
   .moduleNavPanel {
-    position: absolute;
-    bottom: 44px;
-    left: 0;
-    width: 184px;
+    position: static;
+    width: 120px;
   }
 }
