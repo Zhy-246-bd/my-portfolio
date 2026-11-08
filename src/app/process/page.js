@@ -144,7 +144,7 @@ export default function ProcessPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto max-w-4xl px-4 py-12 -mt-20 sm:px-6 sm:py-16 sm:-mt-24 lg:-mt-28">
       <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">过程证据</h1>
       <p className="mt-4 leading-7 text-slate-600">
         这一页记录我是怎么做这个网站的：动手前想清楚要什么、和 AI
