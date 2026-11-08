@@ -49,7 +49,6 @@ export default function ModuleNav() {
               onClick={() => setOpen(false)}
             >
               <span>{module.label}</span>
-              <span aria-hidden="true">↗</span>
             </Link>
           );
         })}
