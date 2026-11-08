@@ -103,7 +103,7 @@ void main() {
   );
   vec2 flowVelocity = texture2D(uVelocity, uv).xy;
   vec2 textUv = clamp(
-    uv + (flowNoise * 0.012 + flowVelocity * 0.04) * uCrisp,
+    uv + (flowNoise * 0.012 + flowVelocity * 0.022) * uCrisp,
     vec2(0.0),
     vec2(1.0)
   );
@@ -443,14 +443,7 @@ export default function FluidTitle({
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1f(
-      uCrisp,
-      variant === "moduleFull" ||
-        variant === "moduleStage" ||
-        variant === "cover"
-        ? 1
-        : 0,
-    );
+    gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
     gl.uniform1f(uTitleScale, 1);
     gl.uniform1f(uTitleOffset, 0);
     gl.uniform1f(uTitleOpacity, 1);
