@@ -91,7 +91,7 @@ function SectionNav({ active, onSelect, bottom = false }) {
             onClick={() => onSelect(section.id)}
             aria-pressed={isActive}
             className={
-              "grid min-w-0 grid-cols-1 items-center gap-1.5 rounded-xl border px-2 py-2.5 text-left backdrop-blur-[14px] transition-colors duration-200 sm:grid-cols-[20px_minmax(0,1fr)_14px] sm:gap-[9px] sm:px-3 sm:py-2.5 " +
+              "grid min-w-0 grid-cols-1 items-center gap-1.5 rounded-xl border px-2 py-2.5 text-left backdrop-blur-[14px] transition-colors duration-200 sm:grid-cols-[20px_minmax(0,1fr)] sm:gap-[9px] sm:px-3 sm:py-2.5 " +
               (isActive
                 ? "border-[rgba(169,232,221,0.48)] bg-[rgba(16,34,30,0.86)] text-[#f5f8f4]"
                 : "border-white/[0.08] bg-[rgba(7,13,12,0.62)] text-[#f5f8f4] hover:border-[rgba(169,232,221,0.32)] hover:bg-[rgba(12,24,22,0.82)]")
@@ -112,12 +112,6 @@ function SectionNav({ active, onSelect, bottom = false }) {
               <small className="hidden truncate font-mono text-[6px] tracking-[0.12em] text-[rgba(230,240,236,0.42)] sm:block sm:text-[7px]">
                 {section.en}
               </small>
-            </span>
-            <span
-              aria-hidden="true"
-              className="hidden text-[10px] text-[rgba(230,240,236,0.3)] sm:block"
-            >
-              ↗
             </span>
           </button>
         );

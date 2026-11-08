@@ -57,8 +57,8 @@ export default function ReflectionStory({ reflection }) {
       <div className={styles.layout}>
         <aside className={styles.rail}>
           <div className={styles.railWord} aria-hidden="true">
-            <span>RE</span>
-            <span>WRITE</span>
+            <span>复</span>
+            <span>盘</span>
           </div>
           <nav aria-label="复盘章节">
             {SECTIONS.map((section) => (
