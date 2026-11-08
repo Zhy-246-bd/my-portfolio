@@ -1,40 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import AboutProfileCard from "./AboutProfileCard";
 import HobbyGallery from "./HobbyGallery";
 import styles from "./about-drawers.module.css";
 
 const LAYERS = [
   {
-    id: "learner",
+    id: "life",
     no: "01",
+    title: "生活者",
+    sub: "出门走走、找吃的、打游戏、做饭，还有路边遇到的猫狗。",
+    open: "收起",
+    closed: "展开",
+  },
+  {
+    id: "learner",
+    no: "02",
     title: "学习者",
-    sub: "数字经济 2025 级，从零开始学做网站。",
+    sub: "从零开始学做网站，和这个作品集想留下什么。",
     open: "收起",
     closed: "展开",
   },
   {
     id: "builder",
-    no: "02",
+    no: "03",
     title: "建造者",
     sub: "8 个阶段作业、8 个项目，和它们背后的过程。",
-    open: "收起",
-    closed: "展开",
-  },
-  {
-    id: "life",
-    no: "03",
-    title: "生活者",
-    sub: "出门走走、找吃的、打游戏、做饭，还有路边遇到的猫狗。",
     open: "收起",
     closed: "展开",
   },
 ];
 
 export default function AboutDrawers({ about, email }) {
-  const [open, setOpen] = useState("learner");
+  const [open, setOpen] = useState("life");
 
   const toggle = (id) => {
     setOpen((current) => (current === id ? null : id));
@@ -44,11 +44,27 @@ export default function AboutDrawers({ about, email }) {
     <div className={styles.page}>
       <h1 className={styles.srOnly}>关于我</h1>
 
-      <header className={styles.hero}>
-        <p className={styles.name}>{about.profile.name}</p>
-        <p className={styles.tagline}>{about.profile.tagline}</p>
-        <p className={styles.lead}>{about.profile.intro}</p>
-      </header>
+      <div className={styles.top}>
+        <section className={styles.fan} aria-label="个人照片">
+          <AboutProfileCard photos={about.photos} />
+        </section>
+
+        <section className={styles.profileCard}>
+          <p className={styles.cardKicker}>HELLO, I AM</p>
+          <h2 className={styles.cardName}>{about.profile.name}</h2>
+          <p className={styles.cardTagline}>{about.profile.tagline}</p>
+          <p className={styles.cardIntro}>{about.profile.intro}</p>
+
+          <dl className={styles.cardFacts}>
+            {about.profile.facts.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
 
       <div className={styles.drawers}>
         {LAYERS.map((layer) => {
@@ -84,34 +100,10 @@ export default function AboutDrawers({ about, email }) {
               >
                 <div className={styles.bodyInner}>
                   {layer.id === "learner" && (
-                    <div className={styles.learner}>
-                      <div className={styles.portrait}>
-                        <Image
-                          src={about.photos[0].src}
-                          alt={about.photos[0].alt}
-                          fill
-                          sizes="(max-width: 760px) 80vw, 280px"
-                          className={styles.photo}
-                        />
-                        <span>{about.profile.role}</span>
-                      </div>
-
-                      <div className={styles.learnerText}>
-                        <dl className={styles.facts}>
-                          {about.profile.facts.map(([label, value]) => (
-                            <div key={label}>
-                              <dt>{label}</dt>
-                              <dd>{value}</dd>
-                            </div>
-                          ))}
-                        </dl>
-
-                        <div className={styles.story}>
-                          {about.story.map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
-                          ))}
-                        </div>
-                      </div>
+                    <div className={styles.learnerTextOnly}>
+                      {about.story.map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
                     </div>
                   )}
 
