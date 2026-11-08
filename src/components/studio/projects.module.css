@@ -231,12 +231,6 @@
   font-size: 12px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .floatCard {
-    animation: none;
-  }
-}
-
 @media (max-width: 820px) {
   .floatField {
     display: grid;
