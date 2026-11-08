@@ -78,10 +78,6 @@ export default function IterationsTimeline({ iterations }) {
           <br />
           <span>把网站往右推。</span>
         </h2>
-        <p className={styles.lead}>
-          课程要求网站必须持续迭代。这里不是 31 张总结卡，而是一条从
-          2026.09.28 延伸到现在的横轴：每一次改动都带着版本、原因、结果和下一步。
-        </p>
       </header>
 
       <div className={styles.control}>
