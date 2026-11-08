@@ -5,7 +5,10 @@ import Image from "next/image";
 import styles from "./profile.module.css";
 
 export default function AboutProfileCard({ photos }) {
-  const [active, setActive] = useState(0);
+  const cafeIndex = photos.findIndex((photo) =>
+    photo.src.includes("profile-3"),
+  );
+  const [active, setActive] = useState(cafeIndex >= 0 ? cafeIndex : 0);
   const total = photos.length;
   const previous = (active - 1 + total) % total;
   const next = (active + 1) % total;
