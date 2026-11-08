@@ -96,7 +96,7 @@ export default function IterationsTimeline({ iterations }) {
     <div className={styles.page}>
       <header className={styles.header}>
         <h2 className={styles.heading}>
-          31 次迭代，
+          多次迭代，
           <br />
           <span>把网站往右推。</span>
         </h2>
