@@ -104,7 +104,7 @@ const INITIAL_LAYOUTS = ZONES.map((zone, index) => ({
   ...zone,
   zone: index,
   w: 20,
-  z: (index % 5) + 1,
+  z: index + 1,
   r: index % 2 === 0 ? -4 : 4,
 }));
 
@@ -126,7 +126,6 @@ function zoneLayout(existing = []) {
     x: base.x + (Math.random() - 0.5) * 4,
     y: base.y + (Math.random() - 0.5) * 4,
     w: 20,
-    z: 1 + Math.floor(Math.random() * 10),
     r: -5 + Math.random() * 10,
   };
 }
@@ -145,12 +144,14 @@ function randomSlots() {
       id: index,
       photo,
       ...layout,
+      z: index + 1,
     };
   });
 }
 
 export default function HobbyGallery() {
   const ref = useRef(null);
+  const topZ = useRef(SLOT_COUNT + 1);
   const [active, setActive] = useState(false);
   const [slots, setSlots] = useState(INITIAL_SLOTS);
 
@@ -170,6 +171,8 @@ export default function HobbyGallery() {
   }, []);
 
   const rotateSlot = (id) => {
+    const nextZ = topZ.current;
+    topZ.current += 1;
     setSlots((current) => {
       const slot = current.find((item) => item.id === id);
       if (!slot) return current;
@@ -189,6 +192,7 @@ export default function HobbyGallery() {
           ? {
               ...item,
               photo: nextPhoto,
+              z: nextZ,
               ...zoneLayout(current.filter((slot) => slot.id !== id)),
             }
           : item,
