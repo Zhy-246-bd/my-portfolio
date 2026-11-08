@@ -23,7 +23,7 @@
   position: relative;
   width: min(100%, 940px);
   height: 640px;
-  margin: -20px auto 0;
+  margin: -40px auto 0;
 }
 
 @property --amp {
