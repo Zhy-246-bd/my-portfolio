@@ -80,9 +80,9 @@
 .railWord {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   margin-bottom: 42px;
-  color: rgba(169, 232, 221, 0.13);
+  color: rgba(169, 232, 221, 0.24);
   font-family: "Arial Black", "Helvetica Neue", sans-serif;
   font-size: clamp(2.7rem, 4vw, 3.8rem);
   font-weight: 900;
@@ -90,8 +90,12 @@
   line-height: 1;
 }
 
+.railWord span:first-child {
+  transform: translateX(-14px);
+}
+
 .railWord span:last-child {
-  margin-left: 0;
+  transform: translateX(22px);
 }
 
 .rail nav {
@@ -440,6 +444,11 @@
     flex-direction: row;
     margin: 0;
     font-size: 24px;
+  }
+
+  .railWord span:first-child,
+  .railWord span:last-child {
+    transform: none;
   }
 
   .railWord span:last-child {
