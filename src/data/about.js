@@ -86,15 +86,15 @@ export const about = {
   achievements: [
     {
       label: "课程完成",
-      value: "7 / 7",
-      title: "阶段项目",
-      text: "从弹射小游戏到天气查询，完成课程要求的七个阶段项目，并保留每个项目的说明和入口。",
+      value: "8 / 8",
+      title: "阶段作业",
+      text: "从弹射小游戏、倒计时、美食盲盒，到待办、番茄钟、Markdown、天气查询和校园食鉴，完成 8 个阶段作业和对应项目。",
     },
     {
       label: "作品上线",
-      value: "2",
-      title: "公网地址",
-      text: "作品集已部署到 Netlify 和 Vercel，链接均可访问；每次推送会自动更新。",
+      value: "1",
+      title: "正式公网地址",
+      text: "作品集部署在 Cloudflare Pages：my-portfolio-2if.pages.dev；GitHub 推送后自动更新，Vercel 作为备用。",
     },
     {
       label: "过程证据",
