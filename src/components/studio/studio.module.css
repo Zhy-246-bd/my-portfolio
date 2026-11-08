@@ -1008,7 +1008,7 @@
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 16px;
   font-family: var(--studio-mono);
   font-size: 8px;
@@ -1026,6 +1026,44 @@
   font-family: var(--studio-sans);
   font-size: 12px;
   letter-spacing: 0.08em;
+}
+
+.moduleBackFixed {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 120;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(5, 12, 10, 0.72);
+  color: rgba(230, 240, 236, 0.78);
+  font-family: var(--studio-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.moduleBackFixed:hover {
+  border-color: rgba(180, 236, 224, 0.35);
+  background: rgba(8, 18, 15, 0.86);
+  color: #b4ece0;
+}
+
+@media (max-width: 640px) {
+  .moduleBackFixed {
+    top: 14px;
+    left: 14px;
+    padding: 7px 11px;
+    font-size: 11px;
+  }
 }
 
 .moduleTopline a:hover {

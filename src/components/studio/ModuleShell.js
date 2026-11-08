@@ -26,9 +26,6 @@ export default function ModuleShell({
 
       <header className={styles.moduleHero}>
         <div className={styles.moduleTopline}>
-          <Link href="/studio" className={styles.moduleBack}>
-            ← 回到首页
-          </Link>
           <span>
             {index} / 06 · {title}
           </span>
@@ -39,6 +36,10 @@ export default function ModuleShell({
           <span>{title}</span>
         </div>
       </header>
+
+      <Link href="/studio" className={styles.moduleBackFixed}>
+        ← 回到首页
+      </Link>
 
       <div className={styles.moduleBody}>
         <div className={styles.moduleSheet}>{children}</div>
