@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./iterations.module.css";
 
 const FIELDS = [
@@ -17,102 +12,22 @@ const FIELDS = [
 
 export default function IterationsTimeline({ iterations }) {
   const viewportRef = useRef(null);
-  const dialogRef = useRef(null);
-  const closeButtonRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [atEnd, setAtEnd] = useState(false);
-  const [active, setActive] = useState(null);
+  const [activeNo, setActiveNo] = useState(null);
 
-  const openItem = (item, event) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    setActive({ item, rect });
+  const toggleItem = (no) => {
+    setActiveNo((current) => (current === no ? null : no));
   };
-
-  const closeItem = () => {
-    const dialog = dialogRef.current;
-    if (!dialog || !active) {
-      setActive(null);
-      return;
-    }
-
-    const target = dialog.getBoundingClientRect();
-    const { rect } = active;
-    const dx = rect.left + rect.width / 2 - (target.left + target.width / 2);
-    const dy = rect.top + rect.height / 2 - (target.top + target.height / 2);
-    const sx = rect.width / target.width;
-    const sy = rect.height / target.height;
-
-    const animation = dialog.animate(
-      [
-        {
-          transform: "translate(-50%, -50%) scale(1)",
-          opacity: 1,
-          borderRadius: "18px",
-        },
-        {
-          transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`,
-          opacity: 0.65,
-          borderRadius: "12px",
-        },
-      ],
-      {
-        duration: 320,
-        easing: "cubic-bezier(0.4, 0, 0.2, 1)",
-        fill: "forwards",
-      },
-    );
-    animation.onfinish = () => setActive(null);
-  };
-
-  useLayoutEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog || !active) return undefined;
-
-    const target = dialog.getBoundingClientRect();
-    const { rect } = active;
-    const dx = rect.left + rect.width / 2 - (target.left + target.width / 2);
-    const dy = rect.top + rect.height / 2 - (target.top + target.height / 2);
-    const sx = rect.width / target.width;
-    const sy = rect.height / target.height;
-
-    const animation = dialog.animate(
-      [
-        {
-          transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`,
-          opacity: 0.55,
-          borderRadius: "12px",
-        },
-        {
-          transform: "translate(-50%, -50%) scale(1)",
-          opacity: 1,
-          borderRadius: "18px",
-        },
-      ],
-      {
-        duration: 420,
-        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-      },
-    );
-    animation.onfinish = () => closeButtonRef.current?.focus();
-    return () => animation.cancel();
-  }, [active]);
 
   useEffect(() => {
-    if (!active) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
+    if (activeNo === null) return undefined;
     const onKeyDown = (event) => {
-      if (event.key === "Escape") closeItem();
+      if (event.key === "Escape") setActiveNo(null);
     };
     window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [active]);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activeNo]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -127,6 +42,14 @@ export default function IterationsTimeline({ iterations }) {
 
     const onWheel = (event) => {
       if (event.ctrlKey) return;
+
+      const record = event.target.closest?.("[data-iteration-card]");
+      if (
+        record &&
+        record.scrollHeight > record.clientHeight + 1
+      ) {
+        return;
+      }
 
       const delta =
         Math.abs(event.deltaY) >= Math.abs(event.deltaX)
@@ -195,6 +118,7 @@ export default function IterationsTimeline({ iterations }) {
         role="region"
         aria-label="迭代记录横向时间轴，使用滚轮或左右方向键浏览"
         data-at-end={atEnd ? "true" : "false"}
+        data-expanded={activeNo !== null ? "true" : "false"}
       >
         <div className={styles.track}>
           <span className={styles.axis} aria-hidden="true">
@@ -208,17 +132,22 @@ export default function IterationsTimeline({ iterations }) {
                 key={item.no}
                 className={`${styles.item} ${position}`}
                 tabIndex={0}
-                onClick={(event) => openItem(item, event)}
+                onClick={() => toggleItem(item.no)}
+                aria-expanded={activeNo === item.no}
+                data-active={activeNo === item.no ? "true" : "false"}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {
                     event.preventDefault();
-                    openItem(item, event);
+                    toggleItem(item.no);
                   }
                 }}
               >
                 <span className={styles.dot} aria-hidden="true" />
                 <span className={styles.version}>{item.version}</span>
-                <div className={styles.card}>
+                <div
+                  className={styles.card}
+                  data-iteration-card
+                >
                   <div className={styles.cardMeta}>
                     <span>第 {item.no} 次</span>
                     <span>{item.date}</span>
@@ -243,44 +172,6 @@ export default function IterationsTimeline({ iterations }) {
           </div>
         </div>
       </div>
-
-      {active && (
-        <div className={styles.overlay} onClick={closeItem}>
-          <article
-            className={styles.dialog}
-            ref={dialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="iteration-dialog-title"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className={styles.close}
-              ref={closeButtonRef}
-              onClick={closeItem}
-              aria-label="关闭"
-            >
-              ×
-            </button>
-
-            <div className={styles.detailMeta}>
-              <span>第 {active.item.no} 次迭代</span>
-              <span>{active.item.version}</span>
-              <span>{active.item.date}</span>
-            </div>
-            <h3 id="iteration-dialog-title">{active.item.title}</h3>
-            <dl>
-              {FIELDS.map((field) => (
-                <div key={field.key}>
-                  <dt>{field.label}</dt>
-                  <dd>{active.item[field.key]}</dd>
-                </div>
-              ))}
-            </dl>
-          </article>
-        </div>
-      )}
     </div>
   );
 }
