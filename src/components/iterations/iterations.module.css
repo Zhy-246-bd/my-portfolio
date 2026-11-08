@@ -23,12 +23,14 @@
   color: #eef8f3;
   font-family: "STXingkai", "华文行楷", "KaiTi", "STKaiti", "Kaiti SC", serif;
   font-size: clamp(2.2rem, 5vw, 4.6rem);
-  font-weight: 700;
-  letter-spacing: 0;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   line-height: 1.12;
 }
 
 .heading span {
+  display: block;
+  margin-left: 0.42em;
   color: rgba(169, 232, 221, 0.72);
 }
 
