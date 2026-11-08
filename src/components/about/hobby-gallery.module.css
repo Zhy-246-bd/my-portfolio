@@ -26,11 +26,11 @@
     opacity: 1;
     transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1);
   }
-  54% {
+  70% {
     opacity: 1;
     transform: translate(-50%, -50%) rotate(var(--r, 0deg)) scale(1);
   }
-  66% {
+  84% {
     opacity: 0;
     transform: translate(-50%, calc(-50% + 30px)) rotate(var(--r, 0deg))
       scale(0.92);
