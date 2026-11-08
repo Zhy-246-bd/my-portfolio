@@ -129,12 +129,8 @@ export const about = {
 
   goals: [
     {
-      period: "本学期",
-      text: "把这门课的作品集做完整：内容、过程、迭代和部署都能自己讲清楚。",
-    },
-    {
       period: "接下来",
-      text: "继续补 JavaScript 和交互基础，尝试做一个真正能给身边人使用的小产品。",
+      text: "继续补 JavaScript 和交互基础，把校园食鉴的后端和真实使用场景继续做下去。",
     },
   ],
 

@@ -167,7 +167,7 @@ export default function AboutPage() {
           title="下一步"
           note="这门课结束后，还想继续补什么、做什么。"
         />
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <div className="mt-5 grid gap-3">
           {about.goals.map((goal) => (
             <article
               key={goal.period}
