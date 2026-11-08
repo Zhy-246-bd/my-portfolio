@@ -394,13 +394,13 @@ export const projects = [
 
     keyPages: [
       {
-        title: "登录 / 注册",
-        description: "账号数据保存在后端，登录后才能推荐新店和参与红黑榜",
+        title: "首页与美食筛选",
+        description: "顶部是搜索、校区和红黑榜分类，下面是店铺卡片与随机推荐入口",
         image: "/images/project-8.webp",
       },
       {
-        title: "首页与美食筛选",
-        description: "搜索、校区筛选和红榜 / 黑榜分类，下面是店铺卡片与随机推荐入口",
+        title: "登录 / 注册",
+        description: "账号数据保存在后端，登录后才能推荐新店和参与红黑榜",
         image: "",
       },
     ],
