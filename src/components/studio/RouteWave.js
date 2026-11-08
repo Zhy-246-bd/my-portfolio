@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import WaterVeil from "./WaterVeil";
 import styles from "./route-wave.module.css";
 
 const PUSH_DELAY = 620;
@@ -105,20 +106,7 @@ export default function RouteWave() {
       data-phase={phase}
       aria-hidden="true"
     >
-      <span className={styles.wash} />
-      <span className={styles.panels}>
-        <span className={styles.panel} />
-        <span className={styles.panel} />
-        <span className={styles.panel} />
-        <span className={styles.panel} />
-      </span>
-      <span className={styles.ripples}>
-        <span className={styles.ring} style={{ "--i": 0 }} />
-        <span className={styles.ring} style={{ "--i": 1 }} />
-        <span className={styles.ring} style={{ "--i": 2 }} />
-        <span className={styles.ring} style={{ "--i": 3 }} />
-      </span>
-      <span className={styles.centerGlow} />
+      <WaterVeil phase={phase} />
     </div>
   );
 }
