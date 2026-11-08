@@ -12,6 +12,7 @@ const layout = [
   { x: 25, y: 58, s: 23, z: 2, dur: 16.2, delay: -7.3, r: 2.1 },
   { x: 63, y: 68, s: 25, z: 5, dur: 15.4, delay: -2.8, r: -2.7 },
   { x: 42, y: 82, s: 23, z: 6, dur: 18.7, delay: -4.6, r: 1.4 },
+  { x: 57, y: 48, s: 20, z: 7, dur: 16.8, delay: -8.2, r: 2.8 },
 ];
 
 export default function ProjectStack({ projects }) {
@@ -112,7 +113,7 @@ export default function ProjectStack({ projects }) {
     <section className={styles.floatSection} aria-label="项目成果">
       <div className={styles.floatHead}>
         <span>SELECTED WORKS</span>
-        <span>07 PROJECTS / 2026</span>
+        <span>08 PROJECTS / 2026</span>
       </div>
 
       <div className={styles.floatField} ref={fieldRef}>

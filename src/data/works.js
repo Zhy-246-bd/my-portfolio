@@ -104,4 +104,16 @@ export const works = [
     status: "已完成",
     projectId: "project-7",
   },
+  {
+    order: 8,
+    stage: "第 9-10 周",
+    title: "校园食鉴",
+    date: "2026年11月 · 第 9-10 周",
+    goal: "作业要求：做一个带后端的项目。",
+    whatIdid:
+      "用 TRAE 完成校园食鉴：多校区美食红黑榜，支持注册登录、推荐店铺、综合 / 红榜 / 黑榜筛选、搜索，以及「今天吃什么」随机推荐；用户和店铺数据保存在后端。",
+    skills: ["TRAE", "后端", "数据库", "登录与权限"],
+    status: "已完成",
+    projectId: "project-8",
+  },
 ];
