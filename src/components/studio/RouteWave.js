@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
-const PUSH_DELAY = 260;
+const PUSH_DELAY = 380;
 
 const PRELOAD = {
   "/about": [
@@ -39,6 +39,17 @@ export default function RouteWave() {
       setPhase("wave");
       document.body.classList.remove("studio-arriving");
       document.body.classList.add("studio-departing");
+      window.__studioFluid?.ripple(0.5, 0.5, 1.6);
+      timers.current.push(
+        window.setTimeout(
+          () => window.__studioFluid?.ripple(0.5, 0.5, 1.2),
+          120,
+        ),
+        window.setTimeout(
+          () => window.__studioFluid?.ripple(0.5, 0.5, 0.9),
+          250,
+        ),
+      );
       router.prefetch(href);
 
       const path = normalize(href);
@@ -112,15 +123,14 @@ export default function RouteWave() {
     document.body.classList.remove("studio-departing");
     document.body.classList.add("studio-arriving");
     setPhase("reveal");
-    window.dispatchEvent(new CustomEvent("studio-arrive"));
     timers.current.push(
       window.setTimeout(
-        () => window.dispatchEvent(new CustomEvent("studio-arrive")),
-        140,
+        () => window.__studioFluid?.ripple(0.5, 0.5, 1.5),
+        30,
       ),
       window.setTimeout(
-        () => window.dispatchEvent(new CustomEvent("studio-arrive")),
-        480,
+        () => window.__studioFluid?.ripple(0.5, 0.5, 1.0),
+        340,
       ),
     );
     return undefined;
@@ -132,7 +142,7 @@ export default function RouteWave() {
       document.body.classList.remove("studio-departing");
       document.body.classList.add("studio-arriving");
       setPhase("reveal");
-      window.dispatchEvent(new CustomEvent("studio-arrive"));
+      window.__studioFluid?.ripple(0.5, 0.5, 1.5);
     }, 2800);
     return () => window.clearTimeout(fallback);
   }, [phase]);

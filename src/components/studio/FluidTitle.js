@@ -103,7 +103,7 @@ void main() {
   );
   vec2 flowVelocity = texture2D(uVelocity, uv).xy;
   vec2 textUv = clamp(
-    uv + (flowNoise * 0.012 + flowVelocity * 0.022) * uCrisp,
+    uv + (flowNoise * 0.012 + flowVelocity * 0.04) * uCrisp,
     vec2(0.0),
     vec2(1.0)
   );
@@ -413,35 +413,8 @@ export default function FluidTitle({
       variant === "cover" || isBackdrop || isModuleStage,
     );
 
-    const onWave = () => {
-      if (variant === "cover") {
-        fluid.ripple(0.5, 0.5, 1.25);
-      }
-    };
-    if (variant === "cover") {
-      window.addEventListener("studio-wave", onWave);
-    }
-
-    const arrivalTimers = [];
-    let arrived = false;
-    const startArrival = () => {
-      if (!(variant === "cover" || isModuleStage) || arrived) return;
-      arrived = true;
-      [1.25, 0.9, 0.65].forEach((strength, index) => {
-        arrivalTimers.push(
-          window.setTimeout(
-            () => fluid.ripple(0.5, 0.5, strength),
-            index * 320,
-          ),
-        );
-      });
-    };
-    const onArrive = () => startArrival();
     if (variant === "cover" || isModuleStage) {
-      window.addEventListener("studio-arrive", onArrive);
-      if (document.body.classList.contains("studio-arriving")) {
-        arrivalTimers.push(window.setTimeout(startArrival, 120));
-      }
+      window.__studioFluid = fluid;
     }
 
     const textTexture = gl.createTexture();
@@ -470,7 +443,14 @@ export default function FluidTitle({
     gl.uniform1i(uText, 0);
     gl.uniform1i(uVelocity, 1);
     gl.uniform1i(uDye, 2);
-    gl.uniform1f(uCrisp, variant === "moduleFull" ? 1 : 0);
+    gl.uniform1f(
+      uCrisp,
+      variant === "moduleFull" ||
+        variant === "moduleStage" ||
+        variant === "cover"
+        ? 1
+        : 0,
+    );
     gl.uniform1f(uTitleScale, 1);
     gl.uniform1f(uTitleOffset, 0);
     gl.uniform1f(uTitleOpacity, 1);
@@ -715,9 +695,12 @@ export default function FluidTitle({
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", updateTitleScroll);
-      window.removeEventListener("studio-wave", onWave);
-      window.removeEventListener("studio-arrive", onArrive);
-      arrivalTimers.forEach((timer) => window.clearTimeout(timer));
+      if (
+        (variant === "cover" || isModuleStage) &&
+        window.__studioFluid === fluid
+      ) {
+        window.__studioFluid = null;
+      }
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
       if (sceneTexture) gl.deleteTexture(sceneTexture);

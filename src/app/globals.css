@@ -46,6 +46,5 @@ body.studio-arriving {
 /* 离开当前页面时先慢慢变淡，像被水推散 */
 body.studio-departing [data-studio-cover],
 body.studio-departing [data-module-page] {
-  opacity: 0.55;
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
