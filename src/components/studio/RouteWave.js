@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
-const PUSH_DELAY = 650;
+const PUSH_DELAY = 260;
 
 const PRELOAD = {
   "/about": [
@@ -113,6 +113,16 @@ export default function RouteWave() {
     document.body.classList.add("studio-arriving");
     setPhase("reveal");
     window.dispatchEvent(new CustomEvent("studio-arrive"));
+    timers.current.push(
+      window.setTimeout(
+        () => window.dispatchEvent(new CustomEvent("studio-arrive")),
+        140,
+      ),
+      window.setTimeout(
+        () => window.dispatchEvent(new CustomEvent("studio-arrive")),
+        480,
+      ),
+    );
     return undefined;
   }, [pathname, phase, target]);
 

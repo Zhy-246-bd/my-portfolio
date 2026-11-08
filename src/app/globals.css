@@ -46,37 +46,6 @@ body.studio-arriving {
 /* 离开当前页面时先慢慢变淡，像被水推散 */
 body.studio-departing [data-studio-cover],
 body.studio-departing [data-module-page] {
-  opacity: 0.42;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 新页面从屏幕中间浮出水面 */
-body.studio-arriving [data-module-page],
-body.studio-arriving [data-studio-cover] {
-  animation: moduleSurface 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-body.studio-arriving [data-module-hero],
-body.studio-arriving [data-module-body] {
-  animation: moduleContentRise 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes moduleSurface {
-  0% {
-    opacity: 0.68;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes moduleContentRise {
-  0% {
-    opacity: 0;
-    transform: translateY(26px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  opacity: 0.55;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }

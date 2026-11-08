@@ -427,10 +427,14 @@ export default function FluidTitle({
     const startArrival = () => {
       if (!(variant === "cover" || isModuleStage) || arrived) return;
       arrived = true;
-      arrivalTimers.push(
-        window.setTimeout(() => fluid.ripple(0.5, 0.5, 1.05), 220),
-        window.setTimeout(() => fluid.ripple(0.5, 0.5, 0.55), 850),
-      );
+      [1.25, 0.9, 0.65].forEach((strength, index) => {
+        arrivalTimers.push(
+          window.setTimeout(
+            () => fluid.ripple(0.5, 0.5, strength),
+            index * 320,
+          ),
+        );
+      });
     };
     const onArrive = () => startArrival();
     if (variant === "cover" || isModuleStage) {
