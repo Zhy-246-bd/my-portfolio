@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
 const PUSH_DELAY = 620;
-const REVEAL_DELAY = 1100;
 
 const PRELOAD = {
   "/about": [
@@ -15,9 +14,13 @@ const PRELOAD = {
   ],
 };
 
+const normalize = (value) => (value || "").replace(/\/+$/, "") || "/";
+
 export default function RouteWave() {
   const router = useRouter();
+  const pathname = usePathname();
   const [phase, setPhase] = useState("idle");
+  const [target, setTarget] = useState(null);
   const timers = useRef([]);
   const preloaded = useRef([]);
 
@@ -32,12 +35,14 @@ export default function RouteWave() {
       if (!href) return;
 
       clearTimers();
+      setTarget(normalize(href));
       setPhase("wave");
-      document.body.classList.add("studio-arriving");
+      document.body.classList.remove("studio-arriving");
+      document.body.classList.add("studio-departing");
       router.prefetch(href);
 
-      const target = href.replace(/\/+$/, "") || "/";
-      (PRELOAD[target] || []).forEach((src) => {
+      const path = normalize(href);
+      (PRELOAD[path] || []).forEach((src) => {
         const image = new window.Image();
         image.src = src;
         preloaded.current.push(image);
@@ -45,14 +50,6 @@ export default function RouteWave() {
 
       timers.current.push(
         window.setTimeout(() => router.push(href), PUSH_DELAY),
-        window.setTimeout(() => {
-          setPhase("reveal");
-          window.dispatchEvent(new CustomEvent("studio-arrive"));
-        }, REVEAL_DELAY),
-        window.setTimeout(() => {
-          setPhase("idle");
-          document.body.classList.remove("studio-arriving");
-        }, REVEAL_DELAY + 1100),
       );
     };
 
@@ -60,9 +57,45 @@ export default function RouteWave() {
     return () => {
       window.removeEventListener("studio-wave", onWave);
       clearTimers();
-      document.body.classList.remove("studio-arriving");
+      document.body.classList.remove(
+        "studio-arriving",
+        "studio-departing",
+      );
     };
   }, [router]);
+
+  useEffect(() => {
+    if (phase !== "wave" || !target) return undefined;
+    if (normalize(pathname) !== target) return undefined;
+
+    document.body.classList.remove("studio-departing");
+    document.body.classList.add("studio-arriving");
+    setPhase("reveal");
+    return undefined;
+  }, [pathname, phase, target]);
+
+  useEffect(() => {
+    if (phase !== "wave") return undefined;
+    const fallback = window.setTimeout(() => {
+      document.body.classList.remove("studio-departing");
+      document.body.classList.add("studio-arriving");
+      setPhase("reveal");
+    }, 2800);
+    return () => window.clearTimeout(fallback);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "reveal") return undefined;
+    const finish = window.setTimeout(() => {
+      setPhase("idle");
+      setTarget(null);
+      document.body.classList.remove(
+        "studio-arriving",
+        "studio-departing",
+      );
+    }, 1700);
+    return () => window.clearTimeout(finish);
+  }, [phase]);
 
   if (phase === "idle") return null;
 
@@ -72,7 +105,20 @@ export default function RouteWave() {
       data-phase={phase}
       aria-hidden="true"
     >
-      <span className={styles.veil} />
+      <span className={styles.wash} />
+      <span className={styles.panels}>
+        <span className={styles.panel} />
+        <span className={styles.panel} />
+        <span className={styles.panel} />
+        <span className={styles.panel} />
+      </span>
+      <span className={styles.ripples}>
+        <span className={styles.ring} style={{ "--i": 0 }} />
+        <span className={styles.ring} style={{ "--i": 1 }} />
+        <span className={styles.ring} style={{ "--i": 2 }} />
+        <span className={styles.ring} style={{ "--i": 3 }} />
+      </span>
+      <span className={styles.centerGlow} />
     </div>
   );
 }

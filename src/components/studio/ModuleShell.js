@@ -24,7 +24,7 @@ export default function ModuleShell({
       </div>
       <span className={styles.moduleShade} aria-hidden="true" />
 
-      <header className={styles.moduleHero}>
+      <header className={styles.moduleHero} data-module-hero>
         <div className={styles.moduleTopline}>
           <span>
             {index} / 06 · {title}
@@ -41,7 +41,7 @@ export default function ModuleShell({
         ← 回到首页
       </Link>
 
-      <div className={styles.moduleBody}>
+      <div className={styles.moduleBody} data-module-body>
         <div className={styles.moduleSheet}>{children}</div>
       </div>
     </div>

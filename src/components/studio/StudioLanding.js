@@ -7,7 +7,7 @@ import styles from "./studio.module.css";
 
 export default function StudioLanding() {
   return (
-    <div className={styles.stage}>
+    <div className={styles.stage} data-studio-cover>
       <span className={styles.grain} aria-hidden="true" />
       <span className={styles.horizon} aria-hidden="true" />
 

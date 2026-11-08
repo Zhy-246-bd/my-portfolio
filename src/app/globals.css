@@ -38,16 +38,38 @@ p {
   text-wrap: pretty;
 }
 
-/* 进入模块时，内容在波纹遮罩下慢慢浮现 */
-body.studio-arriving [data-module-page] {
-  animation: moduleReveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* 离开首页时先慢慢变淡，像被水推散 */
+body.studio-departing [data-studio-cover] {
+  opacity: 0.12;
+  transition: opacity 0.58s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes moduleReveal {
-  from {
-    opacity: 0.45;
+/* 新页面从屏幕中间浮出水面 */
+body.studio-arriving [data-module-page] {
+  animation: moduleSurface 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+body.studio-arriving [data-module-hero],
+body.studio-arriving [data-module-body] {
+  animation: moduleContentRise 1.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes moduleSurface {
+  0% {
+    opacity: 0.55;
   }
-  to {
+  100% {
     opacity: 1;
+  }
+}
+
+@keyframes moduleContentRise {
+  0% {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
