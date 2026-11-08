@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./iterations.module.css";
 
 const FIELDS = [
@@ -12,9 +17,102 @@ const FIELDS = [
 
 export default function IterationsTimeline({ iterations }) {
   const viewportRef = useRef(null);
+  const dialogRef = useRef(null);
+  const closeButtonRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [atEnd, setAtEnd] = useState(false);
-  const [focused, setFocused] = useState(null);
+  const [active, setActive] = useState(null);
+
+  const openItem = (item, event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setActive({ item, rect });
+  };
+
+  const closeItem = () => {
+    const dialog = dialogRef.current;
+    if (!dialog || !active) {
+      setActive(null);
+      return;
+    }
+
+    const target = dialog.getBoundingClientRect();
+    const { rect } = active;
+    const dx = rect.left + rect.width / 2 - (target.left + target.width / 2);
+    const dy = rect.top + rect.height / 2 - (target.top + target.height / 2);
+    const sx = rect.width / target.width;
+    const sy = rect.height / target.height;
+
+    const animation = dialog.animate(
+      [
+        {
+          transform: "translate(-50%, -50%) scale(1)",
+          opacity: 1,
+          borderRadius: "18px",
+        },
+        {
+          transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`,
+          opacity: 0.65,
+          borderRadius: "12px",
+        },
+      ],
+      {
+        duration: 320,
+        easing: "cubic-bezier(0.4, 0, 0.2, 1)",
+        fill: "forwards",
+      },
+    );
+    animation.onfinish = () => setActive(null);
+  };
+
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog || !active) return undefined;
+
+    const target = dialog.getBoundingClientRect();
+    const { rect } = active;
+    const dx = rect.left + rect.width / 2 - (target.left + target.width / 2);
+    const dy = rect.top + rect.height / 2 - (target.top + target.height / 2);
+    const sx = rect.width / target.width;
+    const sy = rect.height / target.height;
+
+    const animation = dialog.animate(
+      [
+        {
+          transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`,
+          opacity: 0.55,
+          borderRadius: "12px",
+        },
+        {
+          transform: "translate(-50%, -50%) scale(1)",
+          opacity: 1,
+          borderRadius: "18px",
+        },
+      ],
+      {
+        duration: 420,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+    );
+    animation.onfinish = () => closeButtonRef.current?.focus();
+    return () => animation.cancel();
+  }, [active]);
+
+  useEffect(() => {
+    if (!active) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeItem();
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [active]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -110,19 +208,13 @@ export default function IterationsTimeline({ iterations }) {
                 key={item.no}
                 className={`${styles.item} ${position}`}
                 tabIndex={0}
-                onMouseEnter={() => setFocused(item)}
-                onMouseLeave={() =>
-                  setFocused((current) =>
-                    current?.no === item.no ? null : current,
-                  )
-                }
-                onFocus={() => setFocused(item)}
-                onClick={() => setFocused(item)}
-                onBlur={() =>
-                  setFocused((current) =>
-                    current?.no === item.no ? null : current,
-                  )
-                }
+                onClick={(event) => openItem(item, event)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openItem(item, event);
+                  }
+                }}
               >
                 <span className={styles.dot} aria-hidden="true" />
                 <span className={styles.version}>{item.version}</span>
@@ -152,23 +244,42 @@ export default function IterationsTimeline({ iterations }) {
         </div>
       </div>
 
-      {focused && (
-        <aside className={styles.detail} aria-live="polite">
-          <div className={styles.detailMeta}>
-            <span>第 {focused.no} 次迭代</span>
-            <span>{focused.version}</span>
-            <span>{focused.date}</span>
-          </div>
-          <h3>{focused.title}</h3>
-          <dl>
-            {FIELDS.map((field) => (
-              <div key={field.key}>
-                <dt>{field.label}</dt>
-                <dd>{focused[field.key]}</dd>
-              </div>
-            ))}
-          </dl>
-        </aside>
+      {active && (
+        <div className={styles.overlay} onClick={closeItem}>
+          <article
+            className={styles.dialog}
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="iteration-dialog-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.close}
+              ref={closeButtonRef}
+              onClick={closeItem}
+              aria-label="关闭"
+            >
+              ×
+            </button>
+
+            <div className={styles.detailMeta}>
+              <span>第 {active.item.no} 次迭代</span>
+              <span>{active.item.version}</span>
+              <span>{active.item.date}</span>
+            </div>
+            <h3 id="iteration-dialog-title">{active.item.title}</h3>
+            <dl>
+              {FIELDS.map((field) => (
+                <div key={field.key}>
+                  <dt>{field.label}</dt>
+                  <dd>{active.item[field.key]}</dd>
+                </div>
+              ))}
+            </dl>
+          </article>
+        </div>
       )}
     </div>
   );
