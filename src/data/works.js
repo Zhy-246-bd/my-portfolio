@@ -61,7 +61,7 @@ export const works = [
     stage: "第 7-8 周",
     title: "待办事项网页",
     date: "2026年11月 · 第 7-8 周",
-    goal: "阶段作业：用 TRAE + DeepSeek 做一个能真正用起来的网页小工具，并部署到公网。",
+    goal: "第 7-8 周作业：完成《个人工具开发》PDF 里指定的项目，并把工具部署到公网。",
     whatIdid:
       "用 TRAE + DeepSeek 做出添加待办、分类/优先级筛选、搜索和完成统计；待办数据存在浏览器本地，刷新页面不会丢。",
     skills: ["TRAE", "DeepSeek", "表单与筛选", "LocalStorage"],
@@ -73,7 +73,7 @@ export const works = [
     stage: "第 7-8 周",
     title: "番茄钟",
     date: "2026年11月 · 第 7-8 周",
-    goal: "阶段作业：用 TRAE + DeepSeek 做一个能真正用起来的网页小工具，并部署到公网。",
+    goal: "第 7-8 周作业：完成《个人工具开发》PDF 里指定的项目，并把工具部署到公网。",
     whatIdid:
       "用 TRAE + DeepSeek 做 25 分钟专注 / 5 分钟休息的计时器，支持开始、暂停、重置、设置，以及今日/本周完成统计；设置和统计存在浏览器本地。",
     skills: ["TRAE", "DeepSeek", "计时器", "通知与音效", "LocalStorage"],
@@ -85,7 +85,7 @@ export const works = [
     stage: "第 7-8 周",
     title: "Markdown 笔记",
     date: "2026年11月 · 第 7-8 周",
-    goal: "阶段作业：用 TRAE + DeepSeek 做一个能真正用起来的网页小工具，并部署到公网。",
+    goal: "第 7-8 周作业：完成《个人工具开发》PDF 里指定的项目，并把工具部署到公网。",
     whatIdid:
       "用 TRAE + DeepSeek 做三栏 Markdown 笔记：左侧笔记列表和搜索、中间编辑、右侧实时预览；新建的笔记存在浏览器本地。",
     skills: ["TRAE", "DeepSeek", "Markdown", "LocalStorage"],
@@ -97,7 +97,7 @@ export const works = [
     stage: "第 7-8 周",
     title: "天气查询",
     date: "2026年11月 · 第 7-8 周",
-    goal: "阶段作业：用 TRAE + DeepSeek 做一个能真正用起来的网页小工具，并接入 OpenWeatherMap API。",
+    goal: "第 7-8 周作业：完成《个人工具开发》PDF 里指定的项目，并把工具部署到公网。",
     whatIdid:
       "用 TRAE + DeepSeek 接入 OpenWeatherMap：城市搜索带候选、定位当前城市、当前天气、未来预报和收藏城市；部署在 Netlify。",
     skills: ["TRAE", "DeepSeek", "OpenWeatherMap API", "浏览器定位"],
