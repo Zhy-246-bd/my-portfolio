@@ -45,14 +45,6 @@ export default function ReflectionStory({ reflection }) {
     <div className={styles.page}>
       <h1 className={styles.srOnly}>学习复盘</h1>
 
-      <section className={styles.opening}>
-        <p className={styles.headline}>
-          不是学会了几个工具，
-          <br />
-          <span>是知道下一步做什么。</span>
-        </p>
-      </section>
-
       <div className={styles.layout}>
         <aside className={styles.rail}>
           <div className={styles.railWord} aria-hidden="true">
