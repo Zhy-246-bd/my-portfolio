@@ -19,7 +19,8 @@ export default function ModuleNav() {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    setOpen(true);
+    const isMobile = window.matchMedia("(max-width: 820px)").matches;
+    setOpen(!isMobile);
   }, [pathname]);
 
   return (
