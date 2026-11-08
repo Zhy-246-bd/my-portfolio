@@ -43,14 +43,16 @@ body.studio-arriving {
   background: #050908;
 }
 
-/* 离开首页时先慢慢变淡，像被水推散 */
-body.studio-departing [data-studio-cover] {
+/* 离开当前页面时先慢慢变淡，像被水推散 */
+body.studio-departing [data-studio-cover],
+body.studio-departing [data-module-page] {
   opacity: 0.42;
   transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* 新页面从屏幕中间浮出水面 */
-body.studio-arriving [data-module-page] {
+body.studio-arriving [data-module-page],
+body.studio-arriving [data-studio-cover] {
   animation: moduleSurface 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 

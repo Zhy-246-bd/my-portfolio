@@ -65,6 +65,47 @@ export default function RouteWave() {
   }, [router]);
 
   useEffect(() => {
+    const onClick = (event) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+      const anchor = event.target?.closest?.("a[href]");
+      if (!anchor) return;
+      if (anchor.target && anchor.target !== "_self") return;
+      if (anchor.hasAttribute("download")) return;
+      if (anchor.dataset.noWave !== undefined) return;
+
+      const raw = anchor.getAttribute("href");
+      if (!raw || raw.startsWith("#")) return;
+
+      const url = new URL(anchor.href, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      if (
+        normalize(url.pathname) === normalize(window.location.pathname)
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      window.dispatchEvent(
+        new CustomEvent("studio-wave", {
+          detail: { href: url.pathname + url.search },
+        }),
+      );
+    };
+
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
+  useEffect(() => {
     if (phase !== "wave" || !target) return undefined;
     if (normalize(pathname) !== target) return undefined;
 

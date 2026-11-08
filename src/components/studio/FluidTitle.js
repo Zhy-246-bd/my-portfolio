@@ -425,7 +425,7 @@ export default function FluidTitle({
     const arrivalTimers = [];
     let arrived = false;
     const startArrival = () => {
-      if (!isModuleStage || arrived) return;
+      if (!(variant === "cover" || isModuleStage) || arrived) return;
       arrived = true;
       arrivalTimers.push(
         window.setTimeout(() => fluid.ripple(0.5, 0.5, 1.05), 220),
@@ -433,7 +433,7 @@ export default function FluidTitle({
       );
     };
     const onArrive = () => startArrival();
-    if (isModuleStage) {
+    if (variant === "cover" || isModuleStage) {
       window.addEventListener("studio-arrive", onArrive);
       if (document.body.classList.contains("studio-arriving")) {
         arrivalTimers.push(window.setTimeout(startArrival, 120));

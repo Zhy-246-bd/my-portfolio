@@ -30,23 +30,6 @@ export default function StudioSidebar() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const handleModuleClick = (event, href) => {
-    if (
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey ||
-      event.button !== 0
-    ) {
-      return;
-    }
-    event.preventDefault();
-    setOpen(false);
-    window.dispatchEvent(
-      new CustomEvent("studio-wave", { detail: { href } }),
-    );
-  };
-
   return (
     <>
       <button
@@ -89,9 +72,7 @@ export default function StudioSidebar() {
                 href={module.href}
                 className={styles.sidebarCard}
                 data-active={active}
-                onClick={(event) =>
-                  handleModuleClick(event, module.href)
-                }
+                onClick={() => setOpen(false)}
               >
                 <span className={styles.sidebarIndex}>
                   {String(index + 1).padStart(2, "0")}
