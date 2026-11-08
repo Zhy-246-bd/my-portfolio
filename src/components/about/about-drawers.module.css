@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   width: 100%;
   margin-top: -104px;
   color: #dfeae5;
@@ -72,8 +72,8 @@
 
 .cardIntro {
   margin: 12px 0 0;
-  color: rgba(223, 234, 229, 0.64);
-  font-size: 13.5px;
+  color: rgba(223, 234, 229, 0.68);
+  font-size: 14.5px;
   line-height: 1.9;
 }
 
@@ -87,16 +87,16 @@
 }
 
 .cardFacts dt {
-  color: rgba(169, 232, 221, 0.46);
+  color: rgba(169, 232, 221, 0.55);
   font-family: var(--studio-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.06em;
 }
 
 .cardFacts dd {
   margin: 5px 0 0;
-  color: rgba(237, 247, 242, 0.88);
-  font-size: 14px;
+  color: rgba(237, 247, 242, 0.9);
+  font-size: 15px;
   line-height: 1.5;
 }
 
@@ -107,8 +107,8 @@
 
 .learnerTextOnly p {
   margin: 0 0 16px;
-  color: rgba(223, 234, 229, 0.68);
-  font-size: 14px;
+  color: rgba(223, 234, 229, 0.72);
+  font-size: 15px;
   line-height: 1.95;
 }
 
@@ -185,9 +185,9 @@
 .index {
   align-self: start;
   padding-top: 8px;
-  color: rgba(169, 232, 221, 0.4);
+  color: rgba(169, 232, 221, 0.5);
   font-family: var(--studio-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
 }
 
@@ -213,9 +213,9 @@
 }
 
 .sub {
-  color: rgba(223, 234, 229, 0.44);
-  font-size: 12.5px;
-  line-height: 1.6;
+  color: rgba(223, 234, 229, 0.52);
+  font-size: 14px;
+  line-height: 1.65;
   transition: color 0.25s ease;
 }
 
@@ -227,9 +227,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: rgba(169, 232, 221, 0.55);
+  color: rgba(169, 232, 221, 0.62);
   font-family: var(--studio-mono);
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
@@ -377,9 +377,9 @@
 }
 
 .metrics span {
-  color: rgba(169, 232, 221, 0.46);
+  color: rgba(169, 232, 221, 0.55);
   font-family: var(--studio-mono);
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.06em;
 }
 
@@ -402,8 +402,8 @@
 
 .metrics p {
   margin: 8px 0 0;
-  color: rgba(223, 234, 229, 0.48);
-  font-size: 11.5px;
+  color: rgba(223, 234, 229, 0.58);
+  font-size: 13px;
   line-height: 1.8;
 }
 
@@ -434,17 +434,17 @@
 
 .capabilities p {
   margin: 7px 0 0;
-  color: rgba(223, 234, 229, 0.54);
-  font-size: 12.5px;
+  color: rgba(223, 234, 229, 0.62);
+  font-size: 14px;
   line-height: 1.8;
 }
 
 .capabilities span {
   display: block;
   margin-top: 10px;
-  color: rgba(169, 232, 221, 0.5);
+  color: rgba(169, 232, 221, 0.58);
   font-family: var(--studio-mono);
-  font-size: 9.5px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   line-height: 1.6;
 }
@@ -457,8 +457,8 @@
 }
 
 .links a {
-  color: rgba(169, 232, 221, 0.72);
-  font-size: 12px;
+  color: rgba(169, 232, 221, 0.78);
+  font-size: 13px;
   text-decoration: none;
   border-bottom: 1px solid rgba(169, 232, 221, 0.24);
 }
@@ -488,24 +488,24 @@
 }
 
 .hobbies span {
-  color: rgba(169, 232, 221, 0.45);
+  color: rgba(169, 232, 221, 0.55);
   font-family: var(--studio-mono);
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 0.08em;
 }
 
 .hobbies h3 {
   margin: 7px 0 0;
-  color: rgba(237, 247, 242, 0.88);
-  font-size: 15px;
+  color: rgba(237, 247, 242, 0.92);
+  font-size: 17px;
   font-weight: 500;
 }
 
 .hobbies p {
-  margin: 7px 0 0;
-  color: rgba(223, 234, 229, 0.5);
-  font-size: 12px;
-  line-height: 1.75;
+  margin: 8px 0 0;
+  color: rgba(223, 234, 229, 0.64);
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 .footer {
@@ -565,11 +565,11 @@
   }
 
   .sub {
-    font-size: 11.5px;
+    font-size: 13px;
   }
 
   .state {
-    font-size: 9px;
+    font-size: 11px;
     gap: 7px;
   }
 
@@ -668,3 +668,4 @@
     font-size: 10px;
   }
 }
+

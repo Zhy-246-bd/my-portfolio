@@ -11,7 +11,7 @@ const LAYERS = [
     id: "life",
     no: "01",
     title: "生活者",
-    sub: "出门走走、找吃的、打游戏、做饭，还有路边遇到的猫狗。",
+    sub: "生活是一个动词。",
     open: "收起",
     closed: "展开",
   },
