@@ -14,6 +14,7 @@ export default function IterationsTimeline({ iterations }) {
   const viewportRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [atEnd, setAtEnd] = useState(false);
+  const [focused, setFocused] = useState(null);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -108,6 +109,20 @@ export default function IterationsTimeline({ iterations }) {
               <article
                 key={item.no}
                 className={`${styles.item} ${position}`}
+                tabIndex={0}
+                onMouseEnter={() => setFocused(item)}
+                onMouseLeave={() =>
+                  setFocused((current) =>
+                    current?.no === item.no ? null : current,
+                  )
+                }
+                onFocus={() => setFocused(item)}
+                onClick={() => setFocused(item)}
+                onBlur={() =>
+                  setFocused((current) =>
+                    current?.no === item.no ? null : current,
+                  )
+                }
               >
                 <span className={styles.dot} aria-hidden="true" />
                 <span className={styles.version}>{item.version}</span>
@@ -136,6 +151,25 @@ export default function IterationsTimeline({ iterations }) {
           </div>
         </div>
       </div>
+
+      {focused && (
+        <aside className={styles.detail} aria-live="polite">
+          <div className={styles.detailMeta}>
+            <span>第 {focused.no} 次迭代</span>
+            <span>{focused.version}</span>
+            <span>{focused.date}</span>
+          </div>
+          <h3>{focused.title}</h3>
+          <dl>
+            {FIELDS.map((field) => (
+              <div key={field.key}>
+                <dt>{field.label}</dt>
+                <dd>{focused[field.key]}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
+      )}
     </div>
   );
 }
