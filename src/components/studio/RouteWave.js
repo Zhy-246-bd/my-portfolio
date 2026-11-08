@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
-const PUSH_DELAY = 380;
-const REVEAL_DELAY = 860;
+const PUSH_DELAY = 620;
+const REVEAL_DELAY = 980;
 
 export default function RouteWave() {
   const router = useRouter();
@@ -56,13 +56,6 @@ export default function RouteWave() {
       aria-hidden="true"
     >
       <span className={styles.veil} />
-      <span className={styles.ripples}>
-        <span className={styles.ring} style={{ "--i": 0 }} />
-        <span className={styles.ring} style={{ "--i": 1 }} />
-        <span className={styles.ring} style={{ "--i": 2 }} />
-        <span className={styles.ring} style={{ "--i": 3 }} />
-      </span>
-      <span className={styles.glow} />
     </div>
   );
 }

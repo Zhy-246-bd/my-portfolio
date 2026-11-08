@@ -384,6 +384,25 @@ export default class GpuFluid {
     this.dye.swap();
   }
 
+  ripple(x = 0.5, y = 0.54, strength = 1) {
+    const count = 18;
+    for (let index = 0; index < count; index += 1) {
+      const angle = (index / count) * Math.PI * 2;
+      const offset = 0.024;
+      const px = x + Math.cos(angle) * offset;
+      const py = y + Math.sin(angle) * offset;
+      const force = 0.2 * strength;
+      this.splatVelocity(
+        px,
+        py,
+        Math.cos(angle) * force,
+        Math.sin(angle) * force,
+        0.0055,
+      );
+    }
+    this.splatDye(x, y, [0, 0, 0.018 * strength], 0.0042);
+  }
+
   setTextTexture(texture) {
     this.textTexture = texture;
   }

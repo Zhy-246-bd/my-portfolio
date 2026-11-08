@@ -413,6 +413,15 @@ export default function FluidTitle({
       variant === "cover" || isBackdrop || isModuleStage,
     );
 
+    const onWave = () => {
+      if (variant === "cover") {
+        fluid.ripple(0.5, 0.54, 1.25);
+      }
+    };
+    if (variant === "cover") {
+      window.addEventListener("studio-wave", onWave);
+    }
+
     const textTexture = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, textTexture);
@@ -684,6 +693,7 @@ export default function FluidTitle({
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("scroll", updateTitleScroll);
+      window.removeEventListener("studio-wave", onWave);
       gl.deleteBuffer(buffer);
       gl.deleteTexture(textTexture);
       if (sceneTexture) gl.deleteTexture(sceneTexture);
