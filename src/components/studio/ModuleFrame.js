@@ -5,13 +5,7 @@ import ModuleShell from "./ModuleShell";
 
 const modules = {
   "/about": { title: "ABOUT", label: "关于我", index: "01" },
-  "/works": {
-    title: "WORKS",
-    label: "阶段作业",
-    index: "02",
-    titleScale: 1.45,
-    titleY: 0.32,
-  },
+  "/works": { title: "WORKS", label: "阶段作业", index: "02" },
   "/projects": { title: "PROJECTS", label: "项目成果", index: "03" },
   "/process": { title: "PROCESS", label: "过程证据", index: "04" },
   "/iterations": { title: "ITERATIONS", label: "迭代记录", index: "05" },

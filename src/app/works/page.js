@@ -7,7 +7,7 @@ export const metadata = { title: "阶段作业" };
 
 export default function WorksPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16 lg:-mt-40">
+    <div className="mx-auto max-w-6xl px-4 pt-2 pb-12 sm:px-6 sm:pt-2 sm:pb-16 lg:-mt-32">
       <WorksBoard works={works} projects={projects} />
 
       <Link
