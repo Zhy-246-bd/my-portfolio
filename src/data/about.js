@@ -94,7 +94,7 @@ export const about = {
       label: "作品上线",
       value: "1",
       title: "正式公网地址",
-      text: "作品集正式地址：zhanghaiyan-portfolio.surge.sh；Cloudflare Pages 作为备用镜像，继续保留。",
+      text: "作品集正式地址：zhy-246-bd.github.io；Surge 与 Cloudflare Pages 作为备用镜像。",
     },
     {
       label: "过程证据",

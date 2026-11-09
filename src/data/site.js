@@ -11,8 +11,8 @@ export const site = {
   intro:
     "这是我在数智编程课上的个人作品集。这里不只放最后的成品，还记录了我每一阶段的作业、遇到问题时是怎么解决的，以及每次修改的原因和效果。",
   email: "2034267621@qq.com", // ← TODO: 改成你的邮箱
-  siteUrl: "https://zhanghaiyan-portfolio.surge.sh/", // 正式站（Surge）
-  siteUrlAlt: "https://my-portfolio-2if.pages.dev/", // 备用站（Cloudflare Pages）
+  siteUrl: "https://zhy-246-bd.github.io/", // 正式站（GitHub Pages）
+  siteUrlAlt: "https://zhanghaiyan-portfolio.surge.sh/", // 备用站（Surge）
   github: "", // 有 GitHub 就填网址，没有就留空字符串
   lastUpdated: "2026-11-08",
 };
