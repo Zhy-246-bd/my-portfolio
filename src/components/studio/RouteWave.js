@@ -4,7 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import styles from "./route-wave.module.css";
 
-const PUSH_DELAY = 380;
+const PUSH_DELAY = 240;
+
+const MODULE_ROUTES = [
+  "/about",
+  "/works",
+  "/projects",
+  "/process",
+  "/iterations",
+  "/reflection",
+];
 
 const PRELOAD = {
   "/about": [
@@ -74,6 +83,29 @@ export default function RouteWave() {
       );
     };
   }, [router]);
+
+  useEffect(() => {
+    const run = () => {
+      MODULE_ROUTES.forEach((route) => {
+        if (normalize(route) !== normalize(pathname)) {
+          router.prefetch(route);
+        }
+      });
+    };
+
+    let timer;
+    let idle;
+    if ("requestIdleCallback" in window) {
+      idle = window.requestIdleCallback(run, { timeout: 2200 });
+    } else {
+      timer = window.setTimeout(run, 1000);
+    }
+
+    return () => {
+      if (timer) window.clearTimeout(timer);
+      if (idle) window.cancelIdleCallback(idle);
+    };
+  }, [pathname, router]);
 
   useEffect(() => {
     const onClick = (event) => {
@@ -149,8 +181,7 @@ export default function RouteWave() {
 
   useEffect(() => {
     if (phase !== "reveal") return undefined;
-    const finish = window.setTimeout(() => {
-      setPhase("idle");
+    const finish = window.setTimeout(() => {      setPhase("idle");
       setTarget(null);
       document.body.classList.remove(
         "studio-arriving",

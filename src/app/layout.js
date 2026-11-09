@@ -18,6 +18,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/Poppins-Black.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="flex min-h-full flex-col">
         <RouteWave />
         <SiteChrome>

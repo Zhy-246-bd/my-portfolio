@@ -81,9 +81,6 @@ export default function StudioSidebar() {
                   <strong>{module.label}</strong>
                   <small>{module.sub}</small>
                 </span>
-                <span className={styles.sidebarArrow} aria-hidden="true">
-                  ↗
-                </span>
               </Link>
             );
           })}
