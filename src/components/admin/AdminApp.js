@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -50,7 +50,14 @@ const ABOUT_SCHEMA = [
   },
   {
     title: "我的故事",
-    fields: [{ kind: "list", path: "story", label: "段落" }],
+    fields: [
+      {
+        kind: "list",
+        path: "story",
+        label: "段落",
+        item: { kind: "text" },
+      },
+    ],
   },
   {
     title: "照片",
@@ -750,3 +757,6 @@ export default function AdminApp() {
     </main>
   );
 }
+
+
+
