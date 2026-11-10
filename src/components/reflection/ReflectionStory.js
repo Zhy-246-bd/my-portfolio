@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRemoteContent } from "@/components/content/SiteContentProvider";
 import styles from "./reflection.module.css";
 
 const SECTIONS = [
@@ -19,7 +20,8 @@ function SectionHead({ title }) {
   );
 }
 
-export default function ReflectionStory({ reflection }) {
+export default function ReflectionStory({ reflection: fallbackReflection }) {
+  const reflection = useRemoteContent("reflection", fallbackReflection);
   const [active, setActive] = useState("ability");
 
   useEffect(() => {

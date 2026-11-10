@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRemoteContent } from "@/components/content/SiteContentProvider";
 import AboutProfileCard from "./AboutProfileCard";
 import HobbyGallery from "./HobbyGallery";
 import styles from "./about-drawers.module.css";
@@ -33,7 +34,8 @@ const LAYERS = [
   },
 ];
 
-export default function AboutDrawers({ about, email }) {
+export default function AboutDrawers({ about: fallbackAbout, email }) {
+  const about = useRemoteContent("about", fallbackAbout);
   const [open, setOpen] = useState("life");
 
   const toggle = (id) => {
@@ -163,6 +165,9 @@ export default function AboutDrawers({ about, email }) {
         <div>
           <p className={styles.footerTitle}>联系我</p>
           <a href={`mailto:${email}`}>{email}</a>
+          <Link href="/admin/" className={styles.adminLink}>
+            内容管理
+          </Link>
         </div>
         <p>{about.aiStatement}</p>
       </footer>

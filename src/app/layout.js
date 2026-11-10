@@ -2,6 +2,7 @@ import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import ModuleFrame from "@/components/studio/ModuleFrame";
 import RouteWave from "@/components/studio/RouteWave";
+import { SiteContentProvider } from "@/components/content/SiteContentProvider";
 import { site } from "@/data/site";
 
 // 这里设置浏览器标签页上的标题，以及搜索引擎看到的描述
@@ -28,10 +29,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="flex min-h-full flex-col">
-        <RouteWave />
-        <SiteChrome>
-          <ModuleFrame>{children}</ModuleFrame>
-        </SiteChrome>
+        <SiteContentProvider>
+          <RouteWave />
+          <SiteChrome>
+            <ModuleFrame>{children}</ModuleFrame>
+          </SiteChrome>
+        </SiteContentProvider>
       </body>
     </html>
   );

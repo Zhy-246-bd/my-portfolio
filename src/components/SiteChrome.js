@@ -23,6 +23,8 @@ export default function SiteChrome({ children }) {
     pathname?.startsWith("/notebook/") ||
     pathname === "/studio" ||
     pathname?.startsWith("/studio/") ||
+    pathname === "/admin" ||
+    pathname?.startsWith("/admin/") ||
     modulePaths.some(
       (path) =>
         pathname === path || pathname?.startsWith(`${path}/`),

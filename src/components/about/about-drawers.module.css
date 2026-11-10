@@ -528,6 +528,19 @@
   font-size: 13px;
 }
 
+.adminLink {
+  display: inline-block;
+  margin-top: 12px;
+  color: rgba(223, 234, 229, 0.3) !important;
+  font-family: var(--studio-mono);
+  font-size: 10px !important;
+  text-decoration: none;
+}
+
+.adminLink:hover {
+  color: rgba(169, 232, 221, 0.7) !important;
+}
+
 .footer p:last-child {
   margin: 0;
   color: rgba(223, 234, 229, 0.4);

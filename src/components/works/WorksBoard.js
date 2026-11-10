@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+import { useRemoteContent } from "@/components/content/SiteContentProvider";
+
 function EntryArea({ project }) {
   if (!project) return null;
 
@@ -26,7 +28,12 @@ function EntryArea({ project }) {
   );
 }
 
-export default function WorksBoard({ works, projects }) {
+export default function WorksBoard({
+  works: fallbackWorks,
+  projects: fallbackProjects,
+}) {
+  const works = useRemoteContent("works", fallbackWorks);
+  const projects = useRemoteContent("projects", fallbackProjects);
   const [selected, setSelected] = useState(null);
   const [hoveredOrder, setHoveredOrder] = useState(null);
   const projectById = Object.fromEntries(projects.map((p) => [p.id, p]));

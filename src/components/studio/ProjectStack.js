@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { useRemoteContent } from "@/components/content/SiteContentProvider";
 import styles from "./projects.module.css";
 
 const layout = [
@@ -15,7 +16,8 @@ const layout = [
   { x: 57, y: 48, s: 20, z: 7, dur: 16.8, delay: -8.2, r: 2.8 },
 ];
 
-export default function ProjectStack({ projects }) {
+export default function ProjectStack({ projects: fallbackProjects }) {
+  const projects = useRemoteContent("projects", fallbackProjects);
   const fieldRef = useRef(null);
 
   useEffect(() => {

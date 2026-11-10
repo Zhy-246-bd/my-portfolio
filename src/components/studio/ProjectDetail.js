@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRemoteContent } from "@/components/content/SiteContentProvider";
 import styles from "./projects.module.css";
 
-export default function ProjectDetail({ projects }) {
+export default function ProjectDetail({ projects: fallbackProjects }) {
+  const projects = useRemoteContent("projects", fallbackProjects);
   const [index, setIndex] = useState(0);
   const project = projects[index];
   const total = projects.length;
