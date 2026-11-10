@@ -137,7 +137,7 @@ const ABOUT_SCHEMA = [
 const PROJECT_SCHEMA = [
   {
     kind: "list",
-    path: "projects",
+    path: "",
     label: "项目",
     item: {
       kind: "fields",
@@ -188,7 +188,7 @@ const PROJECT_SCHEMA = [
 const WORK_SCHEMA = [
   {
     kind: "list",
-    path: "works",
+    path: "",
     label: "作业",
     item: {
       kind: "fields",
@@ -297,11 +297,19 @@ const SCHEMA = {
   reflection: REFLECTION_SCHEMA,
 };
 
+function joinPath(base, ...parts) {
+  return [base, ...parts]
+    .filter((part) => part !== undefined && part !== null && part !== "")
+    .join(".");
+}
+
 function getAtPath(root, path) {
+  if (!path) return root;
   return path.split(".").reduce((value, key) => value?.[key], root);
 }
 
 function setAtPath(root, path, value) {
+  if (!path) return value;
   const copy = structuredClone(root);
   const keys = path.split(".");
   let cursor = copy;
@@ -381,14 +389,14 @@ function Field({ schema, path, doc, update }) {
                 value={pair?.[0] || ""}
                 placeholder="名称"
                 onChange={(event) =>
-                  update(`${path}.${index}.0`, event.target.value)
+                  update(joinPath(path, index, "0"), event.target.value)
                 }
               />
               <input
                 value={pair?.[1] || ""}
                 placeholder="内容"
                 onChange={(event) =>
-                  update(`${path}.${index}.1`, event.target.value)
+                  update(joinPath(path, index, "1"), event.target.value)
                 }
               />
               <button
@@ -445,7 +453,7 @@ function Field({ schema, path, doc, update }) {
                   value={item}
                   rows={2}
                   onChange={(event) =>
-                    update(`${path}.${index}`, event.target.value)
+                    update(joinPath(path, index), event.target.value)
                   }
                 />
               ) : (
@@ -454,7 +462,7 @@ function Field({ schema, path, doc, update }) {
                     <Field
                       key={field.key}
                       schema={field}
-                      path={`${path}.${index}.${field.key}`}
+                      path={joinPath(path, index, field.key)}
                       doc={doc}
                       update={update}
                     />
@@ -482,7 +490,7 @@ function Field({ schema, path, doc, update }) {
           <Field
             key={field.key}
             schema={field}
-            path={`${path}.${field.key}`}
+            path={joinPath(path, field.key)}
             doc={doc}
             update={update}
           />
@@ -757,6 +765,8 @@ export default function AdminApp() {
     </main>
   );
 }
+
+
 
 
 
