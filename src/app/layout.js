@@ -2,6 +2,7 @@ import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import ModuleFrame from "@/components/studio/ModuleFrame";
 import RouteWave from "@/components/studio/RouteWave";
+import AdminEntry from "@/components/AdminEntry";
 import { SiteContentProvider } from "@/components/content/SiteContentProvider";
 import { site } from "@/data/site";
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="flex min-h-full flex-col">
         <SiteContentProvider>
+          <AdminEntry />
           <RouteWave />
           <SiteChrome>
             <ModuleFrame>{children}</ModuleFrame>
